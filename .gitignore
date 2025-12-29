@@ -1,0 +1,214 @@
+# =============================================================================
+# Hospital ERP System - .gitignore
+# =============================================================================
+# Covers: NestJS (Node.js/TypeScript), Flutter (Dart), PostgreSQL, Docker
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# OS Generated Files
+# -----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# -----------------------------------------------------------------------------
+# IDE and Editor
+# -----------------------------------------------------------------------------
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains (IntelliJ, WebStorm, Android Studio)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim
+*.swp
+*.swo
+Session.vim
+.netrwhist
+
+# -----------------------------------------------------------------------------
+# Node.js / NestJS (Backend)
+# -----------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment files (sensitive data)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Cache
+.npm/
+.eslintcache
+.cache/
+
+# -----------------------------------------------------------------------------
+# Flutter / Dart (Mobile Frontend)
+# -----------------------------------------------------------------------------
+# Flutter/Dart specific
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Android specific
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+
+# iOS specific
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS specific (Flutter desktop)
+**/macos/Flutter/ephemeral
+
+# Web specific (Flutter web)
+**/web/favicon.png
+**/web/icons/Icon-192.png
+**/web/icons/Icon-512.png
+**/web/manifest.json
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Generated localization files
+*.g.dart
+*.freezed.dart
+
+# -----------------------------------------------------------------------------
+# Database
+# -----------------------------------------------------------------------------
+# PostgreSQL
+*.sql.backup
+*.dump
+
+# SQLite (for local development)
+*.db
+*.sqlite
+*.sqlite3
+
+# -----------------------------------------------------------------------------
+# Docker
+# -----------------------------------------------------------------------------
+docker-compose.override.yml
+.docker/
+
+# -----------------------------------------------------------------------------
+# Testing
+# -----------------------------------------------------------------------------
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+
+# -----------------------------------------------------------------------------
+# Security / Secrets
+# -----------------------------------------------------------------------------
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+.secrets
+
+# -----------------------------------------------------------------------------
+# Miscellaneous
+# -----------------------------------------------------------------------------
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Documentation build output (if using tools like mkdocs)
+site/
+
+# Backup files
+*.bak
+*.backup
