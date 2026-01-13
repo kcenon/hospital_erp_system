@@ -1,0 +1,40 @@
+# Dependencies
+node_modules
+.npm-cache
+
+# Build
+.next
+out
+build
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Tests
+coverage
+.nyc_output
+
+# Logs
+*.log
+logs
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Development files
+.eslintcache
+.prettierignore
+.editorconfig
