@@ -265,7 +265,8 @@ model Patient {
   deletedAt                DateTime? @map("deleted_at") @db.Timestamptz
 
   // Relations
-  detail PatientDetail?
+  detail  PatientDetail?
+  history PatientHistory[]
 
   @@index([patientNumber])
   @@index([name])
@@ -304,5 +305,27 @@ model PatientSequence {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("patient_sequences")
+  @@schema("patient")
+}
+
+/// PatientHistory entity for audit trail
+model PatientHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  patientId  String   @map("patient_id") @db.Uuid
+  changedBy  String   @map("changed_by") @db.Uuid
+  changedAt  DateTime @default(now()) @map("changed_at") @db.Timestamptz
+  changeType String   @map("change_type") @db.VarChar(20)
+  fieldName  String?  @map("field_name") @db.VarChar(100)
+  oldValue   String?  @map("old_value") @db.Text
+  newValue   String?  @map("new_value") @db.Text
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([changedAt(sort: Desc)])
+  @@index([patientId, changedAt(sort: Desc)])
+  @@index([changedBy])
+  @@map("patient_history")
   @@schema("patient")
 }

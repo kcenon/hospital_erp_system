@@ -1,4 +1,4 @@
-import { PrismaClient, RoomType, BedStatus } from '@prisma/client';
+import { PrismaClient, RoomType, BedStatus, Gender } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -11,6 +11,10 @@ async function main() {
   console.log('Starting seed...');
 
   // Clean existing data (in reverse order of dependencies)
+  await prisma.patientHistory.deleteMany();
+  await prisma.patientDetail.deleteMany();
+  await prisma.patient.deleteMany();
+  await prisma.patientSequence.deleteMany();
   await prisma.bed.deleteMany();
   await prisma.room.deleteMany();
   await prisma.floor.deleteMany();
@@ -527,6 +531,145 @@ async function main() {
     await createBedsForRoom(room.id, roomData.bedCount);
   }
 
+  // =====================================================================
+  // Seed Patients
+  // =====================================================================
+
+  console.log('Creating patients...');
+
+  // Initialize patient sequence for current year
+  const currentYear = new Date().getFullYear();
+  await prisma.patientSequence.create({
+    data: {
+      year: currentYear,
+      lastValue: 0,
+    },
+  });
+
+  // Helper function to generate patient number
+  const generatePatientNumber = async (): Promise<string> => {
+    const sequence = await prisma.patientSequence.update({
+      where: { year: currentYear },
+      data: { lastValue: { increment: 1 } },
+    });
+    return `P${currentYear}${String(sequence.lastValue).padStart(6, '0')}`;
+  };
+
+  // Sample patient data
+  const patientsData = [
+    {
+      name: 'John Doe',
+      birthDate: new Date('1975-03-15'),
+      gender: Gender.MALE,
+      bloodType: 'A+',
+      phone: '010-1234-5678',
+      address: '123 Main Street, Seoul',
+      emergencyContactName: 'Jane Doe',
+      emergencyContactPhone: '010-8765-4321',
+      emergencyContactRelation: 'Spouse',
+      detail: {
+        allergies: 'Penicillin',
+        insuranceType: 'National Health Insurance',
+        insuranceCompany: 'NHI',
+        notes: 'Regular check-up required',
+      },
+    },
+    {
+      name: 'Emily Kim',
+      birthDate: new Date('1988-07-22'),
+      gender: Gender.FEMALE,
+      bloodType: 'O+',
+      phone: '010-2345-6789',
+      address: '456 Oak Avenue, Busan',
+      emergencyContactName: 'Michael Kim',
+      emergencyContactPhone: '010-9876-5432',
+      emergencyContactRelation: 'Brother',
+      detail: {
+        allergies: 'Sulfa drugs, Aspirin',
+        insuranceType: 'Private Insurance',
+        insuranceCompany: 'Samsung Life',
+        notes: 'History of hypertension',
+      },
+    },
+    {
+      name: 'Robert Park',
+      birthDate: new Date('1960-11-08'),
+      gender: Gender.MALE,
+      bloodType: 'B-',
+      phone: '010-3456-7890',
+      address: '789 Pine Road, Incheon',
+      emergencyContactName: 'Susan Park',
+      emergencyContactPhone: '010-1357-2468',
+      emergencyContactRelation: 'Daughter',
+      detail: {
+        allergies: null,
+        insuranceType: 'National Health Insurance',
+        insuranceCompany: 'NHI',
+        notes: 'Diabetes Type 2',
+      },
+    },
+    {
+      name: 'Sarah Lee',
+      birthDate: new Date('1995-05-30'),
+      gender: Gender.FEMALE,
+      bloodType: 'AB+',
+      phone: '010-4567-8901',
+      address: '321 Maple Lane, Daegu',
+      emergencyContactName: 'David Lee',
+      emergencyContactPhone: '010-2468-1357',
+      emergencyContactRelation: 'Father',
+      detail: {
+        allergies: 'Latex',
+        insuranceType: 'National Health Insurance',
+        insuranceCompany: 'NHI',
+        notes: null,
+      },
+    },
+    {
+      name: 'James Choi',
+      birthDate: new Date('1982-09-12'),
+      gender: Gender.MALE,
+      bloodType: 'O-',
+      phone: '010-5678-9012',
+      address: '654 Birch Street, Gwangju',
+      emergencyContactName: 'Linda Choi',
+      emergencyContactPhone: '010-3579-2468',
+      emergencyContactRelation: 'Wife',
+      detail: {
+        allergies: 'Iodine contrast',
+        insuranceType: 'Private Insurance',
+        insuranceCompany: 'Hyundai Insurance',
+        notes: 'Previous cardiac surgery',
+      },
+    },
+  ];
+
+  for (const patientData of patientsData) {
+    const patientNumber = await generatePatientNumber();
+    await prisma.patient.create({
+      data: {
+        patientNumber,
+        name: patientData.name,
+        birthDate: patientData.birthDate,
+        gender: patientData.gender,
+        bloodType: patientData.bloodType,
+        phone: patientData.phone,
+        address: patientData.address,
+        emergencyContactName: patientData.emergencyContactName,
+        emergencyContactPhone: patientData.emergencyContactPhone,
+        emergencyContactRelation: patientData.emergencyContactRelation,
+        detail: {
+          create: {
+            allergies: patientData.detail.allergies,
+            insuranceType: patientData.detail.insuranceType,
+            insuranceCompany: patientData.detail.insuranceCompany,
+            notes: patientData.detail.notes,
+          },
+        },
+      },
+    });
+  }
+
   // Print summary
   const userCount = await prisma.user.count();
   const roleCount = await prisma.role.count();
@@ -535,6 +678,7 @@ async function main() {
   const floorCount = await prisma.floor.count();
   const roomCount = await prisma.room.count();
   const bedCount = await prisma.bed.count();
+  const patientCount = await prisma.patient.count();
 
   console.log('\nSeed completed successfully!');
   console.log('Summary:');
@@ -547,6 +691,8 @@ async function main() {
   console.log(`    Floors: ${floorCount}`);
   console.log(`    Rooms: ${roomCount}`);
   console.log(`    Beds: ${bedCount}`);
+  console.log('  Patients:');
+  console.log(`    Patients: ${patientCount}`);
 }
 
 main()
