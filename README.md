@@ -99,6 +99,7 @@ hospital_erp_system/
 |----------|-----------|
 | **Overview** | [Project Overview](docs/reference/01-overview/project-overview.md), [Technology Stack](docs/reference/01-overview/technology-stack.md), [Schedule Plan](docs/reference/01-overview/schedule-plan.md) |
 | **Design** | [System Architecture](docs/reference/02-design/system-architecture.md), [Database Design](docs/reference/02-design/database-design.md), [API Specification](docs/reference/02-design/api-specification.md), [UI Design](docs/reference/02-design/ui-design.md) |
+| **Database** | [Database Configuration](docs/database-configuration.md) |
 | **Security** | [Security Requirements](docs/reference/03-security/security-requirements.md) |
 | **Appendix** | [Glossary](docs/reference/04-appendix/glossary.md) |
 | **Guides** | [Development Environment](docs/reference/05-guides/development-environment-setup.md), [Coding Conventions](docs/reference/05-guides/coding-conventions.md), [Testing Strategy](docs/reference/05-guides/testing-strategy.md) |

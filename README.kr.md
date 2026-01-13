@@ -99,6 +99,7 @@ hospital_erp_system/
 |----------|------|
 | **개요** | [프로젝트 개요](docs/reference/01-overview/project-overview.kr.md), [기술 스택](docs/reference/01-overview/technology-stack.kr.md), [일정 계획](docs/reference/01-overview/schedule-plan.kr.md) |
 | **설계** | [시스템 아키텍처](docs/reference/02-design/system-architecture.kr.md), [데이터베이스 설계](docs/reference/02-design/database-design.kr.md), [API 명세서](docs/reference/02-design/api-specification.kr.md), [화면 설계](docs/reference/02-design/ui-design.kr.md) |
+| **데이터베이스** | [데이터베이스 설정](docs/database-configuration.md) |
 | **보안** | [보안 요구사항](docs/reference/03-security/security-requirements.kr.md) |
 | **부록** | [용어사전](docs/reference/04-appendix/glossary.kr.md) |
 | **가이드** | [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md), [코딩 컨벤션](docs/reference/05-guides/coding-conventions.kr.md), [테스트 전략](docs/reference/05-guides/testing-strategy.kr.md) |
