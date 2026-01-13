@@ -682,58 +682,142 @@ CREATE INDEX idx_round_records_admission ON rounding.round_records(admission_id)
 
 ### 3.7 감사 로그 (audit schema)
 
+관련 요구사항: REQ-NFR-030~033
+준수 법규: 개인정보보호법 (2년 보존), 의료법
+
+#### Enum 타입
+
+```sql
+-- 로그인 기기 유형
+CREATE TYPE audit.DeviceType AS ENUM ('PC', 'TABLET', 'MOBILE');
+
+-- 감사 작업 유형
+CREATE TYPE audit.AuditAction AS ENUM ('READ', 'CREATE', 'UPDATE', 'DELETE');
+```
+
+#### login_history
+
+보안 감사를 위한 모든 로그인 시도(성공/실패) 추적
+
+```sql
+CREATE TABLE audit.login_history (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID,                       -- 알 수 없는 사용자 로그인 실패 시 NULL
+    username        VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45) NOT NULL,       -- IPv6 지원
+    user_agent      TEXT,
+    device_type     audit.DeviceType,
+    browser         VARCHAR(50),
+    os              VARCHAR(50),
+    login_at        TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    logout_at       TIMESTAMPTZ,
+    session_id      VARCHAR(100),
+    success         BOOLEAN NOT NULL,
+    failure_reason  VARCHAR(100),               -- INVALID_PASSWORD, USER_NOT_FOUND, ACCOUNT_LOCKED
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_login_history_user_time ON audit.login_history(user_id, login_at DESC);
+CREATE INDEX idx_login_history_ip ON audit.login_history(ip_address, login_at DESC);
+CREATE INDEX idx_login_history_created ON audit.login_history(created_at DESC);
+```
+
 #### access_logs
+
+의료법 준수를 위한 환자 정보 접근 추적
 
 ```sql
 CREATE TABLE audit.access_logs (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id         UUID REFERENCES public.users(id),
+    user_id         UUID NOT NULL,
+    username        VARCHAR(50) NOT NULL,
+    user_role       VARCHAR(50),
+    ip_address      VARCHAR(45) NOT NULL,
 
     -- 접근 정보
-    resource_type   VARCHAR(50) NOT NULL,       -- patient, report, room
-    resource_id     UUID,
-    action          VARCHAR(50) NOT NULL,       -- VIEW, CREATE, UPDATE, DELETE
+    resource_type   VARCHAR(50) NOT NULL,       -- patient, admission, vital_sign 등
+    resource_id     UUID NOT NULL,
+    action          audit.AuditAction NOT NULL,
 
     -- 요청 정보
-    ip_address      INET,
-    user_agent      TEXT,
-    request_path    VARCHAR(500),
+    request_path    VARCHAR(255),
+    request_method  VARCHAR(10),
+
+    -- 환자 접근 전용
+    patient_id      UUID,
+    accessed_fields TEXT[],                     -- 접근한 필드명 배열
 
     -- 결과
-    success         BOOLEAN DEFAULT true,
+    success         BOOLEAN NOT NULL DEFAULT true,
+    error_code      VARCHAR(50),
     error_message   TEXT,
 
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- 파티셔닝 (월별)
-CREATE INDEX idx_access_logs_user ON audit.access_logs(user_id);
-CREATE INDEX idx_access_logs_resource ON audit.access_logs(resource_type, resource_id);
-CREATE INDEX idx_access_logs_created ON audit.access_logs(created_at);
+CREATE INDEX idx_access_logs_user_time ON audit.access_logs(user_id, created_at DESC);
+CREATE INDEX idx_access_logs_patient ON audit.access_logs(patient_id, created_at DESC);
+CREATE INDEX idx_access_logs_resource ON audit.access_logs(resource_type, resource_id, created_at DESC);
+CREATE INDEX idx_access_logs_created ON audit.access_logs(created_at DESC);
 ```
 
 #### change_logs
 
+감사 추적을 위한 변경 전/후 값 추적
+
 ```sql
 CREATE TABLE audit.change_logs (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id         UUID REFERENCES public.users(id),
+    user_id         UUID NOT NULL,
+    username        VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45),
 
-    -- 변경 대상
+    -- 변경 정보
+    table_schema    VARCHAR(50) NOT NULL,
     table_name      VARCHAR(100) NOT NULL,
     record_id       UUID NOT NULL,
+    action          audit.AuditAction NOT NULL,
 
-    -- 변경 내용
-    operation       VARCHAR(20) NOT NULL,       -- INSERT, UPDATE, DELETE
-    old_values      JSONB,                      -- 이전 값
-    new_values      JSONB,                      -- 새 값
-    changed_fields  TEXT[],                     -- 변경된 필드 목록
+    -- 변경 데이터
+    old_values      JSONB,                      -- 이전 값 (UPDATE/DELETE용)
+    new_values      JSONB,                      -- 새 값 (CREATE/UPDATE용)
+    changed_fields  TEXT[],                     -- 변경된 필드명 목록
 
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    change_reason   TEXT,                       -- 선택적 변경 사유
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_change_logs_table ON audit.change_logs(table_name, record_id);
-CREATE INDEX idx_change_logs_created ON audit.change_logs(created_at);
+CREATE INDEX idx_change_logs_user_time ON audit.change_logs(user_id, created_at DESC);
+CREATE INDEX idx_change_logs_table ON audit.change_logs(table_schema, table_name, created_at DESC);
+CREATE INDEX idx_change_logs_record ON audit.change_logs(record_id, created_at DESC);
+CREATE INDEX idx_change_logs_created ON audit.change_logs(created_at DESC);
+```
+
+#### 아카이브 테이블
+
+보존 정책 준수를 위해 아카이브 테이블은 메인 테이블 구조를 미러링
+
+```sql
+CREATE TABLE audit.login_history_archive (LIKE audit.login_history INCLUDING ALL);
+CREATE TABLE audit.access_logs_archive (LIKE audit.access_logs INCLUDING ALL);
+CREATE TABLE audit.change_logs_archive (LIKE audit.change_logs INCLUDING ALL);
+```
+
+#### 감사 헬퍼 함수
+
+```sql
+-- 보존 기간 기반 오래된 로그 아카이브 (법적 준수를 위해 2년)
+CREATE FUNCTION audit.archive_old_logs(retention_days INTEGER)
+RETURNS TABLE (login_history_archived INT, access_logs_archived INT, change_logs_archived INT);
+
+-- 자동 변경 로깅을 위한 범용 트리거
+CREATE FUNCTION audit.log_changes() RETURNS TRIGGER;
+
+-- 요청 시작 시 사용자 컨텍스트 설정 (감사 추적용)
+CREATE FUNCTION audit.set_user_context(p_user_id UUID, p_username VARCHAR(50), p_ip_address VARCHAR(45));
+
+-- 요청 종료 시 사용자 컨텍스트 제거
+CREATE FUNCTION audit.clear_user_context();
 ```
 
 ---

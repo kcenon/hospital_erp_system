@@ -682,58 +682,142 @@ CREATE INDEX idx_round_records_admission ON rounding.round_records(admission_id)
 
 ### 3.7 Audit Logs (audit schema)
 
+Related Requirements: REQ-NFR-030~033
+Compliance: Personal Information Protection Act (2-year retention), Medical Service Act
+
+#### Enum Types
+
+```sql
+-- Device type for login history
+CREATE TYPE audit.DeviceType AS ENUM ('PC', 'TABLET', 'MOBILE');
+
+-- Audit action types
+CREATE TYPE audit.AuditAction AS ENUM ('READ', 'CREATE', 'UPDATE', 'DELETE');
+```
+
+#### login_history
+
+Tracks all user login attempts (success and failure) for security audit.
+
+```sql
+CREATE TABLE audit.login_history (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID,                       -- NULL if login failed for unknown user
+    username        VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45) NOT NULL,       -- Supports IPv6
+    user_agent      TEXT,
+    device_type     audit.DeviceType,
+    browser         VARCHAR(50),
+    os              VARCHAR(50),
+    login_at        TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    logout_at       TIMESTAMPTZ,
+    session_id      VARCHAR(100),
+    success         BOOLEAN NOT NULL,
+    failure_reason  VARCHAR(100),               -- INVALID_PASSWORD, USER_NOT_FOUND, ACCOUNT_LOCKED
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_login_history_user_time ON audit.login_history(user_id, login_at DESC);
+CREATE INDEX idx_login_history_ip ON audit.login_history(ip_address, login_at DESC);
+CREATE INDEX idx_login_history_created ON audit.login_history(created_at DESC);
+```
+
 #### access_logs
+
+Tracks patient information access for compliance with Medical Service Act.
 
 ```sql
 CREATE TABLE audit.access_logs (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id         UUID REFERENCES public.users(id),
+    user_id         UUID NOT NULL,
+    username        VARCHAR(50) NOT NULL,
+    user_role       VARCHAR(50),
+    ip_address      VARCHAR(45) NOT NULL,
 
-    -- Access information
-    resource_type   VARCHAR(50) NOT NULL,       -- patient, report, room
-    resource_id     UUID,
-    action          VARCHAR(50) NOT NULL,       -- VIEW, CREATE, UPDATE, DELETE
+    -- Access details
+    resource_type   VARCHAR(50) NOT NULL,       -- patient, admission, vital_sign, etc.
+    resource_id     UUID NOT NULL,
+    action          audit.AuditAction NOT NULL,
 
-    -- Request information
-    ip_address      INET,
-    user_agent      TEXT,
-    request_path    VARCHAR(500),
+    -- Request info
+    request_path    VARCHAR(255),
+    request_method  VARCHAR(10),
+
+    -- For patient access specifically
+    patient_id      UUID,
+    accessed_fields TEXT[],                     -- Array of field names accessed
 
     -- Result
-    success         BOOLEAN DEFAULT true,
+    success         BOOLEAN NOT NULL DEFAULT true,
+    error_code      VARCHAR(50),
     error_message   TEXT,
 
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Partitioning (monthly)
-CREATE INDEX idx_access_logs_user ON audit.access_logs(user_id);
-CREATE INDEX idx_access_logs_resource ON audit.access_logs(resource_type, resource_id);
-CREATE INDEX idx_access_logs_created ON audit.access_logs(created_at);
+CREATE INDEX idx_access_logs_user_time ON audit.access_logs(user_id, created_at DESC);
+CREATE INDEX idx_access_logs_patient ON audit.access_logs(patient_id, created_at DESC);
+CREATE INDEX idx_access_logs_resource ON audit.access_logs(resource_type, resource_id, created_at DESC);
+CREATE INDEX idx_access_logs_created ON audit.access_logs(created_at DESC);
 ```
 
 #### change_logs
 
+Tracks data changes with before/after values for audit trail.
+
 ```sql
 CREATE TABLE audit.change_logs (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id         UUID REFERENCES public.users(id),
+    user_id         UUID NOT NULL,
+    username        VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45),
 
-    -- Change target
+    -- Change details
+    table_schema    VARCHAR(50) NOT NULL,
     table_name      VARCHAR(100) NOT NULL,
     record_id       UUID NOT NULL,
+    action          audit.AuditAction NOT NULL,
 
-    -- Change content
-    operation       VARCHAR(20) NOT NULL,       -- INSERT, UPDATE, DELETE
-    old_values      JSONB,                      -- Previous values
-    new_values      JSONB,                      -- New values
-    changed_fields  TEXT[],                     -- List of changed fields
+    -- Change data
+    old_values      JSONB,                      -- Before values (for UPDATE/DELETE)
+    new_values      JSONB,                      -- After values (for CREATE/UPDATE)
+    changed_fields  TEXT[],                     -- List of changed field names
 
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    change_reason   TEXT,                       -- Optional reason for change
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_change_logs_table ON audit.change_logs(table_name, record_id);
-CREATE INDEX idx_change_logs_created ON audit.change_logs(created_at);
+CREATE INDEX idx_change_logs_user_time ON audit.change_logs(user_id, created_at DESC);
+CREATE INDEX idx_change_logs_table ON audit.change_logs(table_schema, table_name, created_at DESC);
+CREATE INDEX idx_change_logs_record ON audit.change_logs(record_id, created_at DESC);
+CREATE INDEX idx_change_logs_created ON audit.change_logs(created_at DESC);
+```
+
+#### Archive Tables
+
+For retention policy compliance, archive tables mirror the main tables structure.
+
+```sql
+CREATE TABLE audit.login_history_archive (LIKE audit.login_history INCLUDING ALL);
+CREATE TABLE audit.access_logs_archive (LIKE audit.access_logs INCLUDING ALL);
+CREATE TABLE audit.change_logs_archive (LIKE audit.change_logs INCLUDING ALL);
+```
+
+#### Audit Helper Functions
+
+```sql
+-- Archive old logs based on retention period (2 years for compliance)
+CREATE FUNCTION audit.archive_old_logs(retention_days INTEGER)
+RETURNS TABLE (login_history_archived INT, access_logs_archived INT, change_logs_archived INT);
+
+-- Generic trigger for automatic change logging
+CREATE FUNCTION audit.log_changes() RETURNS TRIGGER;
+
+-- Set user context at request start (for audit tracking)
+CREATE FUNCTION audit.set_user_context(p_user_id UUID, p_username VARCHAR(50), p_ip_address VARCHAR(45));
+
+-- Clear user context at request end
+CREATE FUNCTION audit.clear_user_context();
 ```
 
 ---
