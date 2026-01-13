@@ -68,10 +68,14 @@ hospital_erp_system/
 │           ├── schema.prisma    # 데이터베이스 스키마 정의
 │           ├── migrations/      # 데이터베이스 마이그레이션
 │           └── seed.ts          # 시드 데이터 스크립트
-├── docker/
-│   └── docker-compose.dev.yml   # 개발용 Docker 설정
 ├── scripts/
-│   └── init-db.sql              # 데이터베이스 초기화 스크립트
+│   ├── init-db.sql              # 데이터베이스 초기화 스크립트
+│   ├── dev-start.sh             # 개발 환경 시작
+│   ├── dev-stop.sh              # 개발 환경 중지
+│   ├── db-reset.sh              # 데이터베이스 리셋
+│   └── db-seed.sh               # 테스트 데이터 시딩
+├── docker-compose.yml           # 개발용 Docker Compose 설정
+├── docker-compose.prod.yml      # 프로덕션 Docker Compose 참조
 ├── docs/                        # 문서
 │   ├── PRD.md / PRD.kr.md       # 제품 요구사항 명세서
 │   ├── SRS.md / SRS.kr.md       # 소프트웨어 요구사항 명세서
@@ -117,7 +121,31 @@ hospital_erp_system/
 - Redis 7.x
 - Docker & Docker Compose (권장)
 
-### 설치
+### Docker로 빠르게 시작하기 (권장)
+
+Docker Compose를 사용하면 가장 쉽게 시작할 수 있습니다:
+
+```bash
+# 저장소 클론
+git clone https://github.com/kcenon/hospital_erp_system.git
+cd hospital_erp_system
+
+# 모든 서비스 시작 (PostgreSQL, Redis, Backend, Frontend)
+./scripts/dev-start.sh
+
+# 애플리케이션 접근:
+# - Frontend: http://localhost:3001
+# - Backend API: http://localhost:3000
+# - PostgreSQL: localhost:5432
+# - Redis: localhost:6379
+
+# 모든 서비스 중지
+./scripts/dev-stop.sh
+```
+
+### 수동 설치
+
+Docker 없이 개발하려면:
 
 ```bash
 # 저장소 클론
@@ -127,11 +155,12 @@ cd hospital_erp_system
 # 의존성 설치
 pnpm install
 
-# 개발용 데이터베이스 시작
-docker compose -f docker/docker-compose.dev.yml up -d
+# PostgreSQL과 Redis만 Docker로 실행
+docker compose up postgres redis -d
 
 # 환경 변수 설정
 cp apps/backend/env.example apps/backend/.env
+cp apps/frontend/env.example apps/frontend/.env.local
 
 # Prisma 클라이언트 생성 및 마이그레이션 실행
 cd apps/backend
@@ -141,9 +170,23 @@ pnpm db:migrate
 # 샘플 데이터 시딩
 pnpm db:seed
 
-# 개발 서버 시작
+# 백엔드 개발 서버 시작
 pnpm dev
+
+# 프론트엔드 개발 (새 터미널에서)
+cd apps/frontend
+npm install
+npm run dev  # 포트 3001에서 시작
 ```
+
+### 개발 스크립트
+
+| 스크립트 | 설명 |
+|----------|------|
+| `./scripts/dev-start.sh` | 모든 Docker 서비스 시작 |
+| `./scripts/dev-stop.sh` | 모든 Docker 서비스 중지 |
+| `./scripts/db-reset.sh` | 데이터베이스 초기화 (삭제 후 재생성) |
+| `./scripts/db-seed.sh` | 초기/테스트 데이터 시딩 |
 
 자세한 설치 방법은 [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md)을 참조하세요.
 

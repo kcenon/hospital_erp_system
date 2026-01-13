@@ -11,6 +11,9 @@ const pwaConfig = withPWA({
 const nextConfig = {
   reactStrictMode: true,
 
+  // Enable standalone output for Docker deployment
+  output: 'standalone',
+
   // API proxy configuration for backend
   async rewrites() {
     return [
