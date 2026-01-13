@@ -53,18 +53,28 @@ The Inpatient Management ERP System is designed to replace manual Google Sheets-
 
 ```
 hospital_erp_system/
-├── README.md                    # This file (English)
-├── README.kr.md                 # Korean version
-└── docs/                        # Documentation
-    ├── PRD.md / PRD.kr.md       # Product Requirements Document
-    ├── SRS.md / SRS.kr.md       # Software Requirements Specification
-    ├── SDS.md / SDS.kr.md       # Software Design Specification
-    └── reference/               # Reference documentation
-        ├── 01-overview/         # Project overview, tech stack, schedule
-        ├── 02-design/           # Architecture, DB, API, UI design
-        ├── 03-security/         # Security requirements
-        ├── 04-appendix/         # Glossary
-        └── 05-guides/           # Development guides
+├── apps/
+│   └── backend/                 # NestJS backend application
+│       ├── src/                 # Source code
+│       │   ├── prisma/          # Prisma service module
+│       │   ├── app.module.ts    # Root application module
+│       │   └── main.ts          # Application entry point
+│       └── prisma/              # Prisma ORM configuration
+│           ├── schema.prisma    # Database schema definition
+│           ├── migrations/      # Database migrations
+│           └── seed.ts          # Seed data script
+├── docker/
+│   └── docker-compose.dev.yml   # Development Docker configuration
+├── scripts/
+│   └── init-db.sql              # Database initialization script
+├── docs/                        # Documentation
+│   ├── PRD.md / PRD.kr.md       # Product Requirements Document
+│   ├── SRS.md / SRS.kr.md       # Software Requirements Specification
+│   ├── SDS.md / SDS.kr.md       # Software Design Specification
+│   └── reference/               # Reference documentation
+├── package.json                 # Root package.json (pnpm workspace)
+├── pnpm-workspace.yaml          # Workspace configuration
+└── turbo.json                   # Turborepo configuration
 ```
 
 ---
@@ -96,6 +106,7 @@ hospital_erp_system/
 ### Prerequisites
 
 - Node.js 20.x LTS
+- pnpm 9.x
 - PostgreSQL 16.x
 - Redis 7.x
 - Docker & Docker Compose (recommended)
@@ -104,20 +115,31 @@ hospital_erp_system/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/hospital_erp_system.git
+git clone https://github.com/kcenon/hospital_erp_system.git
 cd hospital_erp_system
 
-# Install dependencies (when source code is available)
-npm install
+# Install dependencies
+pnpm install
+
+# Start development database
+docker compose -f docker/docker-compose.dev.yml up -d
 
 # Set up environment variables
-cp .env.example .env
+cp apps/backend/env.example apps/backend/.env
+
+# Generate Prisma client and run migrations
+cd apps/backend
+pnpm db:generate
+pnpm db:migrate
+
+# Seed the database with sample data
+pnpm db:seed
 
 # Start development server
-npm run dev
+pnpm dev
 ```
 
-> **Note**: Source code implementation is in progress. See [Development Environment Setup](docs/reference/05-guides/development-environment-setup.md) for detailed instructions.
+See [Development Environment Setup](docs/reference/05-guides/development-environment-setup.md) for detailed instructions.
 
 ---
 
