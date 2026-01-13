@@ -54,6 +54,23 @@ The Inpatient Management ERP System is designed to replace manual Google Sheets-
 ```
 hospital_erp_system/
 ├── apps/
+│   ├── frontend/                # Next.js frontend application
+│   │   ├── src/
+│   │   │   ├── app/             # Next.js App Router pages
+│   │   │   │   ├── (auth)/      # Auth-related pages
+│   │   │   │   └── (dashboard)/ # Dashboard pages
+│   │   │   ├── components/      # React components
+│   │   │   │   ├── ui/          # shadcn/ui components
+│   │   │   │   ├── forms/       # Form components
+│   │   │   │   ├── layouts/     # Layout components
+│   │   │   │   └── features/    # Feature-specific components
+│   │   │   ├── hooks/           # Custom React hooks
+│   │   │   ├── lib/             # Utility functions
+│   │   │   ├── providers/       # React context providers
+│   │   │   ├── services/        # API service functions
+│   │   │   ├── stores/          # Zustand state stores
+│   │   │   └── types/           # TypeScript type definitions
+│   │   └── public/              # Static assets
 │   └── backend/                 # NestJS backend application
 │       ├── src/                 # Source code
 │       │   ├── common/          # Shared utilities
@@ -158,8 +175,13 @@ pnpm db:migrate
 # Seed the database with sample data
 pnpm db:seed
 
-# Start development server
+# Start backend development server
 pnpm dev
+
+# For frontend development (in a new terminal)
+cd apps/frontend
+npm install
+npm run dev  # Starts on port 3001
 ```
 
 See [Development Environment Setup](docs/reference/05-guides/development-environment-setup.md) for detailed instructions.
