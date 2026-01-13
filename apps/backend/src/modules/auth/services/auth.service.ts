@@ -17,6 +17,7 @@ import {
   LoginResponseDto,
   TokenResponseDto,
   UserInfoDto,
+  ChangePasswordDto,
 } from '../dto';
 
 @Injectable()
@@ -174,6 +175,50 @@ export class AuthService {
     this.logger.log(`Tokens refreshed for user ${user.username}`);
 
     return newTokenPair;
+  }
+
+  /**
+   * Change user password
+   */
+  async changePassword(
+    userId: string,
+    dto: ChangePasswordDto,
+  ): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.passwordHash,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    if (dto.currentPassword === dto.newPassword) {
+      throw new ForbiddenException(
+        'New password must be different from current password',
+      );
+    }
+
+    const saltRounds = 12;
+    const newPasswordHash = await bcrypt.hash(dto.newPassword, saltRounds);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash: newPasswordHash,
+        updatedAt: new Date(),
+      },
+    });
+
+    this.logger.log(`Password changed for user ${user.username}`);
   }
 
   /**
