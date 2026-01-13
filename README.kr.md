@@ -56,6 +56,9 @@ hospital_erp_system/
 ├── apps/
 │   └── backend/                 # NestJS 백엔드 애플리케이션
 │       ├── src/                 # 소스 코드
+│       │   ├── common/          # 공유 유틸리티, 파이프, 데코레이터
+│       │   ├── modules/         # 기능 모듈
+│       │   │   └── room/        # 병실 관리 모듈
 │       │   ├── prisma/          # Prisma 서비스 모듈
 │       │   ├── app.module.ts    # 루트 애플리케이션 모듈
 │       │   └── main.ts          # 애플리케이션 진입점
