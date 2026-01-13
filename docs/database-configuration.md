@@ -27,7 +27,7 @@ hospital_erp (database)
 | `patient` | Patient master data | patients, patient_details, patient_sequences, patient_history |
 | `room` | Hospital infrastructure | buildings, floors, rooms, beds |
 | `admission` | Patient stay management | admissions, transfers, discharges |
-| `report` | Clinical documentation | vital_signs, intake_outputs, medications, nursing_notes |
+| `report` | Clinical documentation | vital_signs, intake_outputs, medications, nursing_notes, daily_reports |
 | `rounding` | Ward rounds | rounds, round_records |
 | `audit` | Compliance and security | access_logs, change_logs, login_history |
 

@@ -385,8 +385,13 @@ model Admission {
   createdBy             String          @map("created_by") @db.Uuid
 
   // Relations
-  transfers Transfer[]
-  discharge Discharge?
+  transfers     Transfer[]
+  discharge     Discharge?
+  vitalSigns    VitalSign[]
+  intakeOutputs IntakeOutput[]
+  medications   Medication[]
+  nursingNotes  NursingNote[]
+  dailyReports  DailyReport[]
 
   @@index([patientId])
   @@index([bedId])
@@ -453,4 +458,213 @@ model AdmissionSequence {
 
   @@map("admission_sequences")
   @@schema("admission")
+}
+
+// =============================================================================
+// Report Management Schema (report schema)
+// Related Requirements: REQ-FR-030~045
+// SDS Reference: Section 4.5 (Report Module), Section 5.1
+// =============================================================================
+
+/// Consciousness level enumeration (AVPU scale)
+enum Consciousness {
+  ALERT
+  VERBAL
+  PAIN
+  UNRESPONSIVE
+
+  @@schema("report")
+}
+
+/// Medication administration status enumeration
+enum MedicationStatus {
+  SCHEDULED
+  ADMINISTERED
+  HELD
+  REFUSED
+  MISSED
+
+  @@schema("report")
+}
+
+/// Medication route enumeration
+enum MedicationRoute {
+  PO // Oral
+  IV // Intravenous
+  IM // Intramuscular
+  SC // Subcutaneous
+  SL // Sublingual
+  TOP // Topical
+  INH // Inhalation
+  PR // Per rectum
+  OTHER
+
+  @@schema("report")
+}
+
+/// Nursing note type enumeration
+enum NoteType {
+  ASSESSMENT
+  PROGRESS
+  PROCEDURE
+  INCIDENT
+  HANDOFF
+
+  @@schema("report")
+}
+
+/// Patient status enumeration for daily reports
+enum PatientStatus {
+  STABLE
+  IMPROVING
+  DECLINING
+  CRITICAL
+
+  @@schema("report")
+}
+
+/// VitalSign entity for patient vital sign records
+model VitalSign {
+  id               String         @id @default(uuid()) @db.Uuid
+  admissionId      String         @map("admission_id") @db.Uuid
+  temperature      Decimal?       @db.Decimal(4, 1)
+  systolicBp       Int?           @map("systolic_bp")
+  diastolicBp      Int?           @map("diastolic_bp")
+  pulseRate        Int?           @map("pulse_rate")
+  respiratoryRate  Int?           @map("respiratory_rate")
+  oxygenSaturation Int?           @map("oxygen_saturation")
+  bloodGlucose     Int?           @map("blood_glucose")
+  painScore        Int?           @map("pain_score")
+  consciousness    Consciousness?
+  measuredAt       DateTime       @map("measured_at") @db.Timestamptz
+  measuredBy       String         @map("measured_by") @db.Uuid
+  notes            String?        @db.Text
+  hasAlert         Boolean        @default(false) @map("has_alert")
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([admissionId, measuredAt(sort: Desc)])
+  @@index([hasAlert])
+  @@index([measuredBy])
+  @@map("vital_signs")
+  @@schema("report")
+}
+
+/// IntakeOutput entity for patient intake/output tracking
+model IntakeOutput {
+  id             String   @id @default(uuid()) @db.Uuid
+  admissionId    String   @map("admission_id") @db.Uuid
+  recordDate     DateTime @map("record_date") @db.Date
+  recordTime     DateTime @map("record_time") @db.Time
+  // Intake
+  oralIntake     Int      @default(0) @map("oral_intake")
+  ivIntake       Int      @default(0) @map("iv_intake")
+  tubeFeeding    Int      @default(0) @map("tube_feeding")
+  otherIntake    Int      @default(0) @map("other_intake")
+  // Output
+  urineOutput    Int      @default(0) @map("urine_output")
+  stoolOutput    Int      @default(0) @map("stool_output")
+  vomitOutput    Int      @default(0) @map("vomit_output")
+  drainageOutput Int      @default(0) @map("drainage_output")
+  otherOutput    Int      @default(0) @map("other_output")
+  // Metadata
+  recordedBy     String   @map("recorded_by") @db.Uuid
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([admissionId, recordDate])
+  @@index([recordedBy])
+  @@map("intake_outputs")
+  @@schema("report")
+}
+
+/// Medication entity for medication administration tracking
+model Medication {
+  id             String           @id @default(uuid()) @db.Uuid
+  admissionId    String           @map("admission_id") @db.Uuid
+  medicationName String           @map("medication_name") @db.VarChar(255)
+  dosage         String           @db.VarChar(100)
+  route          MedicationRoute
+  frequency      String?          @db.VarChar(100)
+  scheduledTime  DateTime?        @map("scheduled_time") @db.Time
+  administeredAt DateTime?        @map("administered_at") @db.Timestamptz
+  administeredBy String?          @map("administered_by") @db.Uuid
+  status         MedicationStatus
+  holdReason     String?          @map("hold_reason") @db.Text
+  notes          String?          @db.Text
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([admissionId, administeredAt])
+  @@index([admissionId, status])
+  @@index([administeredBy])
+  @@map("medications")
+  @@schema("report")
+}
+
+/// NursingNote entity for nursing documentation (SOAP format)
+model NursingNote {
+  id            String   @id @default(uuid()) @db.Uuid
+  admissionId   String   @map("admission_id") @db.Uuid
+  noteType      NoteType @map("note_type")
+  // SOAP Format
+  subjective    String?  @db.Text
+  objective     String?  @db.Text
+  assessment    String?  @db.Text
+  plan          String?  @db.Text
+  // Metadata
+  recordedAt    DateTime @map("recorded_at") @db.Timestamptz
+  recordedBy    String   @map("recorded_by") @db.Uuid
+  isSignificant Boolean  @default(false) @map("is_significant")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([admissionId, recordedAt(sort: Desc)])
+  @@index([admissionId, noteType])
+  @@index([recordedBy])
+  @@index([isSignificant])
+  @@map("nursing_notes")
+  @@schema("report")
+}
+
+/// DailyReport entity for aggregated daily patient reports
+model DailyReport {
+  id               String         @id @default(uuid()) @db.Uuid
+  admissionId      String         @map("admission_id") @db.Uuid
+  reportDate       DateTime       @map("report_date") @db.Date
+  // Vital Signs Summary
+  vitalsSummary    Json?          @map("vitals_summary") @db.JsonB
+  // I/O Summary
+  totalIntake      Int?           @map("total_intake")
+  totalOutput      Int?           @map("total_output")
+  ioBalance        Int?           @map("io_balance")
+  // Medication Summary
+  medicationsGiven Int?           @map("medications_given")
+  medicationsHeld  Int?           @map("medications_held")
+  // Overall
+  patientStatus    PatientStatus? @map("patient_status")
+  summary          String?        @db.Text
+  alerts           Json?          @db.JsonB
+  generatedAt      DateTime       @default(now()) @map("generated_at") @db.Timestamptz
+  generatedBy      String?        @map("generated_by") @db.Uuid
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@unique([admissionId, reportDate])
+  @@index([admissionId, reportDate(sort: Desc)])
+  @@index([reportDate])
+  @@map("daily_reports")
+  @@schema("report")
 }
