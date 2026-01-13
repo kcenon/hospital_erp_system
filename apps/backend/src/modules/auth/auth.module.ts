@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SessionService } from './services';
+import { SessionActivityInterceptor } from './interceptors';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [],
-  providers: [],
-  exports: [JwtModule, PassportModule],
+  providers: [SessionService, SessionActivityInterceptor],
+  exports: [JwtModule, PassportModule, SessionService, SessionActivityInterceptor],
 })
 export class AuthModule {}
