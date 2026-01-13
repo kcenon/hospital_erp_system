@@ -556,6 +556,74 @@ POST /admissions/{admissionId}/discharge
 }
 ```
 
+### 5.6 입원번호로 조회
+
+```http
+GET /admissions/by-number/{admissionNumber}
+```
+
+**응답 (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "admission-uuid",
+    "admissionNumber": "A2025123456",
+    "patient": { ... },
+    "bed": { ... },
+    "status": "ACTIVE",
+    "transfers": [ ... ],
+    "discharge": null
+  }
+}
+```
+
+### 5.7 환자별 활성 입원 조회
+
+```http
+GET /admissions/patient/{patientId}/active
+```
+
+특정 환자의 현재 활성 입원 정보를 반환합니다. 입원 상태가 아니면 null을 반환합니다.
+
+### 5.8 층별 입원 목록 조회
+
+```http
+GET /admissions/floor/{floorId}
+```
+
+**쿼리 파라미터**
+
+| 파라미터 | 타입 | 설명 |
+|----------|------|------|
+| status | string | 입원 상태 필터 |
+
+### 5.9 전실 이력 조회
+
+```http
+GET /admissions/{admissionId}/transfers
+```
+
+**응답 (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "transfer-uuid",
+      "admissionId": "admission-uuid",
+      "fromBedId": "old-bed-uuid",
+      "toBedId": "new-bed-uuid",
+      "transferDate": "2025-12-29",
+      "transferTime": "10:00",
+      "reason": "병실 업그레이드 요청",
+      "transferredBy": "user-uuid",
+      "createdAt": "2025-12-29T10:00:00Z"
+    }
+  ]
+}
+```
+
 ---
 
 ## 6. 보고서 및 일지 API
