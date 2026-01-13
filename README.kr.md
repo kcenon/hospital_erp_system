@@ -53,18 +53,28 @@
 
 ```
 hospital_erp_system/
-├── README.md                    # 영문 README
-├── README.kr.md                 # 현재 문서 (한글)
-└── docs/                        # 문서
-    ├── PRD.md / PRD.kr.md       # 제품 요구사항 명세서
-    ├── SRS.md / SRS.kr.md       # 소프트웨어 요구사항 명세서
-    ├── SDS.md / SDS.kr.md       # 소프트웨어 설계 명세서
-    └── reference/               # 참조 문서
-        ├── 01-overview/         # 프로젝트 개요, 기술 스택, 일정
-        ├── 02-design/           # 아키텍처, DB, API, UI 설계
-        ├── 03-security/         # 보안 요구사항
-        ├── 04-appendix/         # 용어사전
-        └── 05-guides/           # 개발 가이드
+├── apps/
+│   └── backend/                 # NestJS 백엔드 애플리케이션
+│       ├── src/                 # 소스 코드
+│       │   ├── prisma/          # Prisma 서비스 모듈
+│       │   ├── app.module.ts    # 루트 애플리케이션 모듈
+│       │   └── main.ts          # 애플리케이션 진입점
+│       └── prisma/              # Prisma ORM 설정
+│           ├── schema.prisma    # 데이터베이스 스키마 정의
+│           ├── migrations/      # 데이터베이스 마이그레이션
+│           └── seed.ts          # 시드 데이터 스크립트
+├── docker/
+│   └── docker-compose.dev.yml   # 개발용 Docker 설정
+├── scripts/
+│   └── init-db.sql              # 데이터베이스 초기화 스크립트
+├── docs/                        # 문서
+│   ├── PRD.md / PRD.kr.md       # 제품 요구사항 명세서
+│   ├── SRS.md / SRS.kr.md       # 소프트웨어 요구사항 명세서
+│   ├── SDS.md / SDS.kr.md       # 소프트웨어 설계 명세서
+│   └── reference/               # 참조 문서
+├── package.json                 # 루트 package.json (pnpm 워크스페이스)
+├── pnpm-workspace.yaml          # 워크스페이스 설정
+└── turbo.json                   # Turborepo 설정
 ```
 
 ---
@@ -96,6 +106,7 @@ hospital_erp_system/
 ### 사전 요구사항
 
 - Node.js 20.x LTS
+- pnpm 9.x
 - PostgreSQL 16.x
 - Redis 7.x
 - Docker & Docker Compose (권장)
@@ -104,20 +115,31 @@ hospital_erp_system/
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-org/hospital_erp_system.git
+git clone https://github.com/kcenon/hospital_erp_system.git
 cd hospital_erp_system
 
-# 의존성 설치 (소스 코드 구현 후)
-npm install
+# 의존성 설치
+pnpm install
+
+# 개발용 데이터베이스 시작
+docker compose -f docker/docker-compose.dev.yml up -d
 
 # 환경 변수 설정
-cp .env.example .env
+cp apps/backend/env.example apps/backend/.env
+
+# Prisma 클라이언트 생성 및 마이그레이션 실행
+cd apps/backend
+pnpm db:generate
+pnpm db:migrate
+
+# 샘플 데이터 시딩
+pnpm db:seed
 
 # 개발 서버 시작
-npm run dev
+pnpm dev
 ```
 
-> **참고**: 소스 코드 구현이 진행 중입니다. 자세한 설치 방법은 [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md)을 참조하세요.
+자세한 설치 방법은 [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md)을 참조하세요.
 
 ---
 
