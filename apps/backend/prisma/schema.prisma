@@ -13,6 +13,117 @@ datasource db {
 }
 
 // =============================================================================
+// Authentication Schema (public schema)
+// Related Requirements: REQ-FR-060~064, REQ-NFR-023
+// =============================================================================
+
+/// User entity for authentication and authorization
+model User {
+  id                String    @id @default(uuid()) @db.Uuid
+  employeeId        String    @unique @map("employee_id") @db.VarChar(20)
+  username          String    @unique @db.VarChar(50)
+  passwordHash      String    @map("password_hash") @db.VarChar(255)
+  name              String    @db.VarChar(100)
+  email             String?   @db.VarChar(255)
+  phone             String?   @db.VarChar(20)
+  department        String?   @db.VarChar(100)
+  position          String?   @db.VarChar(100)
+  isActive          Boolean   @default(true) @map("is_active")
+  lastLoginAt       DateTime? @map("last_login_at") @db.Timestamptz
+  passwordChangedAt DateTime? @map("password_changed_at") @db.Timestamptz
+  failedLoginCount  Int       @default(0) @map("failed_login_count")
+  lockedUntil       DateTime? @map("locked_until") @db.Timestamptz
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt         DateTime? @map("deleted_at") @db.Timestamptz
+
+  // Relations
+  userRoles     UserRole[] @relation("UserRoles")
+  assignedRoles UserRole[] @relation("AssignedBy")
+
+  @@index([username])
+  @@index([employeeId])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("users")
+  @@schema("public")
+}
+
+/// Role entity for role-based access control
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?  @db.Text
+  level       Int
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@index([code])
+  @@index([isActive])
+  @@map("roles")
+  @@schema("public")
+}
+
+/// Permission entity for fine-grained access control
+model Permission {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique @db.VarChar(100)
+  resource    String   @db.VarChar(50)
+  action      String   @db.VarChar(50)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  rolePermissions RolePermission[]
+
+  @@index([resource])
+  @@index([code])
+  @@map("permissions")
+  @@schema("public")
+}
+
+/// UserRole junction table for user-role assignment
+model UserRole {
+  userId     String   @map("user_id") @db.Uuid
+  roleId     String   @map("role_id") @db.Uuid
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamptz
+  assignedBy String?  @map("assigned_by") @db.Uuid
+
+  // Relations
+  user     User  @relation("UserRoles", fields: [userId], references: [id], onDelete: Cascade)
+  role     Role  @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assigner User? @relation("AssignedBy", fields: [assignedBy], references: [id], onDelete: SetNull)
+
+  @@id([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles")
+  @@schema("public")
+}
+
+/// RolePermission junction table for role-permission assignment
+model RolePermission {
+  roleId       String @map("role_id") @db.Uuid
+  permissionId String @map("permission_id") @db.Uuid
+
+  // Relations
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+  @@map("role_permissions")
+  @@schema("public")
+}
+
+// =============================================================================
 // Room Management Schema (room schema)
 // Related Requirements: REQ-FR-010~015
 // =============================================================================
