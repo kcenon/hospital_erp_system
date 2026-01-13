@@ -556,6 +556,74 @@ POST /admissions/{admissionId}/discharge
 }
 ```
 
+### 5.6 Get Admission by Number
+
+```http
+GET /admissions/by-number/{admissionNumber}
+```
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "admission-uuid",
+    "admissionNumber": "A2025123456",
+    "patient": { ... },
+    "bed": { ... },
+    "status": "ACTIVE",
+    "transfers": [ ... ],
+    "discharge": null
+  }
+}
+```
+
+### 5.7 Get Active Admission by Patient
+
+```http
+GET /admissions/patient/{patientId}/active
+```
+
+Returns the currently active admission for a specific patient, or null if not admitted.
+
+### 5.8 Get Admissions by Floor
+
+```http
+GET /admissions/floor/{floorId}
+```
+
+**Query Parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| status | string | Filter by admission status |
+
+### 5.9 Get Transfer History
+
+```http
+GET /admissions/{admissionId}/transfers
+```
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "transfer-uuid",
+      "admissionId": "admission-uuid",
+      "fromBedId": "old-bed-uuid",
+      "toBedId": "new-bed-uuid",
+      "transferDate": "2025-12-29",
+      "transferTime": "10:00",
+      "reason": "Room upgrade request",
+      "transferredBy": "user-uuid",
+      "createdAt": "2025-12-29T10:00:00Z"
+    }
+  ]
+}
+```
+
 ---
 
 ## 6. Reports and Logs API

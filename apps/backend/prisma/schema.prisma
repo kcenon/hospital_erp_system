@@ -329,3 +329,128 @@ model PatientHistory {
   @@map("patient_history")
   @@schema("patient")
 }
+
+// =============================================================================
+// Admission Management Schema (admission schema)
+// Related Requirements: REQ-FR-020~025
+// =============================================================================
+
+/// Admission type enumeration
+enum AdmissionType {
+  SCHEDULED
+  EMERGENCY
+  TRANSFER_IN
+
+  @@schema("admission")
+}
+
+/// Admission status enumeration
+enum AdmissionStatus {
+  ACTIVE
+  DISCHARGED
+  TRANSFERRED
+
+  @@schema("admission")
+}
+
+/// Discharge type enumeration
+enum DischargeType {
+  NORMAL
+  AMA
+  TRANSFER_OUT
+  DEATH
+  OTHER
+
+  @@schema("admission")
+}
+
+/// Admission entity for patient admission management
+model Admission {
+  id                    String          @id @default(uuid()) @db.Uuid
+  patientId             String          @map("patient_id") @db.Uuid
+  bedId                 String          @map("bed_id") @db.Uuid
+  admissionNumber       String          @unique @map("admission_number") @db.VarChar(20)
+  admissionDate         DateTime        @map("admission_date") @db.Date
+  admissionTime         String          @map("admission_time") @db.VarChar(10)
+  admissionType         AdmissionType   @map("admission_type")
+  diagnosis             String?         @db.Text
+  chiefComplaint        String?         @map("chief_complaint") @db.Text
+  attendingDoctorId     String          @map("attending_doctor_id") @db.Uuid
+  primaryNurseId        String?         @map("primary_nurse_id") @db.Uuid
+  status                AdmissionStatus @default(ACTIVE)
+  expectedDischargeDate DateTime?       @map("expected_discharge_date") @db.Date
+  notes                 String?         @db.Text
+  createdAt             DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  createdBy             String          @map("created_by") @db.Uuid
+
+  // Relations
+  transfers Transfer[]
+  discharge Discharge?
+
+  @@index([patientId])
+  @@index([bedId])
+  @@index([status])
+  @@index([attendingDoctorId])
+  @@index([admissionDate])
+  @@index([patientId, status])
+  @@map("admissions")
+  @@schema("admission")
+}
+
+/// Transfer entity for patient bed transfers
+model Transfer {
+  id            String   @id @default(uuid()) @db.Uuid
+  admissionId   String   @map("admission_id") @db.Uuid
+  fromBedId     String   @map("from_bed_id") @db.Uuid
+  toBedId       String   @map("to_bed_id") @db.Uuid
+  transferDate  DateTime @map("transfer_date") @db.Date
+  transferTime  String   @map("transfer_time") @db.VarChar(10)
+  reason        String   @db.VarChar(255)
+  notes         String?  @db.Text
+  transferredBy String   @map("transferred_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([admissionId])
+  @@index([fromBedId])
+  @@index([toBedId])
+  @@index([transferDate])
+  @@map("transfers")
+  @@schema("admission")
+}
+
+/// Discharge entity for patient discharge records
+model Discharge {
+  id                   String        @id @default(uuid()) @db.Uuid
+  admissionId          String        @unique @map("admission_id") @db.Uuid
+  dischargeDate        DateTime      @map("discharge_date") @db.Date
+  dischargeTime        String        @map("discharge_time") @db.VarChar(10)
+  dischargeType        DischargeType @map("discharge_type")
+  dischargeDiagnosis   String?       @map("discharge_diagnosis") @db.Text
+  dischargeSummary     String?       @map("discharge_summary") @db.Text
+  followUpInstructions String?       @map("follow_up_instructions") @db.Text
+  followUpDate         DateTime?     @map("follow_up_date") @db.Date
+  dischargedBy         String        @map("discharged_by") @db.Uuid
+  createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+
+  @@index([dischargeDate])
+  @@map("discharges")
+  @@schema("admission")
+}
+
+/// Sequence for admission number generation
+model AdmissionSequence {
+  id        Int      @id @default(autoincrement())
+  year      Int      @unique
+  lastValue Int      @default(0) @map("last_value")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("admission_sequences")
+  @@schema("admission")
+}
