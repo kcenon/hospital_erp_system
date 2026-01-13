@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
+import { RedisModule } from './redis';
 import { RoomModule } from './modules/room/room.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { AdmissionModule } from './modules/admission/admission.module';
@@ -25,6 +26,7 @@ import {
       load: [appConfig, databaseConfig, redisConfig, jwtConfig],
       validate,
     }),
+    RedisModule,
     PrismaModule,
     AuthModule,
     RoomModule,

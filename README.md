@@ -78,6 +78,7 @@ hospital_erp_system/
 │       │   │   ├── room/        # Room management
 │       │   │   └── rounding/    # Rounding workflows
 │       │   ├── prisma/          # Prisma service module
+│       │   ├── redis/           # Redis module for session management
 │       │   ├── app.module.ts    # Root application module
 │       │   └── main.ts          # Application entry point
 │       └── prisma/              # Prisma ORM configuration
