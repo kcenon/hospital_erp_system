@@ -73,6 +73,7 @@ logs/
 
 # Cache
 .npm/
+.npm-cache/
 .eslintcache
 .cache/
 
