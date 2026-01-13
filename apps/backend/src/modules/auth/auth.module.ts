@@ -2,10 +2,15 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SessionService, JwtTokenService, AuthService } from './services';
+import {
+  SessionService,
+  JwtTokenService,
+  AuthService,
+  RbacService,
+} from './services';
 import { SessionActivityInterceptor } from './interceptors';
 import { JwtStrategy, LocalStrategy } from './strategies';
-import { LocalAuthGuard } from './guards';
+import { LocalAuthGuard, PermissionGuard, ResourceAccessGuard } from './guards';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from '../../prisma';
 
@@ -29,10 +34,13 @@ import { PrismaModule } from '../../prisma';
     SessionService,
     JwtTokenService,
     AuthService,
+    RbacService,
     SessionActivityInterceptor,
     JwtStrategy,
     LocalStrategy,
     LocalAuthGuard,
+    PermissionGuard,
+    ResourceAccessGuard,
   ],
   exports: [
     JwtModule,
@@ -40,7 +48,10 @@ import { PrismaModule } from '../../prisma';
     SessionService,
     JwtTokenService,
     AuthService,
+    RbacService,
     SessionActivityInterceptor,
+    PermissionGuard,
+    ResourceAccessGuard,
   ],
 })
 export class AuthModule {}
