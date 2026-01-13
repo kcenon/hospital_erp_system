@@ -177,7 +177,7 @@ POST /auth/logout
 ### 2.4 비밀번호 변경
 
 ```http
-PUT /auth/password
+POST /auth/change-password
 ```
 
 **요청**
@@ -187,6 +187,31 @@ PUT /auth/password
   "newPassword": "NewSecureP@ss456"
 }
 ```
+
+**비밀번호 요구사항**
+- 최소 8자 이상
+- 대문자 1개 이상 포함
+- 소문자 1개 이상 포함
+- 숫자 1개 이상 포함
+- 특수문자 1개 이상 포함
+
+**응답 (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "message": "Password changed successfully"
+  }
+}
+```
+
+**에러 응답**
+
+| HTTP | 코드 | 설명 |
+|------|------|------|
+| 401 | AUTH_INVALID_CREDENTIALS | 현재 비밀번호가 올바르지 않음 |
+| 403 | AUTH_SAME_PASSWORD | 새 비밀번호가 현재 비밀번호와 동일함 |
+| 422 | VALIDATION_FAILED | 비밀번호가 요구사항을 충족하지 않음 |
 
 ---
 
