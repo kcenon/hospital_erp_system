@@ -4,6 +4,11 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RoomModule } from './modules/room/room.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { AdmissionModule } from './modules/admission/admission.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ReportModule } from './modules/report/report.module';
+import { RoundingModule } from './modules/rounding/rounding.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { IntegrationModule } from './modules/integration/integration.module';
 import {
   appConfig,
   databaseConfig,
@@ -21,9 +26,14 @@ import {
       validate,
     }),
     PrismaModule,
+    AuthModule,
     RoomModule,
     PatientModule,
     AdmissionModule,
+    ReportModule,
+    RoundingModule,
+    AdminModule,
+    IntegrationModule,
   ],
   controllers: [],
   providers: [],
