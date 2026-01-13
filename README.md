@@ -56,11 +56,27 @@ hospital_erp_system/
 ├── apps/
 │   └── backend/                 # NestJS backend application
 │       ├── src/                 # Source code
-│       │   ├── common/          # Shared utilities, pipes, decorators
+│       │   ├── common/          # Shared utilities
+│       │   │   ├── decorators/  # Custom decorators (CurrentUser, Public, Roles)
+│       │   │   ├── filters/     # Exception filters
+│       │   │   ├── guards/      # Auth guards (JWT, Roles)
+│       │   │   ├── interceptors/ # Request/response interceptors
+│       │   │   └── pipes/       # Validation pipes
+│       │   ├── config/          # Configuration modules
+│       │   │   ├── app.config.ts
+│       │   │   ├── database.config.ts
+│       │   │   ├── jwt.config.ts
+│       │   │   ├── redis.config.ts
+│       │   │   └── env.validation.ts
 │       │   ├── modules/         # Feature modules
+│       │   │   ├── admin/       # Admin and audit management
+│       │   │   ├── admission/   # Admission/discharge management
 │       │   │   ├── auth/        # Authentication and authorization
-│       │   │   ├── patient/     # Patient management module
-│       │   │   └── room/        # Room management module
+│       │   │   ├── integration/ # Legacy system integration
+│       │   │   ├── patient/     # Patient management
+│       │   │   ├── report/      # Vital signs and reports
+│       │   │   ├── room/        # Room management
+│       │   │   └── rounding/    # Rounding workflows
 │       │   ├── prisma/          # Prisma service module
 │       │   ├── app.module.ts    # Root application module
 │       │   └── main.ts          # Application entry point
@@ -212,4 +228,4 @@ Proprietary - All rights reserved.
 
 ---
 
-*Last Updated: 2025-12-29*
+*Last Updated: 2026-01-13*
