@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "room", "patient"]
+  schemas  = ["public", "patient", "room", "admission", "report", "rounding", "audit"]
 }
 
 // =============================================================================
@@ -137,21 +137,21 @@ enum Gender {
 
 /// Patient entity for patient management
 model Patient {
-  id                       String         @id @default(uuid()) @db.Uuid
-  patientNumber            String         @unique @map("patient_number") @db.VarChar(20)
-  name                     String         @db.VarChar(100)
-  birthDate                DateTime       @map("birth_date") @db.Date
+  id                       String    @id @default(uuid()) @db.Uuid
+  patientNumber            String    @unique @map("patient_number") @db.VarChar(20)
+  name                     String    @db.VarChar(100)
+  birthDate                DateTime  @map("birth_date") @db.Date
   gender                   Gender
-  bloodType                String?        @map("blood_type") @db.VarChar(10)
-  phone                    String?        @db.VarChar(20)
-  address                  String?        @db.Text
-  emergencyContactName     String?        @map("emergency_contact_name") @db.VarChar(100)
-  emergencyContactPhone    String?        @map("emergency_contact_phone") @db.VarChar(20)
-  emergencyContactRelation String?        @map("emergency_contact_relation") @db.VarChar(50)
-  legacyPatientId          String?        @map("legacy_patient_id") @db.VarChar(50)
-  createdAt                DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt                DateTime       @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt                DateTime?      @map("deleted_at") @db.Timestamptz
+  bloodType                String?   @map("blood_type") @db.VarChar(10)
+  phone                    String?   @db.VarChar(20)
+  address                  String?   @db.Text
+  emergencyContactName     String?   @map("emergency_contact_name") @db.VarChar(100)
+  emergencyContactPhone    String?   @map("emergency_contact_phone") @db.VarChar(20)
+  emergencyContactRelation String?   @map("emergency_contact_relation") @db.VarChar(50)
+  legacyPatientId          String?   @map("legacy_patient_id") @db.VarChar(50)
+  createdAt                DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt                DateTime? @map("deleted_at") @db.Timestamptz
 
   // Relations
   detail PatientDetail?
