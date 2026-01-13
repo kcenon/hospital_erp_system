@@ -1,5 +1,7 @@
 export * from './auth.module';
 export * from './auth.controller';
+export * from './constants';
+export * from './decorators';
 export * from './dto';
 export * from './exceptions';
 export * from './interfaces';
