@@ -177,7 +177,7 @@ POST /auth/logout
 ### 2.4 Change Password
 
 ```http
-PUT /auth/password
+POST /auth/change-password
 ```
 
 **Request**
@@ -187,6 +187,31 @@ PUT /auth/password
   "newPassword": "NewSecureP@ss456"
 }
 ```
+
+**Password Requirements**
+- Minimum 8 characters
+- At least 1 uppercase letter
+- At least 1 lowercase letter
+- At least 1 number
+- At least 1 special character
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "message": "Password changed successfully"
+  }
+}
+```
+
+**Error Responses**
+
+| HTTP | Code | Description |
+|------|------|-------------|
+| 401 | AUTH_INVALID_CREDENTIALS | Current password is incorrect |
+| 403 | AUTH_SAME_PASSWORD | New password must be different |
+| 422 | VALIDATION_FAILED | Password does not meet requirements |
 
 ---
 

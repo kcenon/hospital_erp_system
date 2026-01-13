@@ -22,6 +22,8 @@ import {
   LoginResponseDto,
   LogoutResponseDto,
   SessionListResponseDto,
+  ChangePasswordDto,
+  ChangePasswordResponseDto,
 } from './dto';
 import { DeviceInfo, AuthenticatedUser } from './interfaces';
 import { Public, CurrentUser } from '../../common/decorators';
@@ -153,6 +155,20 @@ export class AuthController {
 
     await this.sessionService.destroy(sessionId);
     return new LogoutResponseDto('Session destroyed');
+  }
+
+  /**
+   * Change password
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<ChangePasswordResponseDto> {
+    await this.authService.changePassword(user.id, dto);
+    return new ChangePasswordResponseDto();
   }
 
   /**
