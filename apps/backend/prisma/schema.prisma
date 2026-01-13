@@ -668,3 +668,103 @@ model DailyReport {
   @@map("daily_reports")
   @@schema("report")
 }
+
+// =============================================================================
+// Audit Schema (audit schema)
+// Related Requirements: REQ-NFR-030~033
+// SDS Reference: Section 4.7.2 (Audit Log Service), Section 7.4 (Audit Logging Design)
+// =============================================================================
+
+/// Device type enumeration for login history
+enum DeviceType {
+  PC
+  TABLET
+  MOBILE
+
+  @@schema("audit")
+}
+
+/// Audit action enumeration
+enum AuditAction {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+
+  @@schema("audit")
+}
+
+/// LoginHistory entity for tracking user login attempts
+model LoginHistory {
+  id            String      @id @default(uuid()) @db.Uuid
+  userId        String?     @map("user_id") @db.Uuid
+  username      String      @db.VarChar(50)
+  ipAddress     String      @map("ip_address") @db.VarChar(45)
+  userAgent     String?     @map("user_agent") @db.Text
+  deviceType    DeviceType? @map("device_type")
+  browser       String?     @db.VarChar(50)
+  os            String?     @db.VarChar(50)
+  loginAt       DateTime    @default(now()) @map("login_at") @db.Timestamptz
+  logoutAt      DateTime?   @map("logout_at") @db.Timestamptz
+  sessionId     String?     @map("session_id") @db.VarChar(100)
+  success       Boolean
+  failureReason String?     @map("failure_reason") @db.VarChar(100)
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId, loginAt(sort: Desc)])
+  @@index([ipAddress, loginAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("login_history")
+  @@schema("audit")
+}
+
+/// AccessLog entity for tracking patient information access
+model AccessLog {
+  id             String      @id @default(uuid()) @db.Uuid
+  userId         String      @map("user_id") @db.Uuid
+  username       String      @db.VarChar(50)
+  userRole       String?     @map("user_role") @db.VarChar(50)
+  ipAddress      String      @map("ip_address") @db.VarChar(45)
+  resourceType   String      @map("resource_type") @db.VarChar(50)
+  resourceId     String      @map("resource_id") @db.Uuid
+  action         AuditAction
+  requestPath    String?     @map("request_path") @db.VarChar(255)
+  requestMethod  String?     @map("request_method") @db.VarChar(10)
+  patientId      String?     @map("patient_id") @db.Uuid
+  accessedFields String[]    @map("accessed_fields")
+  success        Boolean     @default(true)
+  errorCode      String?     @map("error_code") @db.VarChar(50)
+  errorMessage   String?     @map("error_message") @db.Text
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([patientId, createdAt(sort: Desc)])
+  @@index([resourceType, resourceId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("access_logs")
+  @@schema("audit")
+}
+
+/// ChangeLog entity for tracking data changes
+model ChangeLog {
+  id            String      @id @default(uuid()) @db.Uuid
+  userId        String      @map("user_id") @db.Uuid
+  username      String      @db.VarChar(50)
+  ipAddress     String?     @map("ip_address") @db.VarChar(45)
+  tableSchema   String      @map("table_schema") @db.VarChar(50)
+  tableName     String      @map("table_name") @db.VarChar(100)
+  recordId      String      @map("record_id") @db.Uuid
+  action        AuditAction
+  oldValues     Json?       @map("old_values") @db.JsonB
+  newValues     Json?       @map("new_values") @db.JsonB
+  changedFields String[]    @map("changed_fields")
+  changeReason  String?     @map("change_reason") @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([tableSchema, tableName, createdAt(sort: Desc)])
+  @@index([recordId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("change_logs")
+  @@schema("audit")
+}
