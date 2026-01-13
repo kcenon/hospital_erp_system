@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "room"]
+  schemas  = ["public", "room", "patient"]
 }
 
 // =============================================================================
@@ -119,4 +119,79 @@ model Bed {
   @@index([status])
   @@map("beds")
   @@schema("room")
+}
+
+// =============================================================================
+// Patient Management Schema (patient schema)
+// Related Requirements: REQ-FR-001~004
+// =============================================================================
+
+/// Gender enumeration
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+
+  @@schema("patient")
+}
+
+/// Patient entity for patient management
+model Patient {
+  id                       String         @id @default(uuid()) @db.Uuid
+  patientNumber            String         @unique @map("patient_number") @db.VarChar(20)
+  name                     String         @db.VarChar(100)
+  birthDate                DateTime       @map("birth_date") @db.Date
+  gender                   Gender
+  bloodType                String?        @map("blood_type") @db.VarChar(10)
+  phone                    String?        @db.VarChar(20)
+  address                  String?        @db.Text
+  emergencyContactName     String?        @map("emergency_contact_name") @db.VarChar(100)
+  emergencyContactPhone    String?        @map("emergency_contact_phone") @db.VarChar(20)
+  emergencyContactRelation String?        @map("emergency_contact_relation") @db.VarChar(50)
+  legacyPatientId          String?        @map("legacy_patient_id") @db.VarChar(50)
+  createdAt                DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt                DateTime?      @map("deleted_at") @db.Timestamptz
+
+  // Relations
+  detail PatientDetail?
+
+  @@index([patientNumber])
+  @@index([name])
+  @@index([legacyPatientId])
+  @@index([deletedAt])
+  @@map("patients")
+  @@schema("patient")
+}
+
+/// PatientDetail entity for sensitive patient information
+model PatientDetail {
+  id                       String   @id @default(uuid()) @db.Uuid
+  patientId                String   @unique @map("patient_id") @db.Uuid
+  ssnEncrypted             Bytes?   @map("ssn_encrypted")
+  medicalHistoryEncrypted  Bytes?   @map("medical_history_encrypted")
+  allergies                String?  @db.Text
+  insuranceType            String?  @map("insurance_type") @db.VarChar(50)
+  insuranceNumberEncrypted Bytes?   @map("insurance_number_encrypted")
+  insuranceCompany         String?  @map("insurance_company") @db.VarChar(100)
+  notes                    String?  @db.Text
+  createdAt                DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("patient_details")
+  @@schema("patient")
+}
+
+/// Sequence for patient number generation
+model PatientSequence {
+  id        Int      @id @default(autoincrement())
+  year      Int      @unique
+  lastValue Int      @default(0) @map("last_value")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("patient_sequences")
+  @@schema("patient")
 }
