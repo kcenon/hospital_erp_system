@@ -102,10 +102,14 @@ hospital_erp_system/
 │           ├── schema.prisma    # Database schema definition
 │           ├── migrations/      # Database migrations
 │           └── seed.ts          # Seed data script
-├── docker/
-│   └── docker-compose.dev.yml   # Development Docker configuration
 ├── scripts/
-│   └── init-db.sql              # Database initialization script
+│   ├── init-db.sql              # Database initialization script
+│   ├── dev-start.sh             # Start development environment
+│   ├── dev-stop.sh              # Stop development environment
+│   ├── db-reset.sh              # Reset database
+│   └── db-seed.sh               # Seed database with test data
+├── docker-compose.yml           # Development Docker Compose configuration
+├── docker-compose.prod.yml      # Production Docker Compose reference
 ├── docs/                        # Documentation
 │   ├── PRD.md / PRD.kr.md       # Product Requirements Document
 │   ├── SRS.md / SRS.kr.md       # Software Requirements Specification
@@ -151,7 +155,31 @@ hospital_erp_system/
 - Redis 7.x
 - Docker & Docker Compose (recommended)
 
-### Installation
+### Quick Start with Docker (Recommended)
+
+The easiest way to get started is using Docker Compose:
+
+```bash
+# Clone the repository
+git clone https://github.com/kcenon/hospital_erp_system.git
+cd hospital_erp_system
+
+# Start all services (PostgreSQL, Redis, Backend, Frontend)
+./scripts/dev-start.sh
+
+# Access the application:
+# - Frontend: http://localhost:3001
+# - Backend API: http://localhost:3000
+# - PostgreSQL: localhost:5432
+# - Redis: localhost:6379
+
+# Stop all services
+./scripts/dev-stop.sh
+```
+
+### Manual Installation
+
+For development without Docker:
 
 ```bash
 # Clone the repository
@@ -161,11 +189,12 @@ cd hospital_erp_system
 # Install dependencies
 pnpm install
 
-# Start development database
-docker compose -f docker/docker-compose.dev.yml up -d
+# Start PostgreSQL and Redis manually or use Docker for databases only
+docker compose up postgres redis -d
 
 # Set up environment variables
 cp apps/backend/env.example apps/backend/.env
+cp apps/frontend/env.example apps/frontend/.env.local
 
 # Generate Prisma client and run migrations
 cd apps/backend
@@ -183,6 +212,15 @@ cd apps/frontend
 npm install
 npm run dev  # Starts on port 3001
 ```
+
+### Development Scripts
+
+| Script | Description |
+|--------|-------------|
+| `./scripts/dev-start.sh` | Start all Docker services |
+| `./scripts/dev-stop.sh` | Stop all Docker services |
+| `./scripts/db-reset.sh` | Reset database (drops and recreates) |
+| `./scripts/db-seed.sh` | Seed database with initial/test data |
 
 See [Development Environment Setup](docs/reference/05-guides/development-environment-setup.md) for detailed instructions.
 
