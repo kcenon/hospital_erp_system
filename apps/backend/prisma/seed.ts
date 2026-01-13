@@ -1,6 +1,11 @@
 import { PrismaClient, RoomType, BedStatus } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
+
+// Default password for seed users (should be changed on first login)
+const DEFAULT_PASSWORD = 'Hospital@2024';
+const BCRYPT_ROUNDS = 12;
 
 async function main() {
   console.log('Starting seed...');
@@ -10,6 +15,286 @@ async function main() {
   await prisma.room.deleteMany();
   await prisma.floor.deleteMany();
   await prisma.building.deleteMany();
+  await prisma.userRole.deleteMany();
+  await prisma.rolePermission.deleteMany();
+  await prisma.permission.deleteMany();
+  await prisma.role.deleteMany();
+  await prisma.user.deleteMany();
+
+  // =====================================================================
+  // Seed Roles, Permissions, and Users
+  // =====================================================================
+
+  console.log('Creating roles...');
+
+  // Create roles with hierarchy levels
+  // Role hierarchy: ADMIN(1) > DOCTOR(2) > HEAD_NURSE(3) > NURSE(4) > CLERK(5)
+  const roles = await Promise.all([
+    prisma.role.create({
+      data: {
+        code: 'ADMIN',
+        name: 'System Administrator',
+        description: 'Full system access with administrative capabilities',
+        level: 1,
+        isActive: true,
+      },
+    }),
+    prisma.role.create({
+      data: {
+        code: 'DOCTOR',
+        name: 'Doctor',
+        description: 'Medical staff with patient care access',
+        level: 2,
+        isActive: true,
+      },
+    }),
+    prisma.role.create({
+      data: {
+        code: 'HEAD_NURSE',
+        name: 'Head Nurse',
+        description: 'Senior nursing staff with ward management access',
+        level: 3,
+        isActive: true,
+      },
+    }),
+    prisma.role.create({
+      data: {
+        code: 'NURSE',
+        name: 'Nurse',
+        description: 'Nursing staff with patient care access',
+        level: 4,
+        isActive: true,
+      },
+    }),
+    prisma.role.create({
+      data: {
+        code: 'CLERK',
+        name: 'Clerk',
+        description: 'Administrative staff with limited access',
+        level: 5,
+        isActive: true,
+      },
+    }),
+  ]);
+
+  const [adminRole, doctorRole, headNurseRole, nurseRole, clerkRole] = roles;
+
+  console.log('Creating permissions...');
+
+  // Define permissions per resource
+  const resources = ['patient', 'room', 'admission', 'report', 'rounding', 'admin'];
+  const actions = ['read', 'create', 'update', 'delete'];
+
+  const permissionsData: Array<{
+    code: string;
+    resource: string;
+    action: string;
+    description: string;
+  }> = [];
+
+  for (const resource of resources) {
+    for (const action of actions) {
+      permissionsData.push({
+        code: `${resource}:${action}`,
+        resource,
+        action,
+        description: `${action.charAt(0).toUpperCase() + action.slice(1)} access to ${resource} module`,
+      });
+    }
+  }
+
+  const permissions = await Promise.all(
+    permissionsData.map((p) =>
+      prisma.permission.create({
+        data: p,
+      }),
+    ),
+  );
+
+  // Create a map for easy permission lookup
+  const permissionMap = new Map(permissions.map((p) => [p.code, p]));
+
+  console.log('Assigning permissions to roles...');
+
+  // Helper function to get permission ID
+  const getPermissionId = (code: string): string => {
+    const permission = permissionMap.get(code);
+    if (!permission) {
+      throw new Error(`Permission not found: ${code}`);
+    }
+    return permission.id;
+  };
+
+  // Admin gets all permissions
+  await prisma.rolePermission.createMany({
+    data: permissions.map((p) => ({
+      roleId: adminRole.id,
+      permissionId: p.id,
+    })),
+  });
+
+  // Doctor permissions
+  const doctorPermissions = [
+    'patient:read',
+    'patient:create',
+    'patient:update',
+    'room:read',
+    'admission:read',
+    'admission:create',
+    'admission:update',
+    'report:read',
+    'report:create',
+    'rounding:read',
+    'rounding:create',
+    'rounding:update',
+  ];
+  await prisma.rolePermission.createMany({
+    data: doctorPermissions.map((code) => ({
+      roleId: doctorRole.id,
+      permissionId: getPermissionId(code),
+    })),
+  });
+
+  // Head Nurse permissions
+  const headNursePermissions = [
+    'patient:read',
+    'patient:update',
+    'room:read',
+    'room:update',
+    'admission:read',
+    'admission:update',
+    'report:read',
+    'report:create',
+    'rounding:read',
+    'rounding:create',
+    'rounding:update',
+  ];
+  await prisma.rolePermission.createMany({
+    data: headNursePermissions.map((code) => ({
+      roleId: headNurseRole.id,
+      permissionId: getPermissionId(code),
+    })),
+  });
+
+  // Nurse permissions
+  const nursePermissions = [
+    'patient:read',
+    'room:read',
+    'admission:read',
+    'report:read',
+    'report:create',
+    'rounding:read',
+    'rounding:create',
+  ];
+  await prisma.rolePermission.createMany({
+    data: nursePermissions.map((code) => ({
+      roleId: nurseRole.id,
+      permissionId: getPermissionId(code),
+    })),
+  });
+
+  // Clerk permissions
+  const clerkPermissions = [
+    'patient:read',
+    'patient:create',
+    'room:read',
+    'admission:read',
+  ];
+  await prisma.rolePermission.createMany({
+    data: clerkPermissions.map((code) => ({
+      roleId: clerkRole.id,
+      permissionId: getPermissionId(code),
+    })),
+  });
+
+  console.log('Creating initial admin user...');
+
+  // Create initial admin user
+  const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, BCRYPT_ROUNDS);
+
+  const adminUser = await prisma.user.create({
+    data: {
+      employeeId: 'EMP001',
+      username: 'admin',
+      passwordHash: hashedPassword,
+      name: 'System Administrator',
+      email: 'admin@hospital.local',
+      department: 'IT',
+      position: 'System Administrator',
+      isActive: true,
+    },
+  });
+
+  // Assign admin role to admin user
+  await prisma.userRole.create({
+    data: {
+      userId: adminUser.id,
+      roleId: adminRole.id,
+    },
+  });
+
+  // Create sample users for each role
+  const sampleUsers = [
+    {
+      employeeId: 'DOC001',
+      username: 'doctor1',
+      name: 'Dr. John Smith',
+      email: 'john.smith@hospital.local',
+      department: 'Internal Medicine',
+      position: 'Senior Doctor',
+      roleId: doctorRole.id,
+    },
+    {
+      employeeId: 'HN001',
+      username: 'headnurse1',
+      name: 'Jane Doe',
+      email: 'jane.doe@hospital.local',
+      department: 'Internal Medicine',
+      position: 'Head Nurse',
+      roleId: headNurseRole.id,
+    },
+    {
+      employeeId: 'NRS001',
+      username: 'nurse1',
+      name: 'Alice Johnson',
+      email: 'alice.johnson@hospital.local',
+      department: 'Internal Medicine',
+      position: 'Registered Nurse',
+      roleId: nurseRole.id,
+    },
+    {
+      employeeId: 'CLK001',
+      username: 'clerk1',
+      name: 'Bob Wilson',
+      email: 'bob.wilson@hospital.local',
+      department: 'Administration',
+      position: 'Administrative Clerk',
+      roleId: clerkRole.id,
+    },
+  ];
+
+  for (const userData of sampleUsers) {
+    const user = await prisma.user.create({
+      data: {
+        employeeId: userData.employeeId,
+        username: userData.username,
+        passwordHash: hashedPassword,
+        name: userData.name,
+        email: userData.email,
+        department: userData.department,
+        position: userData.position,
+        isActive: true,
+      },
+    });
+
+    await prisma.userRole.create({
+      data: {
+        userId: user.id,
+        roleId: userData.roleId,
+        assignedBy: adminUser.id,
+      },
+    });
+  }
 
   console.log('Creating buildings...');
 
@@ -243,6 +528,9 @@ async function main() {
   }
 
   // Print summary
+  const userCount = await prisma.user.count();
+  const roleCount = await prisma.role.count();
+  const permissionCount = await prisma.permission.count();
   const buildingCount = await prisma.building.count();
   const floorCount = await prisma.floor.count();
   const roomCount = await prisma.room.count();
@@ -250,10 +538,15 @@ async function main() {
 
   console.log('\nSeed completed successfully!');
   console.log('Summary:');
-  console.log(`  Buildings: ${buildingCount}`);
-  console.log(`  Floors: ${floorCount}`);
-  console.log(`  Rooms: ${roomCount}`);
-  console.log(`  Beds: ${bedCount}`);
+  console.log('  Authentication:');
+  console.log(`    Users: ${userCount}`);
+  console.log(`    Roles: ${roleCount}`);
+  console.log(`    Permissions: ${permissionCount}`);
+  console.log('  Infrastructure:');
+  console.log(`    Buildings: ${buildingCount}`);
+  console.log(`    Floors: ${floorCount}`);
+  console.log(`    Rooms: ${roomCount}`);
+  console.log(`    Beds: ${bedCount}`);
 }
 
 main()

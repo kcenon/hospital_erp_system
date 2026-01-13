@@ -23,7 +23,7 @@ hospital_erp (database)
 
 | Schema | Purpose | Tables |
 |--------|---------|--------|
-| `public` | Authentication and authorization | users, roles, permissions, user_roles |
+| `public` | Authentication and authorization | users, roles, permissions, user_roles, role_permissions |
 | `patient` | Patient master data | patients, patient_details, patient_sequences |
 | `room` | Hospital infrastructure | buildings, floors, rooms, beds |
 | `admission` | Patient stay management | admissions, transfers, discharges |
