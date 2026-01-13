@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "room"]
+}
+
+// =============================================================================
+// Room Management Schema (room schema)
+// Related Requirements: REQ-FR-010~015
+// =============================================================================
+
+/// Building entity for hospital infrastructure
+model Building {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique @db.VarChar(20)
+  name      String   @db.VarChar(100)
+  address   String?  @db.Text
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  floors Floor[]
+
+  @@map("buildings")
+  @@schema("room")
+}
+
+/// Floor entity within buildings
+model Floor {
+  id          String   @id @default(uuid()) @db.Uuid
+  buildingId  String   @map("building_id") @db.Uuid
+  floorNumber Int      @map("floor_number")
+  name        String   @db.VarChar(100)
+  department  String?  @db.VarChar(100)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  rooms    Room[]
+
+  @@unique([buildingId, floorNumber])
+  @@index([buildingId])
+  @@map("floors")
+  @@schema("room")
+}
+
+/// Room type enumeration
+enum RoomType {
+  WARD
+  ICU
+  ISOLATION
+  VIP
+  EMERGENCY
+
+  @@schema("room")
+}
+
+/// Room entity for patient accommodation
+model Room {
+  id         String   @id @default(uuid()) @db.Uuid
+  floorId    String   @map("floor_id") @db.Uuid
+  roomNumber String   @map("room_number") @db.VarChar(20)
+  name       String?  @db.VarChar(100)
+  roomType   RoomType @map("room_type")
+  bedCount   Int      @default(1) @map("bed_count")
+  isActive   Boolean  @default(true) @map("is_active")
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  floor Floor @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  beds  Bed[]
+
+  @@unique([floorId, roomNumber])
+  @@index([floorId])
+  @@map("rooms")
+  @@schema("room")
+}
+
+/// Bed status enumeration
+enum BedStatus {
+  EMPTY
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+
+  @@schema("room")
+}
+
+/// Bed entity for individual patient beds
+model Bed {
+  id                 String    @id @default(uuid()) @db.Uuid
+  roomId             String    @map("room_id") @db.Uuid
+  bedNumber          String    @map("bed_number") @db.VarChar(10)
+  status             BedStatus @default(EMPTY)
+  currentAdmissionId String?   @map("current_admission_id") @db.Uuid
+  notes              String?   @db.Text
+  isActive           Boolean   @default(true) @map("is_active")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, bedNumber])
+  @@index([roomId])
+  @@index([status])
+  @@map("beds")
+  @@schema("room")
+}
