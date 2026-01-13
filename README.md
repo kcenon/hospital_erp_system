@@ -58,6 +58,7 @@ hospital_erp_system/
 │       ├── src/                 # Source code
 │       │   ├── common/          # Shared utilities, pipes, decorators
 │       │   ├── modules/         # Feature modules
+│       │   │   ├── auth/        # Authentication and authorization
 │       │   │   ├── patient/     # Patient management module
 │       │   │   └── room/        # Room management module
 │       │   ├── prisma/          # Prisma service module

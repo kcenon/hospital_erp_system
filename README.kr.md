@@ -58,6 +58,7 @@ hospital_erp_system/
 │       ├── src/                 # 소스 코드
 │       │   ├── common/          # 공유 유틸리티, 파이프, 데코레이터
 │       │   ├── modules/         # 기능 모듈
+│       │   │   ├── auth/        # 인증 및 권한 관리
 │       │   │   ├── patient/     # 환자 관리 모듈
 │       │   │   └── room/        # 병실 관리 모듈
 │       │   ├── prisma/          # Prisma 서비스 모듈
