@@ -22,55 +22,52 @@ describe('VitalSigns Value Object', () => {
     });
 
     it('should allow null values', () => {
-      const vitals = new VitalSigns(
-        36.5,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-      );
+      const vitals = new VitalSigns(36.5, null, null, null, null, null, null, null, null);
 
       expect(vitals.temperature).toBe(36.5);
       expect(vitals.systolicBp).toBeNull();
     });
 
     it('should throw on invalid temperature below range', () => {
-      expect(() => new VitalSigns(29, null, null, null, null, null, null, null, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(29, null, null, null, null, null, null, null, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid temperature above range', () => {
-      expect(() => new VitalSigns(46, null, null, null, null, null, null, null, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(46, null, null, null, null, null, null, null, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid systolicBp below range', () => {
-      expect(() => new VitalSigns(null, 49, null, null, null, null, null, null, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(null, 49, null, null, null, null, null, null, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid systolicBp above range', () => {
-      expect(() => new VitalSigns(null, 251, null, null, null, null, null, null, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(null, 251, null, null, null, null, null, null, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid oxygenSaturation below range', () => {
-      expect(() => new VitalSigns(null, null, null, null, null, 49, null, null, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(null, null, null, null, null, 49, null, null, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid painScore', () => {
-      expect(() => new VitalSigns(null, null, null, null, null, null, null, 11, null))
-        .toThrow(InvalidVitalValueException);
+      expect(() => new VitalSigns(null, null, null, null, null, null, null, 11, null)).toThrow(
+        InvalidVitalValueException,
+      );
     });
 
     it('should throw on invalid consciousness value', () => {
-      expect(() => new VitalSigns(null, null, null, null, null, null, null, null, 'INVALID'))
-        .toThrow(InvalidVitalValueException);
+      expect(
+        () => new VitalSigns(null, null, null, null, null, null, null, null, 'INVALID'),
+      ).toThrow(InvalidVitalValueException);
     });
   });
 

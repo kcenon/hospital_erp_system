@@ -4,21 +4,21 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 1.0.0 |
-| 작성일 | 2026-01-12 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용                   |
+| --------- | ---------------------- |
+| 문서 버전 | 1.0.0                  |
+| 작성일    | 2026-01-12             |
+| 상태      | 초안                   |
+| 관리자    | kcenon@naver.com       |
 | 표준 기준 | 개인정보보호법, 의료법 |
 
 ---
 
 ## 문서 이력
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
-|------|------|--------|----------|
-| 1.0.0 | 2026-01-12 | - | 초안 작성 (갭 분석 기반 신규) |
+| 버전  | 일자       | 작성자 | 변경 내용                     |
+| ----- | ---------- | ------ | ----------------------------- |
+| 1.0.0 | 2026-01-12 | -      | 초안 작성 (갭 분석 기반 신규) |
 
 ---
 
@@ -58,11 +58,11 @@
 
 ### 1.3 추적성 참조
 
-| 관련 요구사항 | 문서 |
-|--------------|------|
-| REQ-NFR-SEC-002 | SRS.kr.md - 개인정보보호 요구사항 |
-| SEC-008 | security-requirements.kr.md - 동의 관리 |
-| REQ-FR-001 | SRS.kr.md - 환자 등록 |
+| 관련 요구사항   | 문서                                    |
+| --------------- | --------------------------------------- |
+| REQ-NFR-SEC-002 | SRS.kr.md - 개인정보보호 요구사항       |
+| SEC-008         | security-requirements.kr.md - 동의 관리 |
+| REQ-FR-001      | SRS.kr.md - 환자 등록                   |
 
 ---
 
@@ -70,21 +70,21 @@
 
 ### 2.1 개인정보보호법
 
-| 조항 | 내용 | 시스템 적용 |
-|------|------|------------|
+| 조항   | 내용                    | 시스템 적용         |
+| ------ | ----------------------- | ------------------- |
 | 제15조 | 개인정보 수집·이용 동의 | 필수 동의 항목 정의 |
-| 제17조 | 제3자 제공 동의 | 별도 동의 필요 |
-| 제22조 | 동의 받는 방법 | 서면/전자 동의 UI |
-| 제23조 | 민감정보 처리 제한 | 건강정보 별도 동의 |
-| 제37조 | 처리정지권 | 동의 철회 기능 |
+| 제17조 | 제3자 제공 동의         | 별도 동의 필요      |
+| 제22조 | 동의 받는 방법          | 서면/전자 동의 UI   |
+| 제23조 | 민감정보 처리 제한      | 건강정보 별도 동의  |
+| 제37조 | 처리정지권              | 동의 철회 기능      |
 
 ### 2.2 의료법
 
-| 조항 | 내용 | 시스템 적용 |
-|------|------|------------|
-| 제19조 | 정보 누설 금지 | 접근 권한 관리 |
-| 제21조 | 기록 열람 | 환자 조회 기능 |
-| 제21조의2 | 전자의무기록 | 전자 동의 효력 |
+| 조항      | 내용           | 시스템 적용    |
+| --------- | -------------- | -------------- |
+| 제19조    | 정보 누설 금지 | 접근 권한 관리 |
+| 제21조    | 기록 열람      | 환자 조회 기능 |
+| 제21조의2 | 전자의무기록   | 전자 동의 효력 |
 
 ### 2.3 동의의 유효성 요건
 
@@ -136,22 +136,22 @@
 
 #### 3.2.1 필수 동의
 
-| ID | 동의 항목 | 수집 항목 | 이용 목적 | 보유 기간 |
-|----|----------|----------|----------|----------|
-| CONSENT-M01 | 진료 목적 개인정보 | 성명, 주민번호, 연락처, 주소 | 진료, 처방, 수납 | 진료 종료 후 10년 |
-| CONSENT-M02 | 건강정보 처리 | 진단명, 검사결과, 처방내역, 바이탈 | 진료, 치료 | 진료 종료 후 10년 |
-| CONSENT-M03 | 건강보험공단 제공 | 진료내역, 처방내역 | 진료비 청구 | 청구 완료 후 5년 |
-| CONSENT-M04 | 법정 의무 제공 | 전염병 정보, 진료기록 | 법령 준수 | 법령에 따름 |
+| ID          | 동의 항목          | 수집 항목                          | 이용 목적        | 보유 기간         |
+| ----------- | ------------------ | ---------------------------------- | ---------------- | ----------------- |
+| CONSENT-M01 | 진료 목적 개인정보 | 성명, 주민번호, 연락처, 주소       | 진료, 처방, 수납 | 진료 종료 후 10년 |
+| CONSENT-M02 | 건강정보 처리      | 진단명, 검사결과, 처방내역, 바이탈 | 진료, 치료       | 진료 종료 후 10년 |
+| CONSENT-M03 | 건강보험공단 제공  | 진료내역, 처방내역                 | 진료비 청구      | 청구 완료 후 5년  |
+| CONSENT-M04 | 법정 의무 제공     | 전염병 정보, 진료기록              | 법령 준수        | 법령에 따름       |
 
 #### 3.2.2 선택 동의
 
-| ID | 동의 항목 | 수집 항목 | 이용 목적 | 보유 기간 |
-|----|----------|----------|----------|----------|
-| CONSENT-O01 | 보험사 제공 | 진료내역, 진단서 | 실손보험 청구 대행 | 동의 철회 시까지 |
-| CONSENT-O02 | 의료 연구 | 비식별화된 진료 데이터 | 의학 연구 | 연구 종료 시까지 |
-| CONSENT-O03 | 만족도 조사 | 연락처, 입원 내역 | 서비스 개선 | 1년 |
-| CONSENT-O04 | 건강 정보 수신 | 이메일, 전화번호 | 건강정보, 프로모션 | 동의 철회 시까지 |
-| CONSENT-O05 | 제3자 마케팅 | 성명, 연락처 | 협력사 마케팅 | 동의 철회 시까지 |
+| ID          | 동의 항목      | 수집 항목              | 이용 목적          | 보유 기간        |
+| ----------- | -------------- | ---------------------- | ------------------ | ---------------- |
+| CONSENT-O01 | 보험사 제공    | 진료내역, 진단서       | 실손보험 청구 대행 | 동의 철회 시까지 |
+| CONSENT-O02 | 의료 연구      | 비식별화된 진료 데이터 | 의학 연구          | 연구 종료 시까지 |
+| CONSENT-O03 | 만족도 조사    | 연락처, 입원 내역      | 서비스 개선        | 1년              |
+| CONSENT-O04 | 건강 정보 수신 | 이메일, 전화번호       | 건강정보, 프로모션 | 동의 철회 시까지 |
+| CONSENT-O05 | 제3자 마케팅   | 성명, 연락처           | 협력사 마케팅      | 동의 철회 시까지 |
 
 ---
 
@@ -404,14 +404,14 @@ function ConsentDetails({ item }: { item: ConsentItem }) {
 
 ### 4.3 동의 수집 규칙
 
-| 규칙 | 설명 |
-|------|------|
-| 분리 동의 | 필수/선택 항목 별도 체크박스 |
-| 기본값 해제 | 체크박스 기본값은 미선택 |
-| 명확한 표시 | 선택 동의 항목임을 명확히 표시 |
-| 상세 설명 | 각 항목별 수집/이용 내용 상세 설명 |
-| 전문 제공 | 동의서 전문 열람 기능 |
-| 사본 제공 | 동의 완료 후 사본 제공 |
+| 규칙        | 설명                               |
+| ----------- | ---------------------------------- |
+| 분리 동의   | 필수/선택 항목 별도 체크박스       |
+| 기본값 해제 | 체크박스 기본값은 미선택           |
+| 명확한 표시 | 선택 동의 항목임을 명확히 표시     |
+| 상세 설명   | 각 항목별 수집/이용 내용 상세 설명 |
+| 전문 제공   | 동의서 전문 열람 기능              |
+| 사본 제공   | 동의 완료 후 사본 제공             |
 
 ---
 
@@ -498,7 +498,7 @@ export class ConsentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auditService: AuditService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   // 환자의 현재 동의 상태 조회
@@ -506,36 +506,34 @@ export class ConsentService {
     const consents = await this.prisma.consentRecord.findMany({
       where: {
         patientId,
-        isActive: true
+        isActive: true,
       },
       include: {
-        consentType: true
+        consentType: true,
       },
       orderBy: {
-        consentType: { category: 'asc' }
-      }
+        consentType: { category: 'asc' },
+      },
     });
 
     // 동의하지 않은 항목도 포함 (선택 항목)
     const allTypes = await this.prisma.consentType.findMany({
-      where: { isActive: true }
+      where: { isActive: true },
     });
 
-    return allTypes.map(type => {
-      const record = consents.find(c => c.consentTypeId === type.id);
+    return allTypes.map((type) => {
+      const record = consents.find((c) => c.consentTypeId === type.id);
       return {
         consentType: type,
         record,
         decision: record?.decision ?? null,
-        consentedAt: record?.consentGivenAt ?? null
+        consentedAt: record?.consentGivenAt ?? null,
       };
     });
   }
 
   // 동의 수집
-  async collectConsent(
-    input: CollectConsentInput
-  ): Promise<ConsentRecord[]> {
+  async collectConsent(input: CollectConsentInput): Promise<ConsentRecord[]> {
     const results: ConsentRecord[] = [];
 
     await this.prisma.$transaction(async (tx) => {
@@ -545,9 +543,9 @@ export class ConsentService {
           where: {
             patientId: input.patientId,
             consentTypeId: decision.consentTypeId,
-            isActive: true
+            isActive: true,
           },
-          data: { isActive: false }
+          data: { isActive: false },
         });
 
         // 새 동의 기록 생성
@@ -564,8 +562,8 @@ export class ConsentService {
             recordingUrl: input.recordingUrl,
             ipAddress: input.ipAddress,
             userAgent: input.userAgent,
-            consentGivenAt: new Date()
-          }
+            consentGivenAt: new Date(),
+          },
         });
 
         // 이력 기록
@@ -574,8 +572,8 @@ export class ConsentService {
             consentRecordId: record.id,
             action: 'GRANTED',
             newDecision: decision.accepted,
-            performedBy: input.collectedBy
-          }
+            performedBy: input.collectedBy,
+          },
         });
 
         results.push(record);
@@ -589,8 +587,8 @@ export class ConsentService {
       entityId: input.patientId,
       details: {
         consentCount: results.length,
-        method: input.method
-      }
+        method: input.method,
+      },
     });
 
     // 동의 사본 이메일 발송
@@ -602,17 +600,14 @@ export class ConsentService {
   }
 
   // 동의 여부 확인
-  async hasConsent(
-    patientId: string,
-    consentTypeCode: string
-  ): Promise<boolean> {
+  async hasConsent(patientId: string, consentTypeCode: string): Promise<boolean> {
     const record = await this.prisma.consentRecord.findFirst({
       where: {
         patientId,
         consentType: { code: consentTypeCode },
         isActive: true,
-        decision: true
-      }
+        decision: true,
+      },
     });
 
     return !!record;
@@ -621,7 +616,7 @@ export class ConsentService {
   // 특정 작업에 필요한 동의 확인
   async validateConsentsForAction(
     patientId: string,
-    action: ConsentableAction
+    action: ConsentableAction,
   ): Promise<ConsentValidationResult> {
     const requiredConsents = CONSENT_REQUIREMENTS[action];
 
@@ -631,9 +626,7 @@ export class ConsentService {
     const valid: ConsentType[] = [];
 
     for (const required of requiredConsents) {
-      const consent = patientConsents.find(
-        c => c.consentType.code === required.code
-      );
+      const consent = patientConsents.find((c) => c.consentType.code === required.code);
 
       if (!consent?.decision) {
         if (required.mandatory) {
@@ -648,17 +641,14 @@ export class ConsentService {
       isValid: missing.length === 0,
       validConsents: valid,
       missingConsents: missing,
-      action
+      action,
     };
   }
 
   // 동의 사본 발송
-  private async sendConsentCopy(
-    patientId: string,
-    email: string
-  ): Promise<void> {
+  private async sendConsentCopy(patientId: string, email: string): Promise<void> {
     const consents = await this.getPatientConsents(patientId);
-    const acceptedConsents = consents.filter(c => c.decision);
+    const acceptedConsents = consents.filter((c) => c.decision);
 
     const pdf = await this.generateConsentPDF(acceptedConsents);
 
@@ -669,28 +659,22 @@ export class ConsentService {
       attachments: [
         {
           filename: `동의서_${formatDate(new Date())}.pdf`,
-          content: pdf
-        }
-      ]
+          content: pdf,
+        },
+      ],
     });
   }
 }
 
 // 동의 필요 작업 정의
 const CONSENT_REQUIREMENTS: Record<ConsentableAction, ConsentRequirement[]> = {
-  'VIEW_PATIENT_RECORD': [
+  VIEW_PATIENT_RECORD: [
     { code: 'CONSENT-M01', mandatory: true },
-    { code: 'CONSENT-M02', mandatory: true }
+    { code: 'CONSENT-M02', mandatory: true },
   ],
-  'INSURANCE_CLAIM': [
-    { code: 'CONSENT-O01', mandatory: true }
-  ],
-  'RESEARCH_DATA_EXPORT': [
-    { code: 'CONSENT-O02', mandatory: true }
-  ],
-  'SEND_MARKETING': [
-    { code: 'CONSENT-O04', mandatory: true }
-  ]
+  INSURANCE_CLAIM: [{ code: 'CONSENT-O01', mandatory: true }],
+  RESEARCH_DATA_EXPORT: [{ code: 'CONSENT-O02', mandatory: true }],
+  SEND_MARKETING: [{ code: 'CONSENT-O04', mandatory: true }],
 };
 ```
 
@@ -764,22 +748,20 @@ export class ConsentWithdrawalService {
     private readonly prisma: PrismaService,
     private readonly auditService: AuditService,
     private readonly notificationService: NotificationService,
-    private readonly dataService: DataProcessingService
+    private readonly dataService: DataProcessingService,
   ) {}
 
   // 동의 철회 요청 처리
-  async withdrawConsent(
-    input: WithdrawConsentInput
-  ): Promise<WithdrawalResult> {
+  async withdrawConsent(input: WithdrawConsentInput): Promise<WithdrawalResult> {
     // 1. 동의 기록 조회
     const consentRecord = await this.prisma.consentRecord.findFirst({
       where: {
         patientId: input.patientId,
         consentTypeId: input.consentTypeId,
         isActive: true,
-        decision: true
+        decision: true,
       },
-      include: { consentType: true }
+      include: { consentType: true },
     });
 
     if (!consentRecord) {
@@ -793,7 +775,7 @@ export class ConsentWithdrawalService {
       return {
         success: false,
         reason: validation.reason,
-        alternativeAction: validation.alternative
+        alternativeAction: validation.alternative,
       };
     }
 
@@ -806,7 +788,7 @@ export class ConsentWithdrawalService {
         return {
           success: false,
           requiresAcknowledgement: true,
-          impacts
+          impacts,
         };
       }
     }
@@ -819,8 +801,8 @@ export class ConsentWithdrawalService {
         data: {
           isActive: false,
           withdrawnAt: new Date(),
-          withdrawnReason: input.reason
-        }
+          withdrawnReason: input.reason,
+        },
       });
 
       // 이력 기록
@@ -834,9 +816,9 @@ export class ConsentWithdrawalService {
           performedBy: input.requestedBy,
           metadata: {
             withdrawalMethod: input.method,
-            ipAddress: input.ipAddress
-          }
-        }
+            ipAddress: input.ipAddress,
+          },
+        },
       });
     });
 
@@ -850,8 +832,8 @@ export class ConsentWithdrawalService {
       entityId: consentRecord.id,
       details: {
         consentType: consentRecord.consentType.code,
-        reason: input.reason
-      }
+        reason: input.reason,
+      },
     });
 
     // 7. 철회 완료 통지
@@ -860,14 +842,12 @@ export class ConsentWithdrawalService {
     return {
       success: true,
       withdrawnAt: new Date(),
-      impacts: await this.getWithdrawalImpacts(consentRecord.consentType)
+      impacts: await this.getWithdrawalImpacts(consentRecord.consentType),
     };
   }
 
   // 철회 가능 여부 검증
-  private async validateWithdrawal(
-    record: ConsentRecordWithType
-  ): Promise<WithdrawalValidation> {
+  private async validateWithdrawal(record: ConsentRecordWithType): Promise<WithdrawalValidation> {
     const consentType = record.consentType;
 
     // 법적 의무 보존 동의는 철회 불가 (부분적)
@@ -875,7 +855,7 @@ export class ConsentWithdrawalService {
       return {
         canWithdraw: false,
         reason: '법령에 의한 의무적 정보 제공 동의는 철회할 수 없습니다.',
-        alternative: '진료 종료 후 법정 보존 기간 만료 시 자동 삭제됩니다.'
+        alternative: '진료 종료 후 법정 보존 기간 만료 시 자동 삭제됩니다.',
       };
     }
 
@@ -884,14 +864,14 @@ export class ConsentWithdrawalService {
       const pendingClaims = await this.prisma.insuranceClaim.count({
         where: {
           patientId: record.patientId,
-          status: { in: ['PENDING', 'PROCESSING'] }
-        }
+          status: { in: ['PENDING', 'PROCESSING'] },
+        },
       });
 
       if (pendingClaims > 0) {
         return {
           canWithdraw: true,
-          warning: '진행 중인 보험 청구 건이 있습니다. 철회 시 해당 청구가 중단됩니다.'
+          warning: '진행 중인 보험 청구 건이 있습니다. 철회 시 해당 청구가 중단됩니다.',
         };
       }
     }
@@ -900,17 +880,12 @@ export class ConsentWithdrawalService {
   }
 
   // 철회 후 데이터 처리
-  private async handleDataAfterWithdrawal(
-    record: ConsentRecordWithType
-  ): Promise<void> {
+  private async handleDataAfterWithdrawal(record: ConsentRecordWithType): Promise<void> {
     const consentType = record.consentType;
 
     switch (consentType.code) {
       case 'CONSENT-O01': // 보험사 제공
-        await this.dataService.stopThirdPartySharing(
-          record.patientId,
-          'INSURANCE_COMPANY'
-        );
+        await this.dataService.stopThirdPartySharing(record.patientId, 'INSURANCE_COMPANY');
         break;
 
       case 'CONSENT-O02': // 연구 목적
@@ -928,9 +903,7 @@ export class ConsentWithdrawalService {
   }
 
   // 철회 영향 범위 조회
-  private async getWithdrawalImpacts(
-    consentType: ConsentType
-  ): Promise<WithdrawalImpact[]> {
+  private async getWithdrawalImpacts(consentType: ConsentType): Promise<WithdrawalImpact[]> {
     const impacts: WithdrawalImpact[] = [];
 
     switch (consentType.code) {
@@ -938,7 +911,7 @@ export class ConsentWithdrawalService {
         impacts.push({
           area: '진료 서비스',
           description: '진료 예약 및 접수가 불가능합니다.',
-          severity: 'critical'
+          severity: 'critical',
         });
         break;
 
@@ -946,7 +919,7 @@ export class ConsentWithdrawalService {
         impacts.push({
           area: '진료비 청구',
           description: '건강보험 적용이 불가능하여 진료비를 전액 부담해야 합니다.',
-          severity: 'high'
+          severity: 'high',
         });
         break;
 
@@ -954,7 +927,7 @@ export class ConsentWithdrawalService {
         impacts.push({
           area: '보험 청구',
           description: '실손보험 청구 대행 서비스를 이용할 수 없습니다.',
-          severity: 'medium'
+          severity: 'medium',
         });
         break;
 
@@ -962,7 +935,7 @@ export class ConsentWithdrawalService {
         impacts.push({
           area: '정보 수신',
           description: '건강 정보 및 프로모션 알림을 받을 수 없습니다.',
-          severity: 'low'
+          severity: 'low',
         });
         break;
     }
@@ -987,16 +960,14 @@ interface ConsentAuthority {
   guardianInfo?: LegalGuardian;
 }
 
-export function determineConsentAuthority(
-  patient: Patient
-): ConsentAuthority {
+export function determineConsentAuthority(patient: Patient): ConsentAuthority {
   const age = calculateAge(patient.birthDate);
 
   return {
     patientId: patient.id,
     patientAge: age,
     requiresLegalGuardian: age < 14, // 14세 미만
-    guardianInfo: age < 14 ? patient.legalGuardian : undefined
+    guardianInfo: age < 14 ? patient.legalGuardian : undefined,
   };
 }
 
@@ -1005,18 +976,18 @@ const AGE_CONSENT_RULES = {
   UNDER_14: {
     // 14세 미만: 법정대리인 단독 동의
     consentors: ['LEGAL_GUARDIAN'],
-    description: '법정대리인의 동의가 필요합니다.'
+    description: '법정대리인의 동의가 필요합니다.',
   },
   UNDER_18: {
     // 14세 이상 18세 미만: 본인 + 법정대리인
     consentors: ['PATIENT', 'LEGAL_GUARDIAN'],
-    description: '본인과 법정대리인 모두의 동의가 필요합니다.'
+    description: '본인과 법정대리인 모두의 동의가 필요합니다.',
   },
   ADULT: {
     // 18세 이상: 본인 동의
     consentors: ['PATIENT'],
-    description: '본인의 동의만 필요합니다.'
-  }
+    description: '본인의 동의만 필요합니다.',
+  },
 };
 ```
 
@@ -1056,14 +1027,12 @@ ADD COLUMN patient_assent BOOLEAN; -- 14세 이상 미성년자의 동의
 @Injectable()
 export class GuardianVerificationService {
   // 법정대리인 등록 및 검증
-  async registerGuardian(
-    input: RegisterGuardianInput
-  ): Promise<LegalGuardian> {
+  async registerGuardian(input: RegisterGuardianInput): Promise<LegalGuardian> {
     // 1. 관계 증빙 서류 검증
     const relationshipValid = await this.verifyRelationshipDocument(
       input.relationshipDocumentUrl,
       input.patientId,
-      input.relationship
+      input.relationship,
     );
 
     if (!relationshipValid) {
@@ -1090,27 +1059,25 @@ export class GuardianVerificationService {
         relationshipDocumentUrl: input.relationshipDocumentUrl,
         verified: true,
         verifiedAt: new Date(),
-        verifiedBy: input.verifiedBy
-      }
+        verifiedBy: input.verifiedBy,
+      },
     });
 
     return guardian;
   }
 
   // 미성년자 동의 수집
-  async collectMinorConsent(
-    input: MinorConsentInput
-  ): Promise<ConsentRecord[]> {
+  async collectMinorConsent(input: MinorConsentInput): Promise<ConsentRecord[]> {
     const patient = await this.prisma.patient.findUnique({
-      where: { id: input.patientId }
+      where: { id: input.patientId },
     });
 
     const age = calculateAge(patient.birthDate);
     const guardian = await this.prisma.legalGuardian.findFirst({
       where: {
         patientId: input.patientId,
-        verified: true
-      }
+        verified: true,
+      },
     });
 
     if (age < 14 && !guardian) {
@@ -1128,7 +1095,7 @@ export class GuardianVerificationService {
       ...input,
       guardianId: guardian?.id,
       guardianSignatureData: input.guardianSignatureData,
-      patientAssent: input.patientAssent
+      patientAssent: input.patientAssent,
     });
   }
 }
@@ -1150,45 +1117,45 @@ export class ConsentController {
   async getConsentHistory(
     @Param('patientId') patientId: string,
     @Query('from') from?: string,
-    @Query('to') to?: string
+    @Query('to') to?: string,
   ): Promise<ConsentHistoryResponse> {
     const history = await this.consentService.getConsentHistory(patientId, {
       from: from ? new Date(from) : undefined,
-      to: to ? new Date(to) : undefined
+      to: to ? new Date(to) : undefined,
     });
 
     return {
       patientId,
       totalRecords: history.length,
-      history: history.map(h => ({
+      history: history.map((h) => ({
         consentType: h.consentRecord.consentType.name,
         action: h.action,
         previousDecision: h.previousDecision,
         newDecision: h.newDecision,
         reason: h.reason,
         performedAt: h.performedAt,
-        performedBy: h.performedBy?.name || 'SYSTEM'
-      }))
+        performedBy: h.performedBy?.name || 'SYSTEM',
+      })),
     };
   }
 
   @Get('patients/:patientId/current')
   async getCurrentConsents(
-    @Param('patientId') patientId: string
+    @Param('patientId') patientId: string,
   ): Promise<CurrentConsentsResponse> {
     const consents = await this.consentService.getPatientConsents(patientId);
 
     return {
       patientId,
-      consents: consents.map(c => ({
+      consents: consents.map((c) => ({
         id: c.consentType.id,
         code: c.consentType.code,
         name: c.consentType.name,
         category: c.consentType.category,
         decision: c.decision,
         consentedAt: c.consentedAt,
-        version: c.record?.consentVersion
-      }))
+        version: c.record?.consentVersion,
+      })),
     };
   }
 }
@@ -1243,14 +1210,11 @@ ORDER BY month DESC, ct.code;
 export class ConsentGuard implements CanActivate {
   constructor(
     private readonly consentService: ConsentService,
-    private readonly reflector: Reflector
+    private readonly reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredConsents = this.reflector.get<string[]>(
-      'requiredConsents',
-      context.getHandler()
-    );
+    const requiredConsents = this.reflector.get<string[]>('requiredConsents', context.getHandler());
 
     if (!requiredConsents || requiredConsents.length === 0) {
       return true;
@@ -1267,9 +1231,7 @@ export class ConsentGuard implements CanActivate {
       const hasConsent = await this.consentService.hasConsent(patientId, consentCode);
 
       if (!hasConsent) {
-        throw new ForbiddenException(
-          `Required consent not found: ${consentCode}`
-        );
+        throw new ForbiddenException(`Required consent not found: ${consentCode}`);
       }
     }
 
@@ -1286,7 +1248,7 @@ export const RequireConsent = (...consentCodes: string[]) =>
 export class InsuranceController {
   @Post('claims')
   @UseGuards(AuthGuard, ConsentGuard)
-  @RequireConsent('CONSENT-O01')  // 보험사 제공 동의 필요
+  @RequireConsent('CONSENT-O01') // 보험사 제공 동의 필요
   async createClaim(@Body() dto: CreateClaimDto) {
     // 보험 청구 처리
   }
@@ -1302,10 +1264,10 @@ export class ConsentVersionService {
   // 동의서 버전 업데이트
   async updateConsentVersion(
     consentTypeId: string,
-    newContent: UpdateConsentInput
+    newContent: UpdateConsentInput,
   ): Promise<ConsentType> {
     const current = await this.prisma.consentType.findUnique({
-      where: { id: consentTypeId }
+      where: { id: consentTypeId },
     });
 
     // 새 버전 생성
@@ -1314,8 +1276,8 @@ export class ConsentVersionService {
       data: {
         ...newContent,
         version: current.version + 1,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     // 이전 버전 동의자에게 재동의 필요 알림
@@ -1325,11 +1287,9 @@ export class ConsentVersionService {
   }
 
   // 재동의 필요 환자 조회
-  async getPatientsNeedingRenewal(
-    consentTypeId: string
-  ): Promise<Patient[]> {
+  async getPatientsNeedingRenewal(consentTypeId: string): Promise<Patient[]> {
     const currentType = await this.prisma.consentType.findUnique({
-      where: { id: consentTypeId }
+      where: { id: consentTypeId },
     });
 
     const outdatedRecords = await this.prisma.consentRecord.findMany({
@@ -1337,22 +1297,22 @@ export class ConsentVersionService {
         consentTypeId,
         consentVersion: { lt: currentType.version },
         isActive: true,
-        decision: true
+        decision: true,
       },
-      include: { patient: true }
+      include: { patient: true },
     });
 
-    return outdatedRecords.map(r => r.patient);
+    return outdatedRecords.map((r) => r.patient);
   }
 
   // 재동의 요청 발송
   async requestRenewal(patientId: string, consentTypeId: string): Promise<void> {
     const patient = await this.prisma.patient.findUnique({
-      where: { id: patientId }
+      where: { id: patientId },
     });
 
     const consentType = await this.prisma.consentType.findUnique({
-      where: { id: consentTypeId }
+      where: { id: consentTypeId },
     });
 
     await this.notificationService.send({
@@ -1362,8 +1322,8 @@ export class ConsentVersionService {
       body: `${consentType.name} 동의서가 변경되었습니다. 갱신이 필요합니다.`,
       data: {
         consentTypeId,
-        action: 'RENEW_CONSENT'
-      }
+        action: 'RENEW_CONSENT',
+      },
     });
   }
 }
@@ -1375,13 +1335,13 @@ export class ConsentVersionService {
 
 ### 10.1 감사 항목
 
-| 감사 항목 | 확인 내용 | 빈도 |
-|----------|----------|------|
-| 동의 수집 절차 | 필수/선택 분리, 기본값, 설명 제공 | 월간 |
-| 동의 기록 무결성 | 변조 여부, 증빙 보존 | 분기 |
-| 철회 처리 | 10일 이내 처리, 완료 통지 | 월간 |
-| 미성년자 동의 | 법정대리인 확인, 이중 동의 | 분기 |
-| 버전 관리 | 변경 이력, 재동의 처리 | 반기 |
+| 감사 항목        | 확인 내용                         | 빈도 |
+| ---------------- | --------------------------------- | ---- |
+| 동의 수집 절차   | 필수/선택 분리, 기본값, 설명 제공 | 월간 |
+| 동의 기록 무결성 | 변조 여부, 증빙 보존              | 분기 |
+| 철회 처리        | 10일 이내 처리, 완료 통지         | 월간 |
+| 미성년자 동의    | 법정대리인 확인, 이중 동의        | 분기 |
+| 버전 관리        | 변경 이력, 재동의 처리            | 반기 |
 
 ### 10.2 준수 체크리스트
 
@@ -1421,21 +1381,22 @@ async function checkWithdrawalTimeliness(): Promise<ComplianceCheckResult> {
     where: {
       action: 'WITHDRAWN',
       performedAt: {
-        lt: subDays(new Date(), 10) // 10일 이전 요청
+        lt: subDays(new Date(), 10), // 10일 이전 요청
       },
       consentRecord: {
-        isActive: true // 아직 처리 안 됨
-      }
-    }
+        isActive: true, // 아직 처리 안 됨
+      },
+    },
   });
 
   return {
     category: '철회 처리',
     item: '10일 이내 처리',
     status: overdue > 0 ? 'FAIL' : 'PASS',
-    details: overdue > 0
-      ? `${overdue}건의 철회 요청이 10일을 초과했습니다.`
-      : '모든 철회 요청이 적시에 처리되었습니다.'
+    details:
+      overdue > 0
+        ? `${overdue}건의 철회 요청이 10일을 초과했습니다.`
+        : '모든 철회 요청이 적시에 처리되었습니다.',
   };
 }
 ```
@@ -1457,7 +1418,7 @@ export class ConsentAuditReportService {
       summary: {
         totalConsentsCollected: await this.countConsentsCollected(startDate, endDate),
         totalWithdrawals: await this.countWithdrawals(startDate, endDate),
-        averageProcessingTime: await this.calcAverageProcessingTime(startDate, endDate)
+        averageProcessingTime: await this.calcAverageProcessingTime(startDate, endDate),
       },
 
       byConsentType: await this.getStatsByConsentType(startDate, endDate),
@@ -1466,7 +1427,7 @@ export class ConsentAuditReportService {
 
       issues: await this.getComplianceIssues(startDate, endDate),
 
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     // 보고서 저장
@@ -1481,13 +1442,14 @@ export class ConsentAuditReportService {
 
 ## 변경 이력
 
-| 버전 | 일자 | 변경 내용 |
-|------|------|----------|
+| 버전  | 일자       | 변경 내용                          |
+| ----- | ---------- | ---------------------------------- |
 | 1.0.0 | 2026-01-12 | 초안 작성 - 갭 분석 기반 신규 문서 |
 
 ---
 
 > **관련 문서**
+>
 > - [SRS.kr.md](../../SRS.kr.md) - 요구사항 명세
 > - [security-requirements.kr.md](security-requirements.kr.md) - 보안 요구사항
 > - [data-retention-policy.kr.md](data-retention-policy.kr.md) - 데이터 보존 정책

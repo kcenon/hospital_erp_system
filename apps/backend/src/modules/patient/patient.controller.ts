@@ -43,7 +43,7 @@ export class PatientController {
   @RequirePermission(Permissions.PATIENT_CREATE)
   async create(
     @Body() dto: CreatePatientDto,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ): Promise<PatientResponseDto> {
     return this.patientService.create(dto);
   }
@@ -98,7 +98,7 @@ export class PatientController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePatientDto,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ): Promise<PatientResponseDto> {
     return this.patientService.update(id, dto);
   }
@@ -108,7 +108,7 @@ export class PatientController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async softDelete(
     @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ): Promise<void> {
     return this.patientService.softDelete(id);
   }
@@ -118,7 +118,7 @@ export class PatientController {
   async createDetail(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreatePatientDetailDto,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ): Promise<PatientDetailResponseDto> {
     return this.patientService.createDetail(id, dto);
   }
@@ -128,7 +128,7 @@ export class PatientController {
   async updateDetail(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePatientDetailDto,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ): Promise<PatientDetailResponseDto> {
     return this.patientService.updateDetail(id, dto);
   }

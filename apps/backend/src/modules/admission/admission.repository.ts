@@ -124,9 +124,7 @@ export class AdmissionRepository {
     });
   }
 
-  async findByAdmissionNumber(
-    admissionNumber: string,
-  ): Promise<AdmissionWithRelations | null> {
+  async findByAdmissionNumber(admissionNumber: string): Promise<AdmissionWithRelations | null> {
     return this.prisma.admission.findUnique({
       where: { admissionNumber },
       include: {
@@ -156,13 +154,11 @@ export class AdmissionRepository {
     });
   }
 
-  async findAll(
-    params: FindAdmissionsParams,
-  ): Promise<PaginatedResult<AdmissionWithRelations>> {
+  async findAll(params: FindAdmissionsParams): Promise<PaginatedResult<AdmissionWithRelations>> {
     const {
       patientId,
       bedId,
-      floorId,
+      floorId: _floorId,
       attendingDoctorId,
       status,
       admissionDateFrom,
@@ -233,10 +229,7 @@ export class AdmissionRepository {
     };
   }
 
-  async findByFloor(
-    floorId: string,
-    status?: AdmissionStatus,
-  ): Promise<AdmissionWithRelations[]> {
+  async findByFloor(floorId: string, status?: AdmissionStatus): Promise<AdmissionWithRelations[]> {
     const beds = await this.prisma.bed.findMany({
       where: {
         room: {

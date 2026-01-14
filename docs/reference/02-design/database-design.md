@@ -2,13 +2,13 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Owner | kcenon@naver.com |
-| DBMS | PostgreSQL 16 |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Owner            | kcenon@naver.com |
+| DBMS             | PostgreSQL 16    |
 
 ---
 
@@ -16,13 +16,13 @@
 
 ### 1.1 Design Principles
 
-| Principle | Description |
-|-----------|-------------|
-| **Normalization** | 3NF baseline, denormalize for performance when needed |
-| **Naming Convention** | snake_case, plural table names |
-| **Audit Trail** | Create/update/delete history on all core tables |
-| **Soft Delete** | Physical deletion prohibited for medical data |
-| **Encryption** | Field-level encryption for sensitive information |
+| Principle             | Description                                           |
+| --------------------- | ----------------------------------------------------- |
+| **Normalization**     | 3NF baseline, denormalize for performance when needed |
+| **Naming Convention** | snake_case, plural table names                        |
+| **Audit Trail**       | Create/update/delete history on all core tables       |
+| **Soft Delete**       | Physical deletion prohibited for medical data         |
+| **Encryption**        | Field-level encryption for sensitive information      |
 
 ### 1.2 Schema Structure
 
@@ -826,14 +826,14 @@ CREATE FUNCTION audit.clear_user_context();
 
 ### 4.1 Primary Indexes
 
-| Table | Index | Purpose |
-|-------|-------|---------|
-| patients | patient_number | Patient number search |
-| patients | name | Name search |
-| admissions | (patient_id, status) | Active admission by patient |
-| beds | status | Vacant bed search |
-| vital_signs | (admission_id, measured_at) | Vital history by patient |
-| access_logs | (created_at, user_id) | Audit log query |
+| Table       | Index                       | Purpose                     |
+| ----------- | --------------------------- | --------------------------- |
+| patients    | patient_number              | Patient number search       |
+| patients    | name                        | Name search                 |
+| admissions  | (patient_id, status)        | Active admission by patient |
+| beds        | status                      | Vacant bed search           |
+| vital_signs | (admission_id, measured_at) | Vital history by patient    |
+| access_logs | (created_at, user_id)       | Audit log query             |
 
 ### 4.2 Composite Indexes
 
@@ -898,11 +898,11 @@ $$;
 
 ### 6.1 Backup Policy
 
-| Type | Frequency | Retention | Method |
-|------|-----------|-----------|--------|
-| Full Backup | Daily | 30 days | pg_dump + S3 |
-| Incremental | Hourly | 7 days | WAL Archiving |
-| Point-in-Time | Real-time | 7 days | WAL + RDS Auto |
+| Type          | Frequency | Retention | Method         |
+| ------------- | --------- | --------- | -------------- |
+| Full Backup   | Daily     | 30 days   | pg_dump + S3   |
+| Incremental   | Hourly    | 7 days    | WAL Archiving  |
+| Point-in-Time | Real-time | 7 days    | WAL + RDS Auto |
 
 ### 6.2 Recovery Procedure
 

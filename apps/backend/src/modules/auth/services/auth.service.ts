@@ -1,24 +1,10 @@
-import {
-  Injectable,
-  Logger,
-  UnauthorizedException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../../prisma';
 import { SessionService, JwtTokenService } from './';
-import {
-  TokenPair,
-  DeviceInfo,
-  CreateSessionInput,
-} from '../interfaces';
-import {
-  LoginResponseDto,
-  TokenResponseDto,
-  UserInfoDto,
-  ChangePasswordDto,
-} from '../dto';
+import { TokenPair, DeviceInfo, CreateSessionInput } from '../interfaces';
+import { LoginResponseDto, TokenResponseDto, UserInfoDto, ChangePasswordDto } from '../dto';
 
 @Injectable()
 export class AuthService {
@@ -56,9 +42,7 @@ export class AuthService {
     }
 
     if (user.lockedUntil && user.lockedUntil > new Date()) {
-      throw new ForbiddenException(
-        `Account is locked until ${user.lockedUntil.toISOString()}`,
-      );
+      throw new ForbiddenException(`Account is locked until ${user.lockedUntil.toISOString()}`);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
@@ -76,11 +60,7 @@ export class AuthService {
   /**
    * Login and generate tokens
    */
-  async login(
-    user: User,
-    deviceInfo: DeviceInfo,
-    ipAddress: string,
-  ): Promise<LoginResponseDto> {
+  async login(user: User, deviceInfo: DeviceInfo, ipAddress: string): Promise<LoginResponseDto> {
     const roles = await this.getUserRoles(user.id);
     const permissions = await this.getUserPermissions(user.id);
 
@@ -180,10 +160,7 @@ export class AuthService {
   /**
    * Change user password
    */
-  async changePassword(
-    userId: string,
-    dto: ChangePasswordDto,
-  ): Promise<void> {
+  async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -192,19 +169,14 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const isCurrentPasswordValid = await bcrypt.compare(
-      dto.currentPassword,
-      user.passwordHash,
-    );
+    const isCurrentPasswordValid = await bcrypt.compare(dto.currentPassword, user.passwordHash);
 
     if (!isCurrentPasswordValid) {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
     if (dto.currentPassword === dto.newPassword) {
-      throw new ForbiddenException(
-        'New password must be different from current password',
-      );
+      throw new ForbiddenException('New password must be different from current password');
     }
 
     const saltRounds = 12;
@@ -230,9 +202,7 @@ export class AuthService {
       include: { role: true },
     });
 
-    return userRoles
-      .filter((ur) => ur.role.isActive)
-      .map((ur) => ur.role);
+    return userRoles.filter((ur) => ur.role.isActive).map((ur) => ur.role);
   }
 
   /**

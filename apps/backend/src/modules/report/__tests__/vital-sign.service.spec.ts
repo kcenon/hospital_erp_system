@@ -13,10 +13,7 @@ import {
   createTestAdmission,
 } from '../../../../test/factories';
 import { createMockPrismaService } from '../../../../test/utils';
-import {
-  AdmissionNotFoundException,
-  AdmissionNotActiveException,
-} from '../exceptions';
+import { AdmissionNotFoundException, AdmissionNotActiveException } from '../exceptions';
 
 describe('VitalSignService', () => {
   let service: VitalSignService;
@@ -156,10 +153,7 @@ describe('VitalSignService', () => {
 
     it('should return history with pagination', async () => {
       const admission = createTestAdmission({ id: admissionId });
-      const vitalSigns = [
-        createNormalVitalSign(admissionId),
-        createNormalVitalSign(admissionId),
-      ];
+      const vitalSigns = [createNormalVitalSign(admissionId), createNormalVitalSign(admissionId)];
 
       prismaService.admission.findUnique.mockResolvedValue(admission);
       mockVitalRepo.findByAdmission.mockResolvedValue({
@@ -266,9 +260,7 @@ describe('VitalSignService', () => {
     it('should throw when admission not found', async () => {
       prismaService.admission.findUnique.mockResolvedValue(null);
 
-      await expect(service.getLatest(admissionId)).rejects.toThrow(
-        AdmissionNotFoundException,
-      );
+      await expect(service.getLatest(admissionId)).rejects.toThrow(AdmissionNotFoundException);
     });
   });
 
@@ -281,10 +273,7 @@ describe('VitalSignService', () => {
 
     it('should return trend data', async () => {
       const admission = createTestAdmission({ id: admissionId });
-      const vitalSigns = [
-        createNormalVitalSign(admissionId),
-        createNormalVitalSign(admissionId),
-      ];
+      const vitalSigns = [createNormalVitalSign(admissionId), createNormalVitalSign(admissionId)];
 
       prismaService.admission.findUnique.mockResolvedValue(admission);
       mockVitalRepo.findByDateRange.mockResolvedValue(vitalSigns);

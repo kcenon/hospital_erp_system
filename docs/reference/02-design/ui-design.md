@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Owner | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Owner            | kcenon@naver.com |
 
 ---
 
@@ -15,13 +15,13 @@
 
 ### 1.1 Core Principles
 
-| Principle | Description | Application |
-|-----------|-------------|-------------|
-| **Clarity** | Clear information delivery | Intuitive layout, clear labels |
-| **Efficiency** | Complete tasks with minimal clicks | Shortcuts, quick input |
-| **Consistency** | Same patterns and components | Design system compliance |
-| **Accessibility** | Accessible to all users | WCAG 2.1 AA compliance |
-| **Responsiveness** | Support various devices | PC, tablet, mobile optimization |
+| Principle          | Description                        | Application                     |
+| ------------------ | ---------------------------------- | ------------------------------- |
+| **Clarity**        | Clear information delivery         | Intuitive layout, clear labels  |
+| **Efficiency**     | Complete tasks with minimal clicks | Shortcuts, quick input          |
+| **Consistency**    | Same patterns and components       | Design system compliance        |
+| **Accessibility**  | Accessible to all users            | WCAG 2.1 AA compliance          |
+| **Responsiveness** | Support various devices            | PC, tablet, mobile optimization |
 
 ### 1.2 Special Considerations for Medical Environment
 
@@ -203,12 +203,12 @@ Base Components (shadcn/ui based)
 
 ### 3.2 Responsive Breakpoints
 
-| Breakpoint | Width | Layout | Target Device |
-|------------|-------|--------|---------------|
-| Mobile | < 640px | Single column, bottom tabs | Smartphone |
-| Tablet | 640px - 1023px | 2 columns, collapsed sidebar | Tablet (rounds) |
-| Desktop | 1024px - 1279px | Full layout | Laptop |
-| Wide | >= 1280px | Extended layout | Large monitor |
+| Breakpoint | Width           | Layout                       | Target Device   |
+| ---------- | --------------- | ---------------------------- | --------------- |
+| Mobile     | < 640px         | Single column, bottom tabs   | Smartphone      |
+| Tablet     | 640px - 1023px  | 2 columns, collapsed sidebar | Tablet (rounds) |
+| Desktop    | 1024px - 1279px | Full layout                  | Laptop          |
+| Wide       | >= 1280px       | Extended layout              | Large monitor   |
 
 ---
 
@@ -504,12 +504,12 @@ Base Components (shadcn/ui based)
 
 ### 5.2 Touch Interaction Guidelines
 
-| Element | Minimum Size | Spacing | Notes |
-|---------|-------------|---------|-------|
-| Button | 44px x 44px | 8px | Apple HIG compliant |
-| Input Field | 44px height | 8px | Include label |
-| List Item | 56px height | 1px divider | Swipe actions supported |
-| Tab | 48px height | - | Active tab highlighted |
+| Element     | Minimum Size | Spacing     | Notes                   |
+| ----------- | ------------ | ----------- | ----------------------- |
+| Button      | 44px x 44px  | 8px         | Apple HIG compliant     |
+| Input Field | 44px height  | 8px         | Include label           |
+| List Item   | 56px height  | 1px divider | Swipe actions supported |
+| Tab         | 48px height  | -           | Active tab highlighted  |
 
 ---
 
@@ -517,40 +517,26 @@ Base Components (shadcn/ui based)
 
 ### 6.1 WCAG 2.1 Compliance Items
 
-| Item | Level | Implementation |
-|------|-------|----------------|
-| Color Contrast | AA | Text 4.5:1 minimum |
-| Keyboard Access | AA | All functions accessible via keyboard |
-| Focus Indicator | AA | Clear focus ring |
-| Alt Text | A | Alt attribute on all images |
-| Form Labels | A | Labels linked to all inputs |
-| Error Identification | AA | Clear error messages |
+| Item                 | Level | Implementation                        |
+| -------------------- | ----- | ------------------------------------- |
+| Color Contrast       | AA    | Text 4.5:1 minimum                    |
+| Keyboard Access      | AA    | All functions accessible via keyboard |
+| Focus Indicator      | AA    | Clear focus ring                      |
+| Alt Text             | A     | Alt attribute on all images           |
+| Form Labels          | A     | Labels linked to all inputs           |
+| Error Identification | AA    | Clear error messages                  |
 
 ### 6.2 Screen Reader Support
 
 ```html
 <!-- Proper ARIA usage examples -->
-<button
-  aria-label="Enter Vitals"
-  aria-describedby="vital-input-desc"
->
-  + Vitals
-</button>
+<button aria-label="Enter Vitals" aria-describedby="vital-input-desc">+ Vitals</button>
 
 <!-- Status notification -->
-<div
-  role="alert"
-  aria-live="polite"
->
-  Vital signs have been saved.
-</div>
+<div role="alert" aria-live="polite">Vital signs have been saved.</div>
 
 <!-- Patient status badge -->
-<span
-  class="status-badge status-critical"
-  role="status"
-  aria-label="Patient Status: Critical"
->
+<span class="status-badge status-critical" role="status" aria-label="Patient Status: Critical">
   Critical
 </span>
 ```
@@ -625,17 +611,17 @@ Base Components (shadcn/ui based)
 
 ### Primary Icons (Using Lucide React)
 
-| Icon | Usage | Code |
-|------|-------|------|
-| Hospital | Hospital/Admission | `<Building2 />` |
-| Person | Patient/User | `<User />` |
-| Bed | Room/Bed | `<Bed />` |
-| Clipboard | Report/Log | `<ClipboardList />` |
-| Syringe | Medication/Injection | `<Syringe />` |
-| Heart | Vitals/Heartbeat | `<Heart />` |
-| Gear | Settings | `<Settings />` |
-| Bell | Notification | `<Bell />` |
-| Plus | Add | `<Plus />` |
-| Pencil | Edit | `<Pencil />` |
-| Trash | Delete | `<Trash2 />` |
-| Search | Search | `<Search />` |
+| Icon      | Usage                | Code                |
+| --------- | -------------------- | ------------------- |
+| Hospital  | Hospital/Admission   | `<Building2 />`     |
+| Person    | Patient/User         | `<User />`          |
+| Bed       | Room/Bed             | `<Bed />`           |
+| Clipboard | Report/Log           | `<ClipboardList />` |
+| Syringe   | Medication/Injection | `<Syringe />`       |
+| Heart     | Vitals/Heartbeat     | `<Heart />`         |
+| Gear      | Settings             | `<Settings />`      |
+| Bell      | Notification         | `<Bell />`          |
+| Plus      | Add                  | `<Plus />`          |
+| Pencil    | Edit                 | `<Pencil />`        |
+| Trash     | Delete               | `<Trash2 />`        |
+| Search    | Search               | `<Search />`        |

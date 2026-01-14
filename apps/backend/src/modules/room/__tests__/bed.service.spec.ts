@@ -23,10 +23,7 @@ describe('BedService', () => {
     prismaService = createMockPrismaService();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        BedService,
-        { provide: PrismaService, useValue: prismaService },
-      ],
+      providers: [BedService, { provide: PrismaService, useValue: prismaService }],
     }).compile();
 
     service = module.get<BedService>(BedService);
@@ -75,9 +72,7 @@ describe('BedService', () => {
     it('should throw NotFoundException when bed not found', async () => {
       prismaService.bed.findUnique.mockResolvedValue(null);
 
-      await expect(service.findById('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findById('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -86,10 +81,7 @@ describe('BedService', () => {
       const building = createTestBuilding();
       const floor = createTestFloor(building.id);
       const room = createTestRoom(floor.id);
-      const beds = [
-        createEmptyBed(room.id),
-        createEmptyBed(room.id),
-      ].map((bed) => ({
+      const beds = [createEmptyBed(room.id), createEmptyBed(room.id)].map((bed) => ({
         ...bed,
         room: { ...room, floor: { ...floor, building } },
       }));
@@ -340,9 +332,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.occupy('bed-id', 'new-admission')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.occupy('bed-id', 'new-admission')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw when bed is under maintenance', async () => {
@@ -350,9 +340,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.occupy('bed-id', 'admission-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.occupy('bed-id', 'admission-id')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -379,9 +367,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.release('bed-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.release('bed-id')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw when releasing reserved bed', async () => {
@@ -389,9 +375,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.release('bed-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.release('bed-id')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -413,9 +397,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.reserve('bed-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.reserve('bed-id')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw when reserving already reserved bed', async () => {
@@ -423,9 +405,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.reserve('bed-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.reserve('bed-id')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -464,9 +444,7 @@ describe('BedService', () => {
 
       prismaService.bed.findUnique.mockResolvedValue(bed);
 
-      await expect(service.setMaintenance('bed-id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.setMaintenance('bed-id')).rejects.toThrow(BadRequestException);
     });
   });
 });

@@ -102,9 +102,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const dashboard = await this.roomDashboardService.getFloorDashboard(floorId);
       client.emit('room:status', dashboard);
 
-      this.logger.debug(
-        `Client ${client.id} subscribed to floor ${floorId}`,
-      );
+      this.logger.debug(`Client ${client.id} subscribed to floor ${floorId}`);
 
       return { success: true, floorId };
     } catch (error) {
@@ -124,9 +122,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): Promise<{ success: boolean }> {
     client.leave(`floor:${floorId}`);
 
-    this.logger.debug(
-      `Client ${client.id} unsubscribed from floor ${floorId}`,
-    );
+    this.logger.debug(`Client ${client.id} unsubscribed from floor ${floorId}`);
 
     return { success: true };
   }

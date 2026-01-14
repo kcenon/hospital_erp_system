@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Param,
-  Query,
-  Body,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Patch, Post, Param, Query, Body, ParseUUIDPipe } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { BedService } from './bed.service';
 import { RoomDashboardService } from './room-dashboard.service';
@@ -32,9 +23,7 @@ export class RoomController {
   }
 
   @Get('buildings/:buildingId/floors')
-  async getFloorsByBuilding(
-    @Param('buildingId', ParseUUIDPipe) buildingId: string,
-  ) {
+  async getFloorsByBuilding(@Param('buildingId', ParseUUIDPipe) buildingId: string) {
     return this.roomService.findFloorsByBuilding(buildingId);
   }
 
@@ -59,10 +48,7 @@ export class RoomController {
   }
 
   @Patch('beds/:id/status')
-  async updateBedStatus(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateBedStatusDto,
-  ) {
+  async updateBedStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateBedStatusDto) {
     return this.bedService.updateStatus(id, dto);
   }
 
@@ -85,10 +71,7 @@ export class RoomController {
   }
 
   @Post('beds/:id/maintenance')
-  async setMaintenance(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('notes') notes?: string,
-  ) {
+  async setMaintenance(@Param('id', ParseUUIDPipe) id: string, @Body('notes') notes?: string) {
     return this.bedService.setMaintenance(id, notes);
   }
 
@@ -98,9 +81,7 @@ export class RoomController {
   }
 
   @Get('dashboard/building/:buildingId')
-  async getBuildingDashboard(
-    @Param('buildingId', ParseUUIDPipe) buildingId: string,
-  ) {
+  async getBuildingDashboard(@Param('buildingId', ParseUUIDPipe) buildingId: string) {
     return this.roomDashboardService.getBuildingDashboard(buildingId);
   }
 

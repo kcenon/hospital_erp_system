@@ -17,7 +17,8 @@ import { DeviceInfoDto } from './session.dto';
  * - At least 1 number
  * - At least 1 special character
  */
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+const PASSWORD_PATTERN =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 const PASSWORD_MESSAGE =
   'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character';
 

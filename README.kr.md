@@ -22,11 +22,11 @@
 
 ### 플랫폼 지원
 
-| 플랫폼 | 용도 | 주요 사용자 |
-|--------|------|------------|
-| **PC Web** | 관리/입원 업무 | 원무과, 관리자 |
-| **Tablet Web** | 라운딩, 모바일 입력 | 의사, 수간호사 |
-| **Mobile Web (PWA)** | 빠른 조회/입력 | 간호사, 의료진 |
+| 플랫폼               | 용도                | 주요 사용자    |
+| -------------------- | ------------------- | -------------- |
+| **PC Web**           | 관리/입원 업무      | 원무과, 관리자 |
+| **Tablet Web**       | 라운딩, 모바일 입력 | 의사, 수간호사 |
+| **Mobile Web (PWA)** | 빠른 조회/입력      | 간호사, 의료진 |
 
 ---
 
@@ -38,14 +38,14 @@
 
 ### 기술 스택 요약
 
-| 계층 | 기술 | 목적 |
-|------|------|------|
-| **Frontend** | Next.js 14 + TypeScript | SSR, 반응형 UI, 타입 안정성 |
-| **UI 컴포넌트** | Tailwind CSS + shadcn/ui | 디자인 시스템, 접근성 |
-| **Backend** | NestJS + TypeScript | 모듈화, 엔터프라이즈 패턴 |
-| **Database** | PostgreSQL 16 | ACID 준수, 의료 데이터 신뢰성 |
-| **Cache** | Redis | 세션 관리, 실시간 업데이트 |
-| **Cloud** | AWS / Naver Cloud | 국내 법규 준수, 확장성 |
+| 계층            | 기술                     | 목적                          |
+| --------------- | ------------------------ | ----------------------------- |
+| **Frontend**    | Next.js 14 + TypeScript  | SSR, 반응형 UI, 타입 안정성   |
+| **UI 컴포넌트** | Tailwind CSS + shadcn/ui | 디자인 시스템, 접근성         |
+| **Backend**     | NestJS + TypeScript      | 모듈화, 엔터프라이즈 패턴     |
+| **Database**    | PostgreSQL 16            | ACID 준수, 의료 데이터 신뢰성 |
+| **Cache**       | Redis                    | 세션 관리, 실시간 업데이트    |
+| **Cloud**       | AWS / Naver Cloud        | 국내 법규 준수, 확장성        |
 
 ---
 
@@ -92,22 +92,22 @@ hospital_erp_system/
 
 ### 핵심 문서
 
-| 문서 | 설명 | 링크 |
-|------|------|------|
-| **PRD** | 제품 요구사항 명세서 | [PRD.kr.md](docs/PRD.kr.md) |
+| 문서    | 설명                       | 링크                        |
+| ------- | -------------------------- | --------------------------- |
+| **PRD** | 제품 요구사항 명세서       | [PRD.kr.md](docs/PRD.kr.md) |
 | **SRS** | 소프트웨어 요구사항 명세서 | [SRS.kr.md](docs/SRS.kr.md) |
-| **SDS** | 소프트웨어 설계 명세서 | [SDS.kr.md](docs/SDS.kr.md) |
+| **SDS** | 소프트웨어 설계 명세서     | [SDS.kr.md](docs/SDS.kr.md) |
 
 ### 참조 문서
 
-| 카테고리 | 문서 |
-|----------|------|
-| **개요** | [프로젝트 개요](docs/reference/01-overview/project-overview.kr.md), [기술 스택](docs/reference/01-overview/technology-stack.kr.md), [일정 계획](docs/reference/01-overview/schedule-plan.kr.md) |
-| **설계** | [시스템 아키텍처](docs/reference/02-design/system-architecture.kr.md), [데이터베이스 설계](docs/reference/02-design/database-design.kr.md), [API 명세서](docs/reference/02-design/api-specification.kr.md), [화면 설계](docs/reference/02-design/ui-design.kr.md) |
-| **데이터베이스** | [데이터베이스 설정](docs/database-configuration.md) |
-| **보안** | [보안 요구사항](docs/reference/03-security/security-requirements.kr.md) |
-| **부록** | [용어사전](docs/reference/04-appendix/glossary.kr.md) |
-| **가이드** | [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md), [코딩 컨벤션](docs/reference/05-guides/coding-conventions.kr.md), [테스트 전략](docs/reference/05-guides/testing-strategy.kr.md) |
+| 카테고리         | 문서                                                                                                                                                                                                                                                              |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **개요**         | [프로젝트 개요](docs/reference/01-overview/project-overview.kr.md), [기술 스택](docs/reference/01-overview/technology-stack.kr.md), [일정 계획](docs/reference/01-overview/schedule-plan.kr.md)                                                                   |
+| **설계**         | [시스템 아키텍처](docs/reference/02-design/system-architecture.kr.md), [데이터베이스 설계](docs/reference/02-design/database-design.kr.md), [API 명세서](docs/reference/02-design/api-specification.kr.md), [화면 설계](docs/reference/02-design/ui-design.kr.md) |
+| **데이터베이스** | [데이터베이스 설정](docs/database-configuration.md)                                                                                                                                                                                                               |
+| **보안**         | [보안 요구사항](docs/reference/03-security/security-requirements.kr.md)                                                                                                                                                                                           |
+| **부록**         | [용어사전](docs/reference/04-appendix/glossary.kr.md)                                                                                                                                                                                                             |
+| **가이드**       | [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md), [코딩 컨벤션](docs/reference/05-guides/coding-conventions.kr.md), [테스트 전략](docs/reference/05-guides/testing-strategy.kr.md)                                                   |
 
 ---
 
@@ -181,12 +181,12 @@ npm run dev  # 포트 3001에서 시작
 
 ### 개발 스크립트
 
-| 스크립트 | 설명 |
-|----------|------|
-| `./scripts/dev-start.sh` | 모든 Docker 서비스 시작 |
-| `./scripts/dev-stop.sh` | 모든 Docker 서비스 중지 |
-| `./scripts/db-reset.sh` | 데이터베이스 초기화 (삭제 후 재생성) |
-| `./scripts/db-seed.sh` | 초기/테스트 데이터 시딩 |
+| 스크립트                 | 설명                                 |
+| ------------------------ | ------------------------------------ |
+| `./scripts/dev-start.sh` | 모든 Docker 서비스 시작              |
+| `./scripts/dev-stop.sh`  | 모든 Docker 서비스 중지              |
+| `./scripts/db-reset.sh`  | 데이터베이스 초기화 (삭제 후 재생성) |
+| `./scripts/db-seed.sh`   | 초기/테스트 데이터 시딩              |
 
 자세한 설치 방법은 [개발환경 설정](docs/reference/05-guides/development-environment-setup.kr.md)을 참조하세요.
 
@@ -204,23 +204,23 @@ npm run dev  # 포트 3001에서 시작
 
 ### 브랜치 전략
 
-| 브랜치 | 용도 |
-|--------|------|
-| `main` | 프로덕션 준비 코드 |
-| `develop` | 개발 통합 |
-| `feature/*` | 기능 개발 |
-| `hotfix/*` | 프로덕션 버그 수정 |
+| 브랜치      | 용도               |
+| ----------- | ------------------ |
+| `main`      | 프로덕션 준비 코드 |
+| `develop`   | 개발 통합          |
+| `feature/*` | 기능 개발          |
+| `hotfix/*`  | 프로덕션 버그 수정 |
 
 ---
 
 ## 로드맵
 
-| 단계 | 기간 | 주요 내용 |
-|------|------|----------|
+| 단계      | 기간    | 주요 내용                         |
+| --------- | ------- | --------------------------------- |
 | **1단계** | 1-2개월 | 기반 구축 (인증, 환자, 병실 관리) |
-| **2단계** | 3-4개월 | 핵심 기능 (입퇴원, 보고서) |
-| **3단계** | 5개월 | 고급 기능 (라운딩, 통계) |
-| **4단계** | 6개월 | 안정화 및 출시 |
+| **2단계** | 3-4개월 | 핵심 기능 (입퇴원, 보고서)        |
+| **3단계** | 5개월   | 고급 기능 (라운딩, 통계)          |
+| **4단계** | 6개월   | 안정화 및 출시                    |
 
 ---
 
@@ -255,4 +255,4 @@ Proprietary - All rights reserved.
 
 ---
 
-*최종 수정: 2025-12-29*
+_최종 수정: 2025-12-29_

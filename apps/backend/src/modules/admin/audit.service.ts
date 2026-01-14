@@ -61,9 +61,7 @@ export class AuditService {
         return;
       }
 
-      const changedFields = event.changes
-        ? this.getChangedFields(event.changes)
-        : [];
+      const changedFields = event.changes ? this.getChangedFields(event.changes) : [];
 
       const [schema, table] = this.parseResourceType(event.resourceType);
 
@@ -206,9 +204,7 @@ export class AuditService {
   private getClientIp(): string {
     const forwardedFor = this.request.headers['x-forwarded-for'];
     if (forwardedFor) {
-      const ips = Array.isArray(forwardedFor)
-        ? forwardedFor[0]
-        : forwardedFor.split(',')[0];
+      const ips = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor.split(',')[0];
       return ips.trim();
     }
     return this.request.ip || '0.0.0.0';
@@ -224,10 +220,7 @@ export class AuditService {
     if (!changes.old && !changes.new) return [];
 
     const fields: string[] = [];
-    const allKeys = new Set([
-      ...Object.keys(changes.old || {}),
-      ...Object.keys(changes.new || {}),
-    ]);
+    const allKeys = new Set([...Object.keys(changes.old || {}), ...Object.keys(changes.new || {})]);
 
     for (const key of allKeys) {
       const oldValue = changes.old?.[key];

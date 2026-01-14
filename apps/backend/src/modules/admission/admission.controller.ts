@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  Headers,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Headers } from '@nestjs/common';
 import { AdmissionService } from './admission.service';
 import { ParseUUIDPipe } from '../../common';
 import { AdmissionStatus } from '@prisma/client';
@@ -35,9 +27,7 @@ export class AdmissionController {
   }
 
   @Get()
-  async findAll(
-    @Query() dto: FindAdmissionsDto,
-  ): Promise<PaginatedAdmissionsResponseDto> {
+  async findAll(@Query() dto: FindAdmissionsDto): Promise<PaginatedAdmissionsResponseDto> {
     return this.admissionService.findAll(dto);
   }
 
@@ -64,9 +54,7 @@ export class AdmissionController {
   }
 
   @Get(':id')
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<AdmissionResponseDto> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<AdmissionResponseDto> {
     return this.admissionService.findById(id);
   }
 
@@ -91,9 +79,7 @@ export class AdmissionController {
   }
 
   @Get(':id/transfers')
-  async getTransferHistory(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<TransferResponseDto[]> {
+  async getTransferHistory(@Param('id', ParseUUIDPipe) id: string): Promise<TransferResponseDto[]> {
     return this.admissionService.getTransferHistory(id);
   }
 }

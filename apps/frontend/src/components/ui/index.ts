@@ -11,14 +11,7 @@ export {
   FormMessage,
   useFormField,
 } from './form';
-export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from './card';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card';
 export { Badge, badgeVariants } from './badge';
 export {
   Table,

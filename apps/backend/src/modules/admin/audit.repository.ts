@@ -141,9 +141,7 @@ export class AuditRepository {
     });
   }
 
-  async findLoginHistory(
-    params: QueryLoginHistoryParams,
-  ): Promise<PaginatedResult<LoginHistory>> {
+  async findLoginHistory(params: QueryLoginHistoryParams): Promise<PaginatedResult<LoginHistory>> {
     const { page = 1, limit = 20, ...filters } = params;
 
     const where: Prisma.LoginHistoryWhereInput = {};
@@ -215,9 +213,7 @@ export class AuditRepository {
     });
   }
 
-  async findAccessLogs(
-    params: QueryAccessLogsParams,
-  ): Promise<PaginatedResult<AccessLog>> {
+  async findAccessLogs(params: QueryAccessLogsParams): Promise<PaginatedResult<AccessLog>> {
     const { page = 1, limit = 20, ...filters } = params;
 
     const where: Prisma.AccessLogWhereInput = {};
@@ -271,10 +267,7 @@ export class AuditRepository {
     };
   }
 
-  async findAccessLogsByPatient(
-    patientId: string,
-    dateRange: DateRange,
-  ): Promise<AccessLog[]> {
+  async findAccessLogsByPatient(patientId: string, dateRange: DateRange): Promise<AccessLog[]> {
     return this.prisma.accessLog.findMany({
       where: {
         patientId,
@@ -306,9 +299,7 @@ export class AuditRepository {
     });
   }
 
-  async findChangeLogs(
-    params: QueryChangeLogsParams,
-  ): Promise<PaginatedResult<ChangeLog>> {
+  async findChangeLogs(params: QueryChangeLogsParams): Promise<PaginatedResult<ChangeLog>> {
     const { page = 1, limit = 20, ...filters } = params;
 
     const where: Prisma.ChangeLogWhereInput = {};

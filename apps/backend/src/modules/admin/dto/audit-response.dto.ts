@@ -1,10 +1,4 @@
-import {
-  LoginHistory,
-  AccessLog,
-  ChangeLog,
-  AuditAction,
-  DeviceType,
-} from '@prisma/client';
+import { LoginHistory, AccessLog, ChangeLog, AuditAction, DeviceType } from '@prisma/client';
 
 export class LoginHistoryResponseDto {
   id: string;

@@ -11,13 +11,7 @@ import { ReportModule } from './modules/report/report.module';
 import { RoundingModule } from './modules/rounding/rounding.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { IntegrationModule } from './modules/integration/integration.module';
-import {
-  appConfig,
-  databaseConfig,
-  redisConfig,
-  jwtConfig,
-  validate,
-} from './config';
+import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './config';
 
 @Module({
   imports: [

@@ -2,10 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type UseFormProps, type FieldValues } from 'react-hook-form';
 import type { ZodObject, ZodRawShape } from 'zod';
 
-type UseFormWithZodOptions<T extends FieldValues> = Omit<
-  UseFormProps<T>,
-  'resolver'
-> & {
+type UseFormWithZodOptions<T extends FieldValues> = Omit<UseFormProps<T>, 'resolver'> & {
   schema: ZodObject<ZodRawShape>;
 };
 

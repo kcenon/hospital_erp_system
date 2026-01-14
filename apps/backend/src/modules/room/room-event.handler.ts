@@ -21,9 +21,7 @@ export class RoomEventHandler {
    */
   @OnEvent('admission.created')
   async handleAdmissionCreated(event: AdmissionCreatedEvent): Promise<void> {
-    this.logger.debug(
-      `Handling admission.created event for admission ${event.admissionId}`,
-    );
+    this.logger.debug(`Handling admission.created event for admission ${event.admissionId}`);
 
     await this.roomGateway.broadcastAdmission(event);
   }
@@ -33,9 +31,7 @@ export class RoomEventHandler {
    */
   @OnEvent('admission.discharged')
   async handleAdmissionDischarged(event: AdmissionDischargedEvent): Promise<void> {
-    this.logger.debug(
-      `Handling admission.discharged event for admission ${event.admissionId}`,
-    );
+    this.logger.debug(`Handling admission.discharged event for admission ${event.admissionId}`);
 
     await this.roomGateway.broadcastDischarge(event);
   }
@@ -45,14 +41,8 @@ export class RoomEventHandler {
    */
   @OnEvent('bed.statusChanged')
   async handleBedStatusChanged(event: BedStatusChangedEvent): Promise<void> {
-    this.logger.debug(
-      `Handling bed.statusChanged event for bed ${event.bedId}`,
-    );
+    this.logger.debug(`Handling bed.statusChanged event for bed ${event.bedId}`);
 
-    await this.roomGateway.broadcastBedUpdate(
-      event.bedId,
-      event.newStatus,
-      event.patient,
-    );
+    await this.roomGateway.broadcastBedUpdate(event.bedId, event.newStatus, event.patient);
   }
 }

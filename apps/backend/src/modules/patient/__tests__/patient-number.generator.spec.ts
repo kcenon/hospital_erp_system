@@ -11,10 +11,7 @@ describe('PatientNumberGenerator', () => {
     prismaService = createMockPrismaService();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PatientNumberGenerator,
-        { provide: PrismaService, useValue: prismaService },
-      ],
+      providers: [PatientNumberGenerator, { provide: PrismaService, useValue: prismaService }],
     }).compile();
 
     generator = module.get<PatientNumberGenerator>(PatientNumberGenerator);

@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  UseGuards,
-  Headers,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, Headers } from '@nestjs/common';
 import { VitalSignService } from './vital-sign.service';
 import { ParseUUIDPipe, JwtAuthGuard } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';

@@ -235,9 +235,7 @@ describe('AuthService', () => {
         throw new UnauthorizedException('Invalid token');
       });
 
-      await expect(service.refreshTokens('invalid-token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('invalid-token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw when session is expired', async () => {
@@ -252,9 +250,7 @@ describe('AuthService', () => {
       mockJwtTokenService.verifyRefreshToken.mockReturnValue(payload);
       mockSessionService.isValid.mockResolvedValue(false);
 
-      await expect(service.refreshTokens('valid-token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('valid-token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw when user not found', async () => {
@@ -270,9 +266,7 @@ describe('AuthService', () => {
       mockSessionService.isValid.mockResolvedValue(true);
       prismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.refreshTokens('valid-token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('valid-token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw when user is inactive', async () => {
@@ -289,9 +283,7 @@ describe('AuthService', () => {
       mockSessionService.isValid.mockResolvedValue(true);
       prismaService.user.findUnique.mockResolvedValue(user);
 
-      await expect(service.refreshTokens('valid-token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('valid-token')).rejects.toThrow(UnauthorizedException);
     });
   });
 

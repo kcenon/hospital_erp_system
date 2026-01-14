@@ -18,10 +18,7 @@ describe('RoomService', () => {
     prismaService = createMockPrismaService();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RoomService,
-        { provide: PrismaService, useValue: prismaService },
-      ],
+      providers: [RoomService, { provide: PrismaService, useValue: prismaService }],
     }).compile();
 
     service = module.get<RoomService>(RoomService);
@@ -31,10 +28,7 @@ describe('RoomService', () => {
 
   describe('findAllBuildings', () => {
     it('should return all active buildings', async () => {
-      const buildings = [
-        createTestBuilding({ code: 'A' }),
-        createTestBuilding({ code: 'B' }),
-      ];
+      const buildings = [createTestBuilding({ code: 'A' }), createTestBuilding({ code: 'B' })];
 
       prismaService.building.findMany.mockResolvedValue(buildings);
 
@@ -96,9 +90,7 @@ describe('RoomService', () => {
     it('should throw NotFoundException when building not found', async () => {
       prismaService.building.findUnique.mockResolvedValue(null);
 
-      await expect(service.findBuildingById('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findBuildingById('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -140,9 +132,7 @@ describe('RoomService', () => {
     it('should throw NotFoundException when building not found', async () => {
       prismaService.building.findUnique.mockResolvedValue(null);
 
-      await expect(service.findFloorsByBuilding('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findFloorsByBuilding('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -184,9 +174,7 @@ describe('RoomService', () => {
     it('should throw NotFoundException when floor not found', async () => {
       prismaService.floor.findUnique.mockResolvedValue(null);
 
-      await expect(service.findRoomsByFloor('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findRoomsByFloor('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -229,9 +217,7 @@ describe('RoomService', () => {
     it('should throw NotFoundException when room not found', async () => {
       prismaService.room.findUnique.mockResolvedValue(null);
 
-      await expect(service.findRoomById('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findRoomById('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 });

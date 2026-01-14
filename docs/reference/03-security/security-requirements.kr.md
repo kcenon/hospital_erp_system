@@ -2,13 +2,13 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
-| 보안 등급 | 내부용 |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
+| 보안 등급 | 내부용           |
 
 ---
 
@@ -38,12 +38,12 @@
 
 ### 1.2 관련 법규 및 규정
 
-| 법규/규정 | 적용 범위 | 주요 요구사항 |
-|----------|----------|--------------|
+| 법규/규정          | 적용 범위          | 주요 요구사항                |
+| ------------------ | ------------------ | ---------------------------- |
 | **개인정보보호법** | 환자 개인정보 전체 | 암호화, 접근 통제, 동의 관리 |
-| **의료법** | 의무기록 | 5년 보관, 열람 통제 |
-| **전자문서법** | 전자 기록 | 무결성, 진본성 |
-| **정보통신망법** | 시스템 전체 | 보안 조치, 침해 대응 |
+| **의료법**         | 의무기록           | 5년 보관, 열람 통제          |
+| **전자문서법**     | 전자 기록          | 무결성, 진본성               |
+| **정보통신망법**   | 시스템 전체        | 보안 조치, 침해 대응         |
 
 ### 1.3 보안 아키텍처 개요
 
@@ -81,14 +81,14 @@
 
 ### 2.1 인증 요구사항
 
-| 요구사항 | 상세 | 우선순위 |
-|----------|------|----------|
-| **강력한 비밀번호** | 8자 이상, 대소문자/숫자/특수문자 조합 | 필수 |
-| **비밀번호 해싱** | bcrypt (cost factor 12 이상) | 필수 |
-| **MFA 지원** | TOTP (Google Authenticator 등) | 권장 |
-| **세션 관리** | 30분 유휴 타임아웃 | 필수 |
-| **동시 세션 제한** | 사용자당 최대 3개 세션 | 필수 |
-| **로그인 시도 제한** | 5회 실패 시 15분 잠금 | 필수 |
+| 요구사항             | 상세                                  | 우선순위 |
+| -------------------- | ------------------------------------- | -------- |
+| **강력한 비밀번호**  | 8자 이상, 대소문자/숫자/특수문자 조합 | 필수     |
+| **비밀번호 해싱**    | bcrypt (cost factor 12 이상)          | 필수     |
+| **MFA 지원**         | TOTP (Google Authenticator 등)        | 권장     |
+| **세션 관리**        | 30분 유휴 타임아웃                    | 필수     |
+| **동시 세션 제한**   | 사용자당 최대 3개 세션                | 필수     |
+| **로그인 시도 제한** | 5회 실패 시 15분 잠금                 | 필수     |
 
 ### 2.2 비밀번호 정책
 
@@ -102,11 +102,11 @@ const passwordPolicy = {
   requireNumber: true,
   requireSpecial: true,
   specialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-  preventCommon: true,        // 흔한 비밀번호 차단
-  preventUserInfo: true,      // 사용자 정보 포함 차단
-  historyCount: 5,            // 최근 5개 비밀번호 재사용 금지
-  maxAge: 90,                 // 90일마다 변경 필요 (일)
-  warnBefore: 14              // 만료 14일 전 경고
+  preventCommon: true, // 흔한 비밀번호 차단
+  preventUserInfo: true, // 사용자 정보 포함 차단
+  historyCount: 5, // 최근 5개 비밀번호 재사용 금지
+  maxAge: 90, // 90일마다 변경 필요 (일)
+  warnBefore: 14, // 만료 14일 전 경고
 };
 
 // 비밀번호 강도 검증
@@ -149,25 +149,25 @@ function validatePassword(password: string, user: User): ValidationResult {
 const jwtConfig = {
   accessToken: {
     secret: process.env.JWT_ACCESS_SECRET,
-    expiresIn: '1h',          // 1시간
-    algorithm: 'HS256'
+    expiresIn: '1h', // 1시간
+    algorithm: 'HS256',
   },
   refreshToken: {
     secret: process.env.JWT_REFRESH_SECRET,
-    expiresIn: '7d',          // 7일
-    algorithm: 'HS256'
-  }
+    expiresIn: '7d', // 7일
+    algorithm: 'HS256',
+  },
 };
 
 // 토큰 페이로드
 interface TokenPayload {
-  sub: string;                // 사용자 ID
+  sub: string; // 사용자 ID
   username: string;
   roles: string[];
   permissions: string[];
-  iat: number;                // 발급 시간
-  exp: number;                // 만료 시간
-  jti: string;                // 토큰 고유 ID (revocation용)
+  iat: number; // 발급 시간
+  exp: number; // 만료 시간
+  jti: string; // 토큰 고유 ID (revocation용)
 }
 ```
 
@@ -187,10 +187,10 @@ interface SessionData {
 
 // 세션 정책
 const sessionPolicy = {
-  maxConcurrentSessions: 3,   // 최대 동시 세션
-  idleTimeout: 30 * 60,       // 30분 (초)
+  maxConcurrentSessions: 3, // 최대 동시 세션
+  idleTimeout: 30 * 60, // 30분 (초)
   absoluteTimeout: 8 * 60 * 60, // 8시간 (초)
-  renewThreshold: 5 * 60      // 5분 남으면 갱신
+  renewThreshold: 5 * 60, // 5분 남으면 갱신
 };
 ```
 
@@ -234,25 +234,25 @@ const sessionPolicy = {
 
 ### 3.2 권한 매트릭스
 
-| 리소스 | ADMIN | DOCTOR | HEAD_NURSE | NURSE | CLERK |
-|--------|-------|--------|------------|-------|-------|
-| **환자 정보** |
-| - 조회 | ✅ | ✅ | ✅ | ✅ (담당) | ✅ |
-| - 등록 | ✅ | ❌ | ❌ | ❌ | ✅ |
-| - 수정 | ✅ | ✅ (본인 환자) | ✅ | ❌ | ✅ |
-| - 삭제 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **병실 관리** |
-| - 조회 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| - 배정 | ✅ | ❌ | ✅ | ❌ | ✅ |
-| - 설정 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **보고서** |
-| - 조회 | ✅ | ✅ | ✅ | ✅ (담당) | ❌ |
-| - 작성 | ✅ | ✅ | ✅ | ✅ | ❌ |
-| - 수정 | ✅ | ✅ (본인) | ✅ | ✅ (본인) | ❌ |
-| **감사 로그** |
-| - 조회 | ✅ | ❌ | ❌ | ❌ | ❌ |
+| 리소스          | ADMIN | DOCTOR         | HEAD_NURSE | NURSE     | CLERK |
+| --------------- | ----- | -------------- | ---------- | --------- | ----- |
+| **환자 정보**   |
+| - 조회          | ✅    | ✅             | ✅         | ✅ (담당) | ✅    |
+| - 등록          | ✅    | ❌             | ❌         | ❌        | ✅    |
+| - 수정          | ✅    | ✅ (본인 환자) | ✅         | ❌        | ✅    |
+| - 삭제          | ✅    | ❌             | ❌         | ❌        | ❌    |
+| **병실 관리**   |
+| - 조회          | ✅    | ✅             | ✅         | ✅        | ✅    |
+| - 배정          | ✅    | ❌             | ✅         | ❌        | ✅    |
+| - 설정          | ✅    | ❌             | ❌         | ❌        | ❌    |
+| **보고서**      |
+| - 조회          | ✅    | ✅             | ✅         | ✅ (담당) | ❌    |
+| - 작성          | ✅    | ✅             | ✅         | ✅        | ❌    |
+| - 수정          | ✅    | ✅ (본인)      | ✅         | ✅ (본인) | ❌    |
+| **감사 로그**   |
+| - 조회          | ✅    | ❌             | ❌         | ❌        | ❌    |
 | **사용자 관리** |
-| - 전체 | ✅ | ❌ | ❌ | ❌ | ❌ |
+| - 전체          | ✅    | ❌             | ❌         | ❌        | ❌    |
 
 ### 3.3 권한 검증 구현
 
@@ -263,10 +263,7 @@ export class PermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredPermissions = this.reflector.get<string[]>(
-      'permissions',
-      context.getHandler()
-    );
+    const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
 
     if (!requiredPermissions) {
       return true;
@@ -275,9 +272,7 @@ export class PermissionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return requiredPermissions.every(permission =>
-      user.permissions.includes(permission)
-    );
+    return requiredPermissions.every((permission) => user.permissions.includes(permission));
   }
 }
 
@@ -304,15 +299,15 @@ export class PatientController {
 
 ### 4.1 암호화 요구사항
 
-| 데이터 유형 | 저장 시 암호화 | 전송 시 암호화 | 방식 |
-|------------|--------------|--------------|------|
-| 비밀번호 | ✅ | ✅ | bcrypt (단방향) |
-| 주민등록번호 | ✅ | ✅ | AES-256-GCM |
-| 의료 기록 | ✅ | ✅ | AES-256-GCM |
-| 진단 정보 | ✅ | ✅ | AES-256-GCM |
-| 보험 정보 | ✅ | ✅ | AES-256-GCM |
-| 일반 개인정보 | ❌ | ✅ | TLS 1.3 |
-| API 통신 | N/A | ✅ | TLS 1.3 |
+| 데이터 유형   | 저장 시 암호화 | 전송 시 암호화 | 방식            |
+| ------------- | -------------- | -------------- | --------------- |
+| 비밀번호      | ✅             | ✅             | bcrypt (단방향) |
+| 주민등록번호  | ✅             | ✅             | AES-256-GCM     |
+| 의료 기록     | ✅             | ✅             | AES-256-GCM     |
+| 진단 정보     | ✅             | ✅             | AES-256-GCM     |
+| 보험 정보     | ✅             | ✅             | AES-256-GCM     |
+| 일반 개인정보 | ❌             | ✅             | TLS 1.3         |
+| API 통신      | N/A            | ✅             | TLS 1.3         |
 
 ### 4.2 암호화 구현
 
@@ -327,9 +322,7 @@ export class EncryptionService {
   private readonly ivLength = 16;
   private readonly authTagLength = 16;
 
-  constructor(
-    @Inject('ENCRYPTION_KEY') private readonly key: Buffer
-  ) {}
+  constructor(@Inject('ENCRYPTION_KEY') private readonly key: Buffer) {}
 
   encrypt(plaintext: string): EncryptedData {
     const iv = crypto.randomBytes(this.ivLength);
@@ -343,7 +336,7 @@ export class EncryptionService {
     return {
       iv: iv.toString('base64'),
       data: encrypted,
-      authTag: authTag.toString('base64')
+      authTag: authTag.toString('base64'),
     };
   }
 
@@ -363,7 +356,7 @@ export class EncryptionService {
 
 // 민감 정보 필드 데코레이터
 function Encrypted() {
-  return function(target: any, propertyKey: string) {
+  return function (target: any, propertyKey: string) {
     // 자동 암호화/복호화 처리
   };
 }
@@ -371,10 +364,10 @@ function Encrypted() {
 // 사용 예시
 class PatientDetails {
   @Encrypted()
-  ssn: string;  // 주민등록번호
+  ssn: string; // 주민등록번호
 
   @Encrypted()
-  medicalHistory: string;  // 병력
+  medicalHistory: string; // 병력
 }
 ```
 
@@ -444,7 +437,7 @@ const maskingRules = {
     // test@example.com -> t***@example.com
     const [local, domain] = value.split('@');
     return local[0] + '***@' + domain;
-  }
+  },
 };
 
 // 응답 필터링 (권한에 따른 마스킹)
@@ -453,7 +446,7 @@ function applyMasking(data: any, userPermissions: string[]): any {
     return {
       ...data,
       ssn: maskingRules.ssn(data.ssn),
-      phone: maskingRules.phone(data.phone)
+      phone: maskingRules.phone(data.phone),
     };
   }
   return data;
@@ -466,14 +459,14 @@ function applyMasking(data: any, userPermissions: string[]): any {
 
 ### 5.1 감사 로그 요구사항
 
-| 이벤트 유형 | 기록 항목 | 보관 기간 |
-|------------|----------|----------|
-| 로그인/로그아웃 | 사용자, 시간, IP, 결과 | 2년 |
-| 환자 정보 조회 | 사용자, 시간, 환자ID, 조회 항목 | 2년 |
-| 환자 정보 수정 | 사용자, 시간, 변경 전/후 값 | 영구 |
-| 보고서 작성/수정 | 사용자, 시간, 문서ID, 내용 | 5년 |
-| 권한 변경 | 관리자, 시간, 대상, 변경 내역 | 영구 |
-| 데이터 출력/다운로드 | 사용자, 시간, 데이터 범위 | 2년 |
+| 이벤트 유형          | 기록 항목                       | 보관 기간 |
+| -------------------- | ------------------------------- | --------- |
+| 로그인/로그아웃      | 사용자, 시간, IP, 결과          | 2년       |
+| 환자 정보 조회       | 사용자, 시간, 환자ID, 조회 항목 | 2년       |
+| 환자 정보 수정       | 사용자, 시간, 변경 전/후 값     | 영구      |
+| 보고서 작성/수정     | 사용자, 시간, 문서ID, 내용      | 5년       |
+| 권한 변경            | 관리자, 시간, 대상, 변경 내역   | 영구      |
+| 데이터 출력/다운로드 | 사용자, 시간, 데이터 범위       | 2년       |
 
 ### 5.2 감사 로그 구조
 
@@ -497,7 +490,7 @@ interface AuditLog {
   // 상세 정보
   requestPath: string;
   requestMethod: string;
-  requestBody?: object;       // 민감정보 제외
+  requestBody?: object; // 민감정보 제외
 
   // 결과
   success: boolean;
@@ -540,7 +533,7 @@ export class AuditLogInterceptor implements NestInterceptor {
             requestPath: request.path,
             requestMethod: request.method,
             success: true,
-            duration: Date.now() - startTime
+            duration: Date.now() - startTime,
           });
         },
         error: (error) => {
@@ -557,10 +550,10 @@ export class AuditLogInterceptor implements NestInterceptor {
             success: false,
             errorCode: error.code,
             errorMessage: error.message,
-            duration: Date.now() - startTime
+            duration: Date.now() - startTime,
           });
-        }
-      })
+        },
+      }),
     );
   }
 }
@@ -641,14 +634,14 @@ server {
 
 ### 6.2 WAF 규칙
 
-| 규칙 | 설명 | 조치 |
-|------|------|------|
-| SQL Injection | SQL 인젝션 패턴 탐지 | 차단 |
-| XSS | 스크립트 삽입 시도 | 차단 |
-| Path Traversal | 경로 조작 시도 | 차단 |
-| Rate Limit | 분당 1000 요청 초과 | 임시 차단 |
-| Bot Detection | 알려진 악성 봇 | 차단 |
-| GeoIP | 허용 국가 외 접근 | 차단 (선택) |
+| 규칙           | 설명                 | 조치        |
+| -------------- | -------------------- | ----------- |
+| SQL Injection  | SQL 인젝션 패턴 탐지 | 차단        |
+| XSS            | 스크립트 삽입 시도   | 차단        |
+| Path Traversal | 경로 조작 시도       | 차단        |
+| Rate Limit     | 분당 1000 요청 초과  | 임시 차단   |
+| Bot Detection  | 알려진 악성 봇       | 차단        |
+| GeoIP          | 허용 국가 외 접근    | 차단 (선택) |
 
 ### 6.3 Rate Limiting
 
@@ -657,27 +650,27 @@ server {
 const rateLimitConfig = {
   // 일반 API
   default: {
-    windowMs: 60 * 1000,  // 1분
-    max: 100              // 100 요청
+    windowMs: 60 * 1000, // 1분
+    max: 100, // 100 요청
   },
 
   // 로그인 API (브루트포스 방지)
   login: {
-    windowMs: 15 * 60 * 1000,  // 15분
-    max: 5                      // 5회
+    windowMs: 15 * 60 * 1000, // 15분
+    max: 5, // 5회
   },
 
   // 민감 정보 API
   sensitive: {
-    windowMs: 60 * 1000,  // 1분
-    max: 20               // 20 요청
+    windowMs: 60 * 1000, // 1분
+    max: 20, // 20 요청
   },
 
   // 데이터 내보내기
   export: {
-    windowMs: 60 * 60 * 1000,  // 1시간
-    max: 10                     // 10회
-  }
+    windowMs: 60 * 60 * 1000, // 1시간
+    max: 10, // 10회
+  },
 };
 ```
 
@@ -693,13 +686,13 @@ class CreatePatientDto {
   @IsString()
   @Length(2, 50)
   @Matches(/^[가-힣a-zA-Z\s]+$/, {
-    message: '이름은 한글, 영문, 공백만 허용됩니다.'
+    message: '이름은 한글, 영문, 공백만 허용됩니다.',
   })
   name: string;
 
   @IsString()
   @Matches(/^P\d{10}$/, {
-    message: '환자번호 형식이 올바르지 않습니다. (예: P2025001234)'
+    message: '환자번호 형식이 올바르지 않습니다. (예: P2025001234)',
   })
   patientNumber: string;
 
@@ -713,14 +706,14 @@ class CreatePatientDto {
   @IsOptional()
   @IsString()
   @Matches(/^01[0-9]-\d{3,4}-\d{4}$/, {
-    message: '전화번호 형식이 올바르지 않습니다.'
+    message: '전화번호 형식이 올바르지 않습니다.',
   })
   phone?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(500)
-  @Transform(({ value }) => sanitizeHtml(value))  // XSS 방지
+  @Transform(({ value }) => sanitizeHtml(value)) // XSS 방지
   notes?: string;
 }
 ```
@@ -731,8 +724,8 @@ class CreatePatientDto {
 // Prisma ORM 사용 (파라미터 바인딩 자동)
 const patient = await prisma.patient.findFirst({
   where: {
-    patientNumber: userInput  // 자동으로 이스케이프됨
-  }
+    patientNumber: userInput, // 자동으로 이스케이프됨
+  },
 });
 
 // Raw 쿼리 시 파라미터 바인딩 필수
@@ -755,8 +748,8 @@ import DOMPurify from 'isomorphic-dompurify';
 // 입력 정화
 function sanitizeInput(input: string): string {
   return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [],  // 모든 태그 제거
-    ALLOWED_ATTR: []   // 모든 속성 제거
+    ALLOWED_TAGS: [], // 모든 태그 제거
+    ALLOWED_ATTR: [], // 모든 속성 제거
   });
 }
 
@@ -764,7 +757,7 @@ function sanitizeInput(input: string): string {
 function sanitizeRichText(input: string): string {
   return DOMPurify.sanitize(input, {
     ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'ul', 'ol', 'li'],
-    ALLOWED_ATTR: []
+    ALLOWED_ATTR: [],
   });
 }
 ```
@@ -775,14 +768,14 @@ function sanitizeRichText(input: string): string {
 
 ### 8.1 보안 이벤트 정의
 
-| 이벤트 | 심각도 | 알림 |
-|--------|--------|------|
-| 다중 로그인 실패 | HIGH | 즉시 (Slack, SMS) |
-| 비정상 시간대 접근 | MEDIUM | 15분 내 |
-| 대량 데이터 조회 | HIGH | 즉시 |
-| 권한 상승 시도 | CRITICAL | 즉시 (전체 팀) |
-| 민감 정보 대량 접근 | CRITICAL | 즉시 |
-| 새로운 IP에서 관리자 접근 | HIGH | 즉시 |
+| 이벤트                    | 심각도   | 알림              |
+| ------------------------- | -------- | ----------------- |
+| 다중 로그인 실패          | HIGH     | 즉시 (Slack, SMS) |
+| 비정상 시간대 접근        | MEDIUM   | 15분 내           |
+| 대량 데이터 조회          | HIGH     | 즉시              |
+| 권한 상승 시도            | CRITICAL | 즉시 (전체 팀)    |
+| 민감 정보 대량 접근       | CRITICAL | 즉시              |
+| 새로운 IP에서 관리자 접근 | HIGH     | 즉시              |
 
 ### 8.2 이상 탐지 규칙
 
@@ -793,44 +786,44 @@ const anomalyRules = {
   unusualHours: {
     condition: (event) => {
       const hour = event.timestamp.getHours();
-      return hour < 6 || hour > 22;  // 오전 6시 ~ 오후 10시 외
+      return hour < 6 || hour > 22; // 오전 6시 ~ 오후 10시 외
     },
-    severity: 'MEDIUM'
+    severity: 'MEDIUM',
   },
 
   // 대량 조회
   bulkAccess: {
     condition: (events) => {
       const recentEvents = events.filter(
-        e => e.action === 'VIEW' &&
-        e.resourceType === 'patient' &&
-        Date.now() - e.timestamp < 5 * 60 * 1000  // 5분
+        (e) =>
+          e.action === 'VIEW' &&
+          e.resourceType === 'patient' &&
+          Date.now() - e.timestamp < 5 * 60 * 1000, // 5분
       );
-      return recentEvents.length > 50;  // 5분 내 50건 이상
+      return recentEvents.length > 50; // 5분 내 50건 이상
     },
-    severity: 'HIGH'
+    severity: 'HIGH',
   },
 
   // 권한 없는 접근 시도
   unauthorizedAccess: {
     condition: (event) => {
-      return event.success === false &&
-             event.errorCode === 'FORBIDDEN';
+      return event.success === false && event.errorCode === 'FORBIDDEN';
     },
-    severity: 'HIGH'
-  }
+    severity: 'HIGH',
+  },
 };
 ```
 
 ### 8.3 보안 대시보드 메트릭
 
-| 메트릭 | 설명 | 임계값 |
-|--------|------|--------|
-| 로그인 실패율 | 전체 로그인 중 실패 비율 | > 10% |
-| 비정상 접근 시도 | 권한 없는 리소스 접근 | > 5건/시간 |
-| 민감 정보 접근 빈도 | 주민번호 등 조회 횟수 | 기준치 대비 200% |
-| 세션 하이재킹 의심 | IP/기기 급변 세션 | > 0 |
-| API 오류율 | 4xx/5xx 응답 비율 | > 5% |
+| 메트릭              | 설명                     | 임계값           |
+| ------------------- | ------------------------ | ---------------- |
+| 로그인 실패율       | 전체 로그인 중 실패 비율 | > 10%            |
+| 비정상 접근 시도    | 권한 없는 리소스 접근    | > 5건/시간       |
+| 민감 정보 접근 빈도 | 주민번호 등 조회 횟수    | 기준치 대비 200% |
+| 세션 하이재킹 의심  | IP/기기 급변 세션        | > 0              |
+| API 오류율          | 4xx/5xx 응답 비율        | > 5%             |
 
 ---
 
@@ -838,22 +831,22 @@ const anomalyRules = {
 
 ### 9.1 정기 보안 점검
 
-| 점검 유형 | 주기 | 담당 |
-|----------|------|------|
-| 의존성 취약점 스캔 | 매일 (CI/CD) | 자동화 |
-| 정적 코드 분석 (SAST) | 매 PR | 자동화 |
-| 동적 분석 (DAST) | 주간 | 보안팀 |
-| 침투 테스트 | 분기 | 외부 업체 |
-| 보안 코드 리뷰 | 매 릴리즈 | 개발팀 |
+| 점검 유형             | 주기         | 담당      |
+| --------------------- | ------------ | --------- |
+| 의존성 취약점 스캔    | 매일 (CI/CD) | 자동화    |
+| 정적 코드 분석 (SAST) | 매 PR        | 자동화    |
+| 동적 분석 (DAST)      | 주간         | 보안팀    |
+| 침투 테스트           | 분기         | 외부 업체 |
+| 보안 코드 리뷰        | 매 릴리즈    | 개발팀    |
 
 ### 9.2 취약점 대응 SLA
 
-| 심각도 | 대응 시간 | 해결 시간 |
-|--------|----------|----------|
-| CRITICAL | 1시간 | 24시간 |
-| HIGH | 4시간 | 72시간 |
-| MEDIUM | 24시간 | 7일 |
-| LOW | 72시간 | 30일 |
+| 심각도   | 대응 시간 | 해결 시간 |
+| -------- | --------- | --------- |
+| CRITICAL | 1시간     | 24시간    |
+| HIGH     | 4시간     | 72시간    |
+| MEDIUM   | 24시간    | 7일       |
+| LOW      | 72시간    | 30일      |
 
 ### 9.3 의존성 보안
 
@@ -865,7 +858,7 @@ on:
   push:
     branches: [main, develop]
   schedule:
-    - cron: '0 9 * * *'  # 매일 오전 9시
+    - cron: '0 9 * * *' # 매일 오전 9시
 
 jobs:
   dependency-scan:
@@ -894,12 +887,12 @@ jobs:
 
 ### 10.1 보안 사고 분류
 
-| 등급 | 정의 | 예시 |
-|------|------|------|
-| P1 (Critical) | 환자 데이터 유출, 시스템 장악 | 랜섬웨어, DB 유출 |
-| P2 (High) | 부분적 데이터 접근, 서비스 중단 | 계정 탈취, DDoS |
-| P3 (Medium) | 제한적 영향, 즉각 대응 가능 | 취약점 발견 |
-| P4 (Low) | 경미한 영향 | 정책 위반 시도 |
+| 등급          | 정의                            | 예시              |
+| ------------- | ------------------------------- | ----------------- |
+| P1 (Critical) | 환자 데이터 유출, 시스템 장악   | 랜섬웨어, DB 유출 |
+| P2 (High)     | 부분적 데이터 접근, 서비스 중단 | 계정 탈취, DDoS   |
+| P3 (Medium)   | 제한적 영향, 즉각 대응 가능     | 취약점 발견       |
+| P4 (Low)      | 경미한 영향                     | 정책 위반 시도    |
 
 ### 10.2 대응 절차
 
@@ -936,13 +929,13 @@ jobs:
 
 ### 10.3 연락 체계
 
-| 단계 | 담당자 | 연락처 | 역할 |
-|------|--------|--------|------|
-| 1차 | 보안 담당자 | security@hospital.com | 초기 대응 |
-| 2차 | IT 책임자 | - | 의사결정 |
-| 3차 | 경영진 | - | 대외 대응 |
-| 외부 | 침해사고 대응팀 (CERT) | - | 법적 신고 |
-| 외부 | 경찰청 사이버수사대 | 182 | 수사 협조 |
+| 단계 | 담당자                 | 연락처                | 역할      |
+| ---- | ---------------------- | --------------------- | --------- |
+| 1차  | 보안 담당자            | security@hospital.com | 초기 대응 |
+| 2차  | IT 책임자              | -                     | 의사결정  |
+| 3차  | 경영진                 | -                     | 대외 대응 |
+| 외부 | 침해사고 대응팀 (CERT) | -                     | 법적 신고 |
+| 외부 | 경찰청 사이버수사대    | 182                   | 수사 협조 |
 
 ---
 

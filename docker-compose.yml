@@ -7,7 +7,7 @@ services:
     container_name: hospital-erp-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: hospital_user
       POSTGRES_PASSWORD: ${DB_PASSWORD:-hospital_dev_password}
@@ -16,7 +16,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hospital_user -d hospital_erp_dev"]
+      test: ['CMD-SHELL', 'pg_isready -U hospital_user -d hospital_erp_dev']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,12 +29,12 @@ services:
     container_name: hospital-erp-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +49,7 @@ services:
     container_name: hospital-erp-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       NODE_ENV: development
       PORT: 3000
@@ -80,13 +80,13 @@ services:
     container_name: hospital-erp-frontend
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - '3001:3001'
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:3000
       NEXT_PUBLIC_APP_NAME: Hospital ERP System
       NEXT_PUBLIC_APP_URL: http://localhost:3001
-      NEXT_PUBLIC_ENABLE_PWA: "true"
+      NEXT_PUBLIC_ENABLE_PWA: 'true'
     depends_on:
       - backend
     volumes:

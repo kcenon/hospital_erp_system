@@ -8,10 +8,7 @@ import type { BedStatusUpdate, FloorDashboard } from '@/types';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'http://localhost:3000';
 
-function updateBedInDashboard(
-  dashboard: FloorDashboard,
-  update: BedStatusUpdate
-): FloorDashboard {
+function updateBedInDashboard(dashboard: FloorDashboard, update: BedStatusUpdate): FloorDashboard {
   return {
     ...dashboard,
     rooms: dashboard.rooms.map((room) => {
@@ -80,13 +77,10 @@ export function useRoomWebSocket(floorId: string): UseRoomWebSocketReturn {
     });
 
     newSocket.on('bed:status', (data: BedStatusUpdate) => {
-      queryClient.setQueryData(
-        ['floor-dashboard', floorId],
-        (old: FloorDashboard | undefined) => {
-          if (!old) return old;
-          return updateBedInDashboard(old, data);
-        }
-      );
+      queryClient.setQueryData(['floor-dashboard', floorId], (old: FloorDashboard | undefined) => {
+        if (!old) return old;
+        return updateBedInDashboard(old, data);
+      });
     });
 
     newSocket.on('admission:created', () => {

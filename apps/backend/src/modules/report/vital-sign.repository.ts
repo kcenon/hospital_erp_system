@@ -48,9 +48,7 @@ export class VitalSignRepository {
     return this.prisma.vitalSign.create({
       data: {
         admissionId: data.admissionId,
-        temperature: data.temperature
-          ? new Decimal(data.temperature)
-          : null,
+        temperature: data.temperature ? new Decimal(data.temperature) : null,
         systolicBp: data.systolicBp ?? null,
         diastolicBp: data.diastolicBp ?? null,
         pulseRate: data.pulseRate ?? null,
@@ -79,9 +77,7 @@ export class VitalSignRepository {
   /**
    * Find vital signs by admission with pagination
    */
-  async findByAdmission(
-    params: FindVitalSignsParams,
-  ): Promise<PaginatedResult<VitalSign>> {
+  async findByAdmission(params: FindVitalSignsParams): Promise<PaginatedResult<VitalSign>> {
     const { admissionId, startDate, endDate, hasAlert, page = 1, limit = 20 } = params;
 
     const where: Prisma.VitalSignWhereInput = {
@@ -134,11 +130,7 @@ export class VitalSignRepository {
   /**
    * Find vital signs by date range for trend data
    */
-  async findByDateRange(
-    admissionId: string,
-    startDate: Date,
-    endDate: Date,
-  ): Promise<VitalSign[]> {
+  async findByDateRange(admissionId: string, startDate: Date, endDate: Date): Promise<VitalSign[]> {
     return this.prisma.vitalSign.findMany({
       where: {
         admissionId,

@@ -22,11 +22,11 @@ The Inpatient Management ERP System is designed to replace manual Google Sheets-
 
 ### Platform Support
 
-| Platform | Purpose | Primary Users |
-|----------|---------|---------------|
-| **PC Web** | Administrative/admission tasks | Admissions Office, Administrators |
-| **Tablet Web** | Rounds/rounding, mobile input | Physicians, Head Nurses |
-| **Mobile Web (PWA)** | Quick inquiry/input | Nurses, Medical Staff |
+| Platform             | Purpose                        | Primary Users                     |
+| -------------------- | ------------------------------ | --------------------------------- |
+| **PC Web**           | Administrative/admission tasks | Admissions Office, Administrators |
+| **Tablet Web**       | Rounds/rounding, mobile input  | Physicians, Head Nurses           |
+| **Mobile Web (PWA)** | Quick inquiry/input            | Nurses, Medical Staff             |
 
 ---
 
@@ -38,14 +38,14 @@ The Inpatient Management ERP System is designed to replace manual Google Sheets-
 
 ### Tech Stack Summary
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | Next.js 14 + TypeScript | SSR, responsive UI, type safety |
-| **UI Components** | Tailwind CSS + shadcn/ui | Design system, accessibility |
-| **Backend** | NestJS + TypeScript | Modularization, enterprise patterns |
-| **Database** | PostgreSQL 16 | ACID compliance, medical data reliability |
-| **Cache** | Redis | Session management, real-time updates |
-| **Cloud** | AWS / Naver Cloud | Regulatory compliance, scalability |
+| Layer             | Technology               | Purpose                                   |
+| ----------------- | ------------------------ | ----------------------------------------- |
+| **Frontend**      | Next.js 14 + TypeScript  | SSR, responsive UI, type safety           |
+| **UI Components** | Tailwind CSS + shadcn/ui | Design system, accessibility              |
+| **Backend**       | NestJS + TypeScript      | Modularization, enterprise patterns       |
+| **Database**      | PostgreSQL 16            | ACID compliance, medical data reliability |
+| **Cache**         | Redis                    | Session management, real-time updates     |
+| **Cloud**         | AWS / Naver Cloud        | Regulatory compliance, scalability        |
 
 ---
 
@@ -126,22 +126,22 @@ hospital_erp_system/
 
 ### Core Documents
 
-| Document | Description | Link |
-|----------|-------------|------|
-| **PRD** | Product Requirements Document | [PRD.md](docs/PRD.md) |
-| **SRS** | Software Requirements Specification | [SRS.md](docs/SRS.md) |
-| **SDS** | Software Design Specification | [SDS.md](docs/SDS.md) |
+| Document | Description                         | Link                  |
+| -------- | ----------------------------------- | --------------------- |
+| **PRD**  | Product Requirements Document       | [PRD.md](docs/PRD.md) |
+| **SRS**  | Software Requirements Specification | [SRS.md](docs/SRS.md) |
+| **SDS**  | Software Design Specification       | [SDS.md](docs/SDS.md) |
 
 ### Reference Documents
 
-| Category | Documents |
-|----------|-----------|
-| **Overview** | [Project Overview](docs/reference/01-overview/project-overview.md), [Technology Stack](docs/reference/01-overview/technology-stack.md), [Schedule Plan](docs/reference/01-overview/schedule-plan.md) |
-| **Design** | [System Architecture](docs/reference/02-design/system-architecture.md), [Database Design](docs/reference/02-design/database-design.md), [API Specification](docs/reference/02-design/api-specification.md), [UI Design](docs/reference/02-design/ui-design.md) |
-| **Database** | [Database Configuration](docs/database-configuration.md) |
-| **Security** | [Security Requirements](docs/reference/03-security/security-requirements.md) |
-| **Appendix** | [Glossary](docs/reference/04-appendix/glossary.md) |
-| **Guides** | [Development Environment](docs/reference/05-guides/development-environment-setup.md), [Coding Conventions](docs/reference/05-guides/coding-conventions.md), [Testing Strategy](docs/reference/05-guides/testing-strategy.md) |
+| Category     | Documents                                                                                                                                                                                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Overview** | [Project Overview](docs/reference/01-overview/project-overview.md), [Technology Stack](docs/reference/01-overview/technology-stack.md), [Schedule Plan](docs/reference/01-overview/schedule-plan.md)                                                           |
+| **Design**   | [System Architecture](docs/reference/02-design/system-architecture.md), [Database Design](docs/reference/02-design/database-design.md), [API Specification](docs/reference/02-design/api-specification.md), [UI Design](docs/reference/02-design/ui-design.md) |
+| **Database** | [Database Configuration](docs/database-configuration.md)                                                                                                                                                                                                       |
+| **Security** | [Security Requirements](docs/reference/03-security/security-requirements.md)                                                                                                                                                                                   |
+| **Appendix** | [Glossary](docs/reference/04-appendix/glossary.md)                                                                                                                                                                                                             |
+| **Guides**   | [Development Environment](docs/reference/05-guides/development-environment-setup.md), [Coding Conventions](docs/reference/05-guides/coding-conventions.md), [Testing Strategy](docs/reference/05-guides/testing-strategy.md)                                   |
 
 ---
 
@@ -215,12 +215,12 @@ npm run dev  # Starts on port 3001
 
 ### Development Scripts
 
-| Script | Description |
-|--------|-------------|
-| `./scripts/dev-start.sh` | Start all Docker services |
-| `./scripts/dev-stop.sh` | Stop all Docker services |
-| `./scripts/db-reset.sh` | Reset database (drops and recreates) |
-| `./scripts/db-seed.sh` | Seed database with initial/test data |
+| Script                   | Description                          |
+| ------------------------ | ------------------------------------ |
+| `./scripts/dev-start.sh` | Start all Docker services            |
+| `./scripts/dev-stop.sh`  | Stop all Docker services             |
+| `./scripts/db-reset.sh`  | Reset database (drops and recreates) |
+| `./scripts/db-seed.sh`   | Seed database with initial/test data |
 
 See [Development Environment Setup](docs/reference/05-guides/development-environment-setup.md) for detailed instructions.
 
@@ -238,23 +238,23 @@ See [Development Environment Setup](docs/reference/05-guides/development-environ
 
 ### Branch Strategy
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Production-ready code |
-| `develop` | Development integration |
-| `feature/*` | Feature development |
-| `hotfix/*` | Production bug fixes |
+| Branch      | Purpose                 |
+| ----------- | ----------------------- |
+| `main`      | Production-ready code   |
+| `develop`   | Development integration |
+| `feature/*` | Feature development     |
+| `hotfix/*`  | Production bug fixes    |
 
 ---
 
 ## Roadmap
 
-| Phase | Period | Focus |
-|-------|--------|-------|
-| **Phase 1** | Month 1-2 | Foundation (Auth, Patient, Room Management) |
+| Phase       | Period    | Focus                                        |
+| ----------- | --------- | -------------------------------------------- |
+| **Phase 1** | Month 1-2 | Foundation (Auth, Patient, Room Management)  |
 | **Phase 2** | Month 3-4 | Core Features (Admission/Discharge, Reports) |
-| **Phase 3** | Month 5 | Advanced Features (Rounds, Statistics) |
-| **Phase 4** | Month 6 | Stabilization & Launch |
+| **Phase 3** | Month 5   | Advanced Features (Rounds, Statistics)       |
+| **Phase 4** | Month 6   | Stabilization & Launch                       |
 
 ---
 
@@ -289,4 +289,4 @@ Proprietary - All rights reserved.
 
 ---
 
-*Last Updated: 2026-01-13*
+_Last Updated: 2026-01-13_

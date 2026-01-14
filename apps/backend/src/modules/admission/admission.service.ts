@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
-import { Admission, Transfer, Discharge, AdmissionStatus, BedStatus } from '@prisma/client';
-import {
-  AdmissionRepository,
-  AdmissionWithRelations,
-  PaginatedResult,
-} from './admission.repository';
+import { Transfer, Discharge, AdmissionStatus, BedStatus } from '@prisma/client';
+import { AdmissionRepository, AdmissionWithRelations } from './admission.repository';
 import { AdmissionNumberGenerator } from './admission-number.generator';
 import { BedService } from '../room/bed.service';
 import {
@@ -36,10 +32,7 @@ export class AdmissionService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async admitPatient(
-    dto: CreateAdmissionDto,
-    userId: string,
-  ): Promise<AdmissionResponseDto> {
+  async admitPatient(dto: CreateAdmissionDto, userId: string): Promise<AdmissionResponseDto> {
     const patient = await this.prisma.patient.findFirst({
       where: { id: dto.patientId, deletedAt: null },
     });
@@ -233,12 +226,8 @@ export class AdmissionService {
       floorId: dto.floorId,
       attendingDoctorId: dto.attendingDoctorId,
       status: dto.status,
-      admissionDateFrom: dto.admissionDateFrom
-        ? new Date(dto.admissionDateFrom)
-        : undefined,
-      admissionDateTo: dto.admissionDateTo
-        ? new Date(dto.admissionDateTo)
-        : undefined,
+      admissionDateFrom: dto.admissionDateFrom ? new Date(dto.admissionDateFrom) : undefined,
+      admissionDateTo: dto.admissionDateTo ? new Date(dto.admissionDateTo) : undefined,
       search: dto.search,
       page: dto.page,
       limit: dto.limit,
@@ -262,10 +251,7 @@ export class AdmissionService {
     return admissionWithRelations ? this.toResponseDto(admissionWithRelations) : null;
   }
 
-  async findByFloor(
-    floorId: string,
-    status?: AdmissionStatus,
-  ): Promise<AdmissionResponseDto[]> {
+  async findByFloor(floorId: string, status?: AdmissionStatus): Promise<AdmissionResponseDto[]> {
     const admissions = await this.repository.findByFloor(floorId, status);
     return admissions.map((admission) => this.toResponseDto(admission));
   }
@@ -298,9 +284,7 @@ export class AdmissionService {
       updatedAt: admission.updatedAt,
       createdBy: admission.createdBy,
       transfers: admission.transfers.map((t) => this.toTransferResponseDto(t)),
-      discharge: admission.discharge
-        ? this.toDischargeResponseDto(admission.discharge)
-        : null,
+      discharge: admission.discharge ? this.toDischargeResponseDto(admission.discharge) : null,
     };
   }
 

@@ -16,7 +16,10 @@ const roomTypeLabels: Record<RoomType, string> = {
   EMERGENCY: 'Emergency',
 };
 
-const roomTypeVariants: Record<RoomType, 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning'> = {
+const roomTypeVariants: Record<
+  RoomType,
+  'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning'
+> = {
   GENERAL: 'outline',
   ICU: 'destructive',
   VIP: 'default',
@@ -38,9 +41,7 @@ export function RoomCard({ room }: RoomCardProps) {
               ({occupiedCount}/{totalBeds})
             </span>
           </div>
-          <Badge variant={roomTypeVariants[room.roomType]}>
-            {roomTypeLabels[room.roomType]}
-          </Badge>
+          <Badge variant={roomTypeVariants[room.roomType]}>{roomTypeLabels[room.roomType]}</Badge>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {room.beds.map((bed) => (

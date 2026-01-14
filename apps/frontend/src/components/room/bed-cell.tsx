@@ -10,9 +10,12 @@ interface BedCellProps {
 }
 
 const statusStyles: Record<BedStatusType, string> = {
-  EMPTY: 'bg-green-100 border-green-300 hover:bg-green-200 dark:bg-green-900/30 dark:border-green-700',
-  OCCUPIED: 'bg-blue-100 border-blue-300 hover:bg-blue-200 dark:bg-blue-900/30 dark:border-blue-700',
-  RESERVED: 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700',
+  EMPTY:
+    'bg-green-100 border-green-300 hover:bg-green-200 dark:bg-green-900/30 dark:border-green-700',
+  OCCUPIED:
+    'bg-blue-100 border-blue-300 hover:bg-blue-200 dark:bg-blue-900/30 dark:border-blue-700',
+  RESERVED:
+    'bg-yellow-100 border-yellow-300 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700',
   MAINTENANCE: 'bg-gray-100 border-gray-300 dark:bg-gray-900/30 dark:border-gray-700',
 };
 
@@ -30,12 +33,10 @@ export function BedCell({ bed, className }: BedCellProps) {
         'p-2 rounded border-2 transition-colors min-h-[60px]',
         statusStyles[bed.status],
         bed.patient && 'cursor-pointer',
-        className
+        className,
       )}
     >
-      <div className={cn('text-sm font-medium', statusTextColors[bed.status])}>
-        {bed.bedNumber}
-      </div>
+      <div className={cn('text-sm font-medium', statusTextColors[bed.status])}>{bed.bedNumber}</div>
       {bed.patient && (
         <div className={cn('text-xs truncate mt-0.5', statusTextColors[bed.status])}>
           {bed.patient.name}
@@ -54,11 +55,7 @@ export function BedCell({ bed, className }: BedCellProps) {
   );
 
   if (bed.patient) {
-    return (
-      <Link href={`/patients/${bed.patient.id}`}>
-        {content}
-      </Link>
-    );
+    return <Link href={`/patients/${bed.patient.id}`}>{content}</Link>;
   }
 
   return content;

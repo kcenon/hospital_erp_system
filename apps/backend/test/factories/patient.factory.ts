@@ -45,7 +45,11 @@ export function createTestPatientDetail(
       'Peanuts, Shellfish',
       null,
     ]),
-    insuranceType: faker.helpers.arrayElement(['National Health Insurance', 'Medical Aid', 'Private']),
+    insuranceType: faker.helpers.arrayElement([
+      'National Health Insurance',
+      'Medical Aid',
+      'Private',
+    ]),
     insuranceNumberEncrypted: null,
     insuranceCompany: faker.company.name(),
     notes: faker.lorem.sentence(),

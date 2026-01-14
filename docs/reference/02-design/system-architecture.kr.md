@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -60,13 +60,13 @@
 
 ### 1.2 아키텍처 원칙
 
-| 원칙 | 설명 | 적용 |
-|------|------|------|
-| **계층 분리** | Presentation, Business, Data 분리 | 유지보수성 향상 |
-| **모듈화** | 도메인별 독립 모듈 | 확장성, 테스트 용이 |
-| **느슨한 결합** | 인터페이스 기반 의존성 | 변경 영향 최소화 |
-| **보안 우선** | 모든 계층에 보안 적용 | 의료 데이터 보호 |
-| **확장성** | 수평 확장 가능 설계 | 사용량 증가 대응 |
+| 원칙            | 설명                              | 적용                |
+| --------------- | --------------------------------- | ------------------- |
+| **계층 분리**   | Presentation, Business, Data 분리 | 유지보수성 향상     |
+| **모듈화**      | 도메인별 독립 모듈                | 확장성, 테스트 용이 |
+| **느슨한 결합** | 인터페이스 기반 의존성            | 변경 영향 최소화    |
+| **보안 우선**   | 모든 계층에 보안 적용             | 의료 데이터 보호    |
+| **확장성**      | 수평 확장 가능 설계               | 사용량 증가 대응    |
 
 ---
 
@@ -123,16 +123,16 @@
 
 ### 2.2 모듈 상세 설명
 
-| 모듈 | 책임 | 주요 기능 |
-|------|------|----------|
-| **Auth Module** | 인증/인가 | 로그인, 세션 관리, 권한 검증 |
-| **Patient Module** | 환자 관리 | 환자 CRUD, 검색, 이력 조회 |
-| **Room Module** | 병실 관리 | 병실 현황, 배치도, 빈 병상 |
-| **Admission Module** | 입퇴원 관리 | 입원, 전실, 퇴원 처리 |
-| **Report Module** | 보고서/일지 | 간호일지, 치료보고서, 바이탈 |
-| **Rounding Module** | 라운딩 관리 | 회진 기록, 모바일 입력 |
-| **Integration Module** | 외부 연동 | 기존 시스템 동기화 |
-| **Admin Module** | 관리 기능 | 사용자, 권한, 설정, 로그 |
+| 모듈                   | 책임        | 주요 기능                    |
+| ---------------------- | ----------- | ---------------------------- |
+| **Auth Module**        | 인증/인가   | 로그인, 세션 관리, 권한 검증 |
+| **Patient Module**     | 환자 관리   | 환자 CRUD, 검색, 이력 조회   |
+| **Room Module**        | 병실 관리   | 병실 현황, 배치도, 빈 병상   |
+| **Admission Module**   | 입퇴원 관리 | 입원, 전실, 퇴원 처리        |
+| **Report Module**      | 보고서/일지 | 간호일지, 치료보고서, 바이탈 |
+| **Rounding Module**    | 라운딩 관리 | 회진 기록, 모바일 입력       |
+| **Integration Module** | 외부 연동   | 기존 시스템 동기화           |
+| **Admin Module**       | 관리 기능   | 사용자, 권한, 설정, 로그     |
 
 ---
 
@@ -205,7 +205,7 @@ services:
   app:
     build: ./apps/backend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://user:pass@db:5432/hospital_erp
       - REDIS_URL=redis://cache:6379
@@ -216,7 +216,7 @@ services:
   frontend:
     build: ./apps/frontend
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - API_URL=http://app:3000
 
@@ -362,36 +362,20 @@ volumes:
 ```typescript
 // 역할 및 권한 정의
 enum Role {
-  ADMIN = 'ADMIN',           // 시스템 관리자
-  DOCTOR = 'DOCTOR',         // 의사
+  ADMIN = 'ADMIN', // 시스템 관리자
+  DOCTOR = 'DOCTOR', // 의사
   HEAD_NURSE = 'HEAD_NURSE', // 수간호사
-  NURSE = 'NURSE',           // 간호사
-  CLERK = 'CLERK',           // 원무과
+  NURSE = 'NURSE', // 간호사
+  CLERK = 'CLERK', // 원무과
 }
 
 // 권한 매핑
 const permissions = {
-  [Role.ADMIN]: ['*'],  // 전체 권한
-  [Role.DOCTOR]: [
-    'patient:read', 'patient:update',
-    'report:read', 'report:write',
-    'rounding:*',
-  ],
-  [Role.HEAD_NURSE]: [
-    'patient:read', 'patient:update',
-    'room:read', 'room:update',
-    'report:*',
-  ],
-  [Role.NURSE]: [
-    'patient:read',
-    'vital:write',
-    'report:read', 'report:write:own',
-  ],
-  [Role.CLERK]: [
-    'patient:read', 'patient:create',
-    'admission:*',
-    'room:read',
-  ],
+  [Role.ADMIN]: ['*'], // 전체 권한
+  [Role.DOCTOR]: ['patient:read', 'patient:update', 'report:read', 'report:write', 'rounding:*'],
+  [Role.HEAD_NURSE]: ['patient:read', 'patient:update', 'room:read', 'room:update', 'report:*'],
+  [Role.NURSE]: ['patient:read', 'vital:write', 'report:read', 'report:write:own'],
+  [Role.CLERK]: ['patient:read', 'patient:create', 'admission:*', 'room:read'],
 };
 ```
 
@@ -437,12 +421,12 @@ const permissions = {
 
 ### 6.2 동기화 전략
 
-| 데이터 유형 | 동기화 방식 | 주기 | 비고 |
-|------------|------------|------|------|
-| 환자 기본정보 | Pull (조회 시) | 실시간 | 캐시 5분 |
-| 진료 내역 | Pull (조회 시) | 실시간 | 읽기 전용 |
-| 입원 상태 | Bidirectional | 이벤트 기반 | 트랜잭션 처리 |
-| 처방 정보 | Pull | 5분 배치 | 읽기 전용 |
+| 데이터 유형   | 동기화 방식    | 주기        | 비고          |
+| ------------- | -------------- | ----------- | ------------- |
+| 환자 기본정보 | Pull (조회 시) | 실시간      | 캐시 5분      |
+| 진료 내역     | Pull (조회 시) | 실시간      | 읽기 전용     |
+| 입원 상태     | Bidirectional  | 이벤트 기반 | 트랜잭션 처리 |
+| 처방 정보     | Pull           | 5분 배치    | 읽기 전용     |
 
 ---
 
@@ -477,12 +461,12 @@ const permissions = {
 
 ### 7.2 가용성 설계
 
-| 구성요소 | 가용성 전략 | 목표 RTO | 목표 RPO |
-|----------|------------|----------|----------|
-| Application | Multi-AZ 배포 | 1분 | 0 |
-| Database | RDS Multi-AZ | 5분 | 1분 |
-| Cache | Redis Cluster | 1분 | 5분 |
-| Storage | S3 Cross-Region | 1시간 | 0 |
+| 구성요소    | 가용성 전략     | 목표 RTO | 목표 RPO |
+| ----------- | --------------- | -------- | -------- |
+| Application | Multi-AZ 배포   | 1분      | 0        |
+| Database    | RDS Multi-AZ    | 5분      | 1분      |
+| Cache       | Redis Cluster   | 1분      | 5분      |
+| Storage     | S3 Cross-Region | 1시간    | 0        |
 
 ---
 
@@ -520,14 +504,14 @@ const permissions = {
 
 ### 8.2 핵심 메트릭
 
-| 메트릭 | 임계값 | 알림 |
-|--------|--------|------|
-| API 응답 시간 (P95) | > 1초 | Warning |
-| API 에러율 | > 1% | Critical |
-| CPU 사용률 | > 80% | Warning |
-| 메모리 사용률 | > 85% | Warning |
-| DB 연결 풀 | > 80% | Warning |
-| 동시 사용자 | > 100 | Info |
+| 메트릭              | 임계값 | 알림     |
+| ------------------- | ------ | -------- |
+| API 응답 시간 (P95) | > 1초  | Warning  |
+| API 에러율          | > 1%   | Critical |
+| CPU 사용률          | > 80%  | Warning  |
+| 메모리 사용률       | > 85%  | Warning  |
+| DB 연결 풀          | > 80%  | Warning  |
+| 동시 사용자         | > 100  | Info     |
 
 ---
 
@@ -540,6 +524,7 @@ const permissions = {
 **결정**: 모듈러 모놀리식 아키텍처 채택
 
 **근거**:
+
 1. 초기 규모 (100명 이하 동시 사용자)에 마이크로서비스는 과도함
 2. 개발/운영 복잡도 최소화
 3. 향후 필요시 모듈 단위 분리 가능
@@ -551,6 +536,7 @@ const permissions = {
 **결정**: PostgreSQL 16 채택
 
 **근거**:
+
 1. 의료 데이터의 ACID 보장 필수
 2. JSONB로 유연한 스키마 확장
 3. Row-Level Security로 환자별 접근 제어

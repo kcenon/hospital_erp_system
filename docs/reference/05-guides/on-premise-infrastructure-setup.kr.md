@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2026-01-12 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2026-01-12       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -15,14 +15,14 @@
 
 ### 1.1 온프레미스 선택 시 고려사항
 
-| 고려사항 | 온프레미스 장점 |
-|----------|----------------|
-| **데이터 주권** | 환자 데이터 위치에 대한 완전한 통제 |
-| **네트워크 지연** | 실시간 모니터링을 위한 초저지연 |
-| **규정 준수** | 국내 의료 데이터 규정 충족 용이 |
-| **기존 인프라 활용** | 현재 병원 IT 투자 활용 |
-| **장기 비용** | 5년 이상 운영 시 잠재적으로 낮은 TCO |
-| **폐쇄망 지원** | 격리된 의료 네트워크 지원 |
+| 고려사항             | 온프레미스 장점                      |
+| -------------------- | ------------------------------------ |
+| **데이터 주권**      | 환자 데이터 위치에 대한 완전한 통제  |
+| **네트워크 지연**    | 실시간 모니터링을 위한 초저지연      |
+| **규정 준수**        | 국내 의료 데이터 규정 충족 용이      |
+| **기존 인프라 활용** | 현재 병원 IT 투자 활용               |
+| **장기 비용**        | 5년 이상 운영 시 잠재적으로 낮은 TCO |
+| **폐쇄망 지원**      | 격리된 의료 네트워크 지원            |
 
 ### 1.2 온프레미스 vs 클라우드 비교
 
@@ -47,10 +47,10 @@
 
 ### 1.3 아키텍처 옵션
 
-| 규모 | 권장 구성 | 적용 대상 |
-|------|----------|----------|
-| **소규모** (50병상 미만) | 단일 서버 + Docker Compose | 의원, 소규모 병원 |
-| **중규모** (50-200병상) | 3노드 K3s 클러스터 | 종합병원 |
+| 규모                      | 권장 구성                         | 적용 대상          |
+| ------------------------- | --------------------------------- | ------------------ |
+| **소규모** (50병상 미만)  | 단일 서버 + Docker Compose        | 의원, 소규모 병원  |
+| **중규모** (50-200병상)   | 3노드 K3s 클러스터                | 종합병원           |
 | **대규모** (200병상 이상) | 전체 Kubernetes 클러스터 (5+노드) | 대학병원, 의료센터 |
 
 ---
@@ -61,14 +61,14 @@
 
 #### 단일 서버 구성
 
-| 구성요소 | 최소 | 권장 |
-|----------|------|------|
-| **CPU** | 8코어 (Intel Xeon 또는 AMD EPYC) | 16코어 |
-| **RAM** | 32 GB ECC | 64 GB ECC |
-| **스토리지 (OS)** | 256 GB NVMe SSD | 512 GB NVMe SSD |
-| **스토리지 (데이터)** | 1 TB NVMe SSD (RAID 1) | 2 TB NVMe SSD (RAID 10) |
-| **네트워크** | 1 Gbps 듀얼 NIC | 10 Gbps 듀얼 NIC |
-| **전원** | 이중화 PSU | 이중화 PSU + UPS |
+| 구성요소              | 최소                             | 권장                    |
+| --------------------- | -------------------------------- | ----------------------- |
+| **CPU**               | 8코어 (Intel Xeon 또는 AMD EPYC) | 16코어                  |
+| **RAM**               | 32 GB ECC                        | 64 GB ECC               |
+| **스토리지 (OS)**     | 256 GB NVMe SSD                  | 512 GB NVMe SSD         |
+| **스토리지 (데이터)** | 1 TB NVMe SSD (RAID 1)           | 2 TB NVMe SSD (RAID 10) |
+| **네트워크**          | 1 Gbps 듀얼 NIC                  | 10 Gbps 듀얼 NIC        |
+| **전원**              | 이중화 PSU                       | 이중화 PSU + UPS        |
 
 ### 2.2 중규모 (K3s 클러스터)
 
@@ -112,24 +112,24 @@
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-| 노드 역할 | CPU | RAM | 스토리지 | 수량 |
-|-----------|-----|-----|---------|------|
-| K3s Master/Worker | 8코어 | 32 GB | 500 GB NVMe | 3 |
-| 데이터베이스 서버 | 8코어 | 64 GB | 2 TB NVMe (RAID 10) | 2 |
-| 로드 밸런서 | 4코어 | 8 GB | 100 GB SSD | 2 |
-| NFS 스토리지 | 4코어 | 16 GB | 4 TB (RAID 6) | 1 |
+| 노드 역할         | CPU   | RAM   | 스토리지            | 수량 |
+| ----------------- | ----- | ----- | ------------------- | ---- |
+| K3s Master/Worker | 8코어 | 32 GB | 500 GB NVMe         | 3    |
+| 데이터베이스 서버 | 8코어 | 64 GB | 2 TB NVMe (RAID 10) | 2    |
+| 로드 밸런서       | 4코어 | 8 GB  | 100 GB SSD          | 2    |
+| NFS 스토리지      | 4코어 | 16 GB | 4 TB (RAID 6)       | 1    |
 
 ### 2.3 대규모 (전체 Kubernetes)
 
-| 노드 역할 | CPU | RAM | 스토리지 | 수량 |
-|-----------|-----|-----|---------|------|
-| K8s 컨트롤 플레인 | 4코어 | 16 GB | 200 GB NVMe | 3 |
-| K8s 워커 노드 | 16코어 | 64 GB | 500 GB NVMe | 5+ |
-| 데이터베이스 클러스터 | 16코어 | 128 GB | 4 TB NVMe (RAID 10) | 3 |
-| Redis 클러스터 | 8코어 | 32 GB | 500 GB NVMe | 3 |
-| 로드 밸런서 | 4코어 | 8 GB | 100 GB SSD | 2 |
-| 스토리지 (Ceph) | 8코어 | 32 GB | 8 TB (각각) | 3 |
-| 모니터링 | 8코어 | 32 GB | 1 TB SSD | 1 |
+| 노드 역할             | CPU    | RAM    | 스토리지            | 수량 |
+| --------------------- | ------ | ------ | ------------------- | ---- |
+| K8s 컨트롤 플레인     | 4코어  | 16 GB  | 200 GB NVMe         | 3    |
+| K8s 워커 노드         | 16코어 | 64 GB  | 500 GB NVMe         | 5+   |
+| 데이터베이스 클러스터 | 16코어 | 128 GB | 4 TB NVMe (RAID 10) | 3    |
+| Redis 클러스터        | 8코어  | 32 GB  | 500 GB NVMe         | 3    |
+| 로드 밸런서           | 4코어  | 8 GB   | 100 GB SSD          | 2    |
+| 스토리지 (Ceph)       | 8코어  | 32 GB  | 8 TB (각각)         | 3    |
+| 모니터링              | 8코어  | 32 GB  | 1 TB SSD            | 1    |
 
 ---
 
@@ -259,8 +259,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -317,7 +317,7 @@ services:
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hospital -d hospital_erp"]
+      test: ['CMD-SHELL', 'pg_isready -U hospital -d hospital_erp']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -332,7 +332,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -365,7 +365,7 @@ networks:
     driver: bridge
   backend-network:
     driver: bridge
-    internal: true  # 외부 접근 불가
+    internal: true # 외부 접근 불가
 ```
 
 ### 4.3 Kubernetes 매니페스트
@@ -388,9 +388,9 @@ metadata:
   name: app-config
   namespace: hospital-erp
 data:
-  NODE_ENV: "production"
-  API_PORT: "3000"
-  LOG_LEVEL: "info"
+  NODE_ENV: 'production'
+  API_PORT: '3000'
+  LOG_LEVEL: 'info'
 ```
 
 #### Secrets (프로덕션에서는 외부 시크릿 관리자 사용)
@@ -404,10 +404,10 @@ metadata:
   namespace: hospital-erp
 type: Opaque
 stringData:
-  DATABASE_URL: "postgresql://hospital:password@postgres-primary:5432/hospital_erp"
-  REDIS_URL: "redis://:password@redis:6379"
-  JWT_ACCESS_SECRET: "your-access-secret"
-  JWT_REFRESH_SECRET: "your-refresh-secret"
+  DATABASE_URL: 'postgresql://hospital:password@postgres-primary:5432/hospital_erp'
+  REDIS_URL: 'redis://:password@redis:6379'
+  JWT_ACCESS_SECRET: 'your-access-secret'
+  JWT_REFRESH_SECRET: 'your-refresh-secret'
 ```
 
 #### 백엔드 Deployment
@@ -441,11 +441,11 @@ spec:
                 name: app-secrets
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: '512Mi'
+              cpu: '250m'
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: '1Gi'
+              cpu: '1000m'
           livenessProbe:
             httpGet:
               path: /health
@@ -492,9 +492,9 @@ metadata:
   name: hospital-erp-ingress
   namespace: hospital-erp
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   ingressClassName: nginx
   tls:
@@ -951,7 +951,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
     ports:
-      - "9090:9090"
+      - '9090:9090'
     restart: always
 
   grafana:
@@ -963,7 +963,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     ports:
-      - "3000:3000"
+      - '3000:3000'
     restart: always
 
   alertmanager:
@@ -971,7 +971,7 @@ services:
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     ports:
-      - "9093:9093"
+      - '9093:9093'
     restart: always
 
   node-exporter:
@@ -985,7 +985,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--path.rootfs=/rootfs'
     ports:
-      - "9100:9100"
+      - '9100:9100'
     restart: always
 
   postgres-exporter:
@@ -993,7 +993,7 @@ services:
     environment:
       - DATA_SOURCE_NAME=postgresql://hospital:${DB_PASSWORD}@postgres:5432/hospital_erp?sslmode=disable
     ports:
-      - "9187:9187"
+      - '9187:9187'
     restart: always
 
   redis-exporter:
@@ -1002,7 +1002,7 @@ services:
       - REDIS_ADDR=redis://redis:6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
-      - "9121:9121"
+      - '9121:9121'
     restart: always
 
 volumes:
@@ -1066,7 +1066,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "{{ $labels.instance }}에서 높은 CPU 사용률"
+          summary: '{{ $labels.instance }}에서 높은 CPU 사용률'
 
       - alert: HighMemoryUsage
         expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
@@ -1074,7 +1074,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "{{ $labels.instance }}에서 높은 메모리 사용률"
+          summary: '{{ $labels.instance }}에서 높은 메모리 사용률'
 
       - alert: PostgreSQLDown
         expr: pg_up == 0
@@ -1082,7 +1082,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "PostgreSQL 다운"
+          summary: 'PostgreSQL 다운'
 
       - alert: PostgreSQLReplicationLag
         expr: pg_replication_lag > 30
@@ -1090,7 +1090,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "PostgreSQL 복제 지연 {{ $value }}초"
+          summary: 'PostgreSQL 복제 지연 {{ $value }}초'
 
       - alert: RedisDown
         expr: redis_up == 0
@@ -1098,7 +1098,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Redis 다운"
+          summary: 'Redis 다운'
 
       - alert: HighAPILatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
@@ -1106,7 +1106,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "API 지연 P95가 {{ $value }}초"
+          summary: 'API 지연 P95가 {{ $value }}초'
 ```
 
 ---
@@ -1399,41 +1399,41 @@ cat hospital-erp.crt hospital-erp.key > hospital-erp.pem
 
 ### 12.1 하드웨어 비용 (일회성)
 
-| 항목 | 사양 | 수량 | 단가 (USD) | 합계 |
-|------|------|------|------------|------|
-| **소규모** | | | | |
-| 서버 | Dell PowerEdge R650 (16코어, 64GB, 2TB) | 1 | $8,000 | $8,000 |
-| UPS | APC 3000VA | 1 | $1,500 | $1,500 |
-| 네트워크 스위치 | 24포트 기가비트 | 1 | $300 | $300 |
-| **소계** | | | | **$9,800** |
-| | | | | |
-| **중규모** | | | | |
-| K3s 노드 | Dell PowerEdge R650 (8코어, 32GB, 500GB) | 3 | $5,000 | $15,000 |
-| 데이터베이스 서버 | Dell PowerEdge R750 (8코어, 64GB, 2TB RAID) | 2 | $10,000 | $20,000 |
-| 로드 밸런서 | Dell PowerEdge R450 (4코어, 8GB) | 2 | $3,000 | $6,000 |
-| 스토리지 서버 | Synology RS3621xs+ (4TB x 12) | 1 | $8,000 | $8,000 |
-| 네트워크 스위치 | 10GbE 24포트 | 2 | $2,000 | $4,000 |
-| UPS | APC 5000VA | 2 | $3,000 | $6,000 |
-| **소계** | | | | **$59,000** |
+| 항목              | 사양                                        | 수량 | 단가 (USD) | 합계        |
+| ----------------- | ------------------------------------------- | ---- | ---------- | ----------- |
+| **소규모**        |                                             |      |            |             |
+| 서버              | Dell PowerEdge R650 (16코어, 64GB, 2TB)     | 1    | $8,000     | $8,000      |
+| UPS               | APC 3000VA                                  | 1    | $1,500     | $1,500      |
+| 네트워크 스위치   | 24포트 기가비트                             | 1    | $300       | $300        |
+| **소계**          |                                             |      |            | **$9,800**  |
+|                   |                                             |      |            |             |
+| **중규모**        |                                             |      |            |             |
+| K3s 노드          | Dell PowerEdge R650 (8코어, 32GB, 500GB)    | 3    | $5,000     | $15,000     |
+| 데이터베이스 서버 | Dell PowerEdge R750 (8코어, 64GB, 2TB RAID) | 2    | $10,000    | $20,000     |
+| 로드 밸런서       | Dell PowerEdge R450 (4코어, 8GB)            | 2    | $3,000     | $6,000      |
+| 스토리지 서버     | Synology RS3621xs+ (4TB x 12)               | 1    | $8,000     | $8,000      |
+| 네트워크 스위치   | 10GbE 24포트                                | 2    | $2,000     | $4,000      |
+| UPS               | APC 5000VA                                  | 2    | $3,000     | $6,000      |
+| **소계**          |                                             |      |            | **$59,000** |
 
 ### 12.2 운영 비용 (월간)
 
-| 항목 | 소규모 | 중규모 |
-|------|--------|--------|
-| 전기료 | ~$100 | ~$500 |
-| 인터넷 (전용선) | $200 | $500 |
-| IT 인력 (파트타임) | $1,000 | $3,000 |
-| 소프트웨어 라이선스 | $200 | $500 |
-| 백업 스토리지 | $100 | $300 |
-| **월간 합계** | **~$1,600** | **~$4,800** |
+| 항목                | 소규모      | 중규모      |
+| ------------------- | ----------- | ----------- |
+| 전기료              | ~$100       | ~$500       |
+| 인터넷 (전용선)     | $200        | $500        |
+| IT 인력 (파트타임)  | $1,000      | $3,000      |
+| 소프트웨어 라이선스 | $200        | $500        |
+| 백업 스토리지       | $100        | $300        |
+| **월간 합계**       | **~$1,600** | **~$4,800** |
 
 ### 12.3 5년 TCO 비교
 
-| 배포 모델 | 1년차 | 2-5년차 | 5년 합계 |
-|----------|-------|---------|----------|
-| **온프레미스 (소규모)** | $29,000 | $76,800 | **$105,800** |
+| 배포 모델               | 1년차    | 2-5년차  | 5년 합계     |
+| ----------------------- | -------- | -------- | ------------ |
+| **온프레미스 (소규모)** | $29,000  | $76,800  | **$105,800** |
 | **온프레미스 (중규모)** | $116,600 | $230,400 | **$347,000** |
-| **AWS 클라우드** | $4,224 | $16,896 | **$21,120** |
+| **AWS 클라우드**        | $4,224   | $16,896  | **$21,120**  |
 
 > **참고**: 온프레미스는 초기 비용이 높지만 규정 준수를 위해 필요할 수 있습니다. 클라우드 비용은 기본 사용량 기준이며 트래픽에 따라 증가합니다.
 
@@ -1552,4 +1552,4 @@ ORDER BY pg_total_relation_size(schemaname || '.' || tablename) DESC;
 
 ---
 
-*문서 끝*
+_문서 끝_

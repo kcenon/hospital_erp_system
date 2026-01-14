@@ -2,13 +2,13 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Owner | kcenon@naver.com |
-| API Version | v1 |
-| Base URL | `https://api.hospital-erp.com/v1` |
+| Item             | Content                           |
+| ---------------- | --------------------------------- |
+| Document Version | 0.1.0.0                           |
+| Created Date     | 2025-12-29                        |
+| Owner            | kcenon@naver.com                  |
+| API Version      | v1                                |
+| Base URL         | `https://api.hospital-erp.com/v1` |
 
 ---
 
@@ -16,13 +16,13 @@
 
 ### 1.1 Design Principles
 
-| Principle | Description |
-|-----------|-------------|
-| **RESTful** | Resource-centric design, HTTP method utilization |
-| **JSON** | Request/response body in JSON format |
-| **Versioning** | Version included in URL path (/v1/) |
-| **Consistency** | Unified naming conventions and response format |
-| **Documentation** | Auto-generated OpenAPI 3.0 (Swagger) |
+| Principle         | Description                                      |
+| ----------------- | ------------------------------------------------ |
+| **RESTful**       | Resource-centric design, HTTP method utilization |
+| **JSON**          | Request/response body in JSON format             |
+| **Versioning**    | Version included in URL path (/v1/)              |
+| **Consistency**   | Unified naming conventions and response format   |
+| **Documentation** | Auto-generated OpenAPI 3.0 (Swagger)             |
 
 ### 1.2 Common Headers
 
@@ -96,19 +96,19 @@ X-RateLimit-Reset: 1704067200
 
 ### 1.4 HTTP Status Codes
 
-| Code | Meaning | Usage |
-|------|---------|-------|
-| 200 | OK | Success (read, update) |
-| 201 | Created | Resource creation success |
-| 204 | No Content | Deletion success |
-| 400 | Bad Request | Invalid request |
-| 401 | Unauthorized | Authentication required |
-| 403 | Forbidden | Permission denied |
-| 404 | Not Found | Resource not found |
-| 409 | Conflict | Conflict (duplicate, etc.) |
-| 422 | Unprocessable | Validation failed |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Error | Server error |
+| Code | Meaning           | Usage                      |
+| ---- | ----------------- | -------------------------- |
+| 200  | OK                | Success (read, update)     |
+| 201  | Created           | Resource creation success  |
+| 204  | No Content        | Deletion success           |
+| 400  | Bad Request       | Invalid request            |
+| 401  | Unauthorized      | Authentication required    |
+| 403  | Forbidden         | Permission denied          |
+| 404  | Not Found         | Resource not found         |
+| 409  | Conflict          | Conflict (duplicate, etc.) |
+| 422  | Unprocessable     | Validation failed          |
+| 429  | Too Many Requests | Rate limit exceeded        |
+| 500  | Internal Error    | Server error               |
 
 ---
 
@@ -121,6 +121,7 @@ POST /auth/login
 ```
 
 **Request**
+
 ```json
 {
   "username": "nurse001",
@@ -129,6 +130,7 @@ POST /auth/login
 ```
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -155,6 +157,7 @@ POST /auth/refresh
 ```
 
 **Request**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
@@ -168,6 +171,7 @@ POST /auth/logout
 ```
 
 **Request**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
@@ -181,6 +185,7 @@ POST /auth/change-password
 ```
 
 **Request**
+
 ```json
 {
   "currentPassword": "OldP@ss123",
@@ -189,6 +194,7 @@ POST /auth/change-password
 ```
 
 **Password Requirements**
+
 - Minimum 8 characters
 - At least 1 uppercase letter
 - At least 1 lowercase letter
@@ -196,6 +202,7 @@ POST /auth/change-password
 - At least 1 special character
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -207,11 +214,11 @@ POST /auth/change-password
 
 **Error Responses**
 
-| HTTP | Code | Description |
-|------|------|-------------|
-| 401 | AUTH_INVALID_CREDENTIALS | Current password is incorrect |
-| 403 | AUTH_SAME_PASSWORD | New password must be different |
-| 422 | VALIDATION_FAILED | Password does not meet requirements |
+| HTTP | Code                     | Description                         |
+| ---- | ------------------------ | ----------------------------------- |
+| 401  | AUTH_INVALID_CREDENTIALS | Current password is incorrect       |
+| 403  | AUTH_SAME_PASSWORD       | New password must be different      |
+| 422  | VALIDATION_FAILED        | Password does not meet requirements |
 
 ---
 
@@ -225,17 +232,18 @@ GET /patients
 
 **Query Parameters**
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| page | integer | Page number | 1 |
-| limit | integer | Items per page | 20 |
-| search | string | Name/patient number search | - |
-| status | string | Status filter (ADMITTED, DISCHARGED) | - |
-| floorId | uuid | Floor filter | - |
-| sortBy | string | Sort field | name |
-| sortOrder | string | Sort direction (asc, desc) | asc |
+| Parameter | Type    | Description                          | Default |
+| --------- | ------- | ------------------------------------ | ------- |
+| page      | integer | Page number                          | 1       |
+| limit     | integer | Items per page                       | 20      |
+| search    | string  | Name/patient number search           | -       |
+| status    | string  | Status filter (ADMITTED, DISCHARGED) | -       |
+| floorId   | uuid    | Floor filter                         | -       |
+| sortBy    | string  | Sort field                           | name    |
+| sortOrder | string  | Sort direction (asc, desc)           | asc     |
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -276,6 +284,7 @@ GET /patients/{patientId}
 ```
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -334,6 +343,7 @@ POST /patients
 ```
 
 **Request**
+
 ```json
 {
   "patientNumber": "P2025001234",
@@ -356,6 +366,7 @@ PATCH /patients/{patientId}
 ```
 
 **Request**
+
 ```json
 {
   "phone": "010-1111-2222",
@@ -371,8 +382,8 @@ GET /patients/search/legacy
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter       | Type   | Description              |
+| --------------- | ------ | ------------------------ |
 | legacyPatientId | string | Legacy system patient ID |
 
 ---
@@ -387,14 +398,15 @@ GET /rooms
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| buildingId | uuid | Building filter |
-| floorId | uuid | Floor filter |
-| status | string | Status (AVAILABLE, FULL, MAINTENANCE) |
-| hasVacancy | boolean | Has vacant beds |
+| Parameter  | Type    | Description                           |
+| ---------- | ------- | ------------------------------------- |
+| buildingId | uuid    | Building filter                       |
+| floorId    | uuid    | Floor filter                          |
+| status     | string  | Status (AVAILABLE, FULL, MAINTENANCE) |
+| hasVacancy | boolean | Has vacant beds                       |
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -441,6 +453,7 @@ GET /rooms/dashboard/floor/{floorId}
 ```
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -479,10 +492,10 @@ GET /beds/available
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| floorId | uuid | Floor filter |
-| roomType | string | Room type (SINGLE, DOUBLE, MULTI) |
+| Parameter | Type   | Description                       |
+| --------- | ------ | --------------------------------- |
+| floorId   | uuid   | Floor filter                      |
+| roomType  | string | Room type (SINGLE, DOUBLE, MULTI) |
 
 ---
 
@@ -495,6 +508,7 @@ POST /admissions
 ```
 
 **Request**
+
 ```json
 {
   "patientId": "patient-uuid",
@@ -511,6 +525,7 @@ POST /admissions
 ```
 
 **Response (201 Created)**
+
 ```json
 {
   "success": true,
@@ -539,14 +554,14 @@ GET /admissions
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| status | string | ACTIVE, DISCHARGED |
-| floorId | uuid | Floor filter |
-| doctorId | uuid | Attending doctor filter |
-| nurseId | uuid | Primary nurse filter |
-| fromDate | date | Admission date start |
-| toDate | date | Admission date end |
+| Parameter | Type   | Description             |
+| --------- | ------ | ----------------------- |
+| status    | string | ACTIVE, DISCHARGED      |
+| floorId   | uuid   | Floor filter            |
+| doctorId  | uuid   | Attending doctor filter |
+| nurseId   | uuid   | Primary nurse filter    |
+| fromDate  | date   | Admission date start    |
+| toDate    | date   | Admission date end      |
 
 ### 5.4 Process Transfer
 
@@ -555,6 +570,7 @@ POST /admissions/{admissionId}/transfer
 ```
 
 **Request**
+
 ```json
 {
   "toBedId": "new-bed-uuid",
@@ -571,6 +587,7 @@ POST /admissions/{admissionId}/discharge
 ```
 
 **Request**
+
 ```json
 {
   "dischargeDate": "2025-12-29",
@@ -588,6 +605,7 @@ GET /admissions/by-number/{admissionNumber}
 ```
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -619,9 +637,9 @@ GET /admissions/floor/{floorId}
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| status | string | Filter by admission status |
+| Parameter | Type   | Description                |
+| --------- | ------ | -------------------------- |
+| status    | string | Filter by admission status |
 
 ### 5.9 Get Transfer History
 
@@ -630,6 +648,7 @@ GET /admissions/{admissionId}/transfers
 ```
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -660,6 +679,7 @@ POST /admissions/{admissionId}/vitals
 ```
 
 **Request**
+
 ```json
 {
   "measuredAt": "2025-12-29T08:00:00Z",
@@ -684,13 +704,14 @@ GET /admissions/{admissionId}/vitals
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| fromDate | datetime | Start datetime |
-| toDate | datetime | End datetime |
-| limit | integer | Recent N records |
+| Parameter | Type     | Description      |
+| --------- | -------- | ---------------- |
+| fromDate  | datetime | Start datetime   |
+| toDate    | datetime | End datetime     |
+| limit     | integer  | Recent N records |
 
 **Response (200 OK)**
+
 ```json
 {
   "success": true,
@@ -720,6 +741,7 @@ POST /admissions/{admissionId}/daily-reports
 ```
 
 **Request**
+
 ```json
 {
   "reportDate": "2025-12-29",
@@ -749,6 +771,7 @@ POST /admissions/{admissionId}/intake-outputs
 ```
 
 **Request**
+
 ```json
 {
   "recordDate": "2025-12-29",
@@ -767,6 +790,7 @@ POST /admissions/{admissionId}/medications
 ```
 
 **Request**
+
 ```json
 {
   "medicationName": "Ceftriaxone",
@@ -788,6 +812,7 @@ POST /admissions/{admissionId}/nursing-notes
 ```
 
 **Request**
+
 ```json
 {
   "noteDatetime": "2025-12-29T10:30:00Z",
@@ -811,6 +836,7 @@ POST /rounds
 ```
 
 **Request**
+
 ```json
 {
   "roundDate": "2025-12-29",
@@ -828,11 +854,11 @@ GET /rounds
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| roundDate | date | Rounding date |
-| floorId | uuid | Floor filter |
-| status | string | PLANNED, IN_PROGRESS, COMPLETED |
+| Parameter | Type   | Description                     |
+| --------- | ------ | ------------------------------- |
+| roundDate | date   | Rounding date                   |
+| floorId   | uuid   | Floor filter                    |
+| status    | string | PLANNED, IN_PROGRESS, COMPLETED |
 
 ### 7.3 Start Rounding
 
@@ -847,6 +873,7 @@ POST /rounds/{roundId}/records
 ```
 
 **Request**
+
 ```json
 {
   "admissionId": "admission-uuid",
@@ -882,6 +909,7 @@ POST /admin/users
 ```
 
 **Request**
+
 ```json
 {
   "employeeId": "EMP2025001",
@@ -924,13 +952,13 @@ GET /admin/audit/access-logs
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| userId | uuid | User filter |
-| resourceType | string | Resource type |
-| action | string | Action |
-| fromDate | datetime | Start datetime |
-| toDate | datetime | End datetime |
+| Parameter    | Type     | Description    |
+| ------------ | -------- | -------------- |
+| userId       | uuid     | User filter    |
+| resourceType | string   | Resource type  |
+| action       | string   | Action         |
+| fromDate     | datetime | Start datetime |
+| toDate       | datetime | End datetime   |
 
 ---
 
@@ -942,21 +970,21 @@ GET /admin/audit/access-logs
 // Client connection
 const socket = io('wss://api.hospital-erp.com', {
   auth: {
-    token: 'Bearer <access_token>'
-  }
+    token: 'Bearer <access_token>',
+  },
 });
 ```
 
 ### 9.2 Events
 
-| Event | Direction | Description |
-|-------|-----------|-------------|
-| `room:status` | Server → Client | Room status change |
-| `admission:created` | Server → Client | New admission |
-| `admission:discharged` | Server → Client | Discharge processed |
-| `vital:recorded` | Server → Client | Vital signs recorded |
-| `round:started` | Server → Client | Rounding started |
-| `subscribe:floor` | Client → Server | Subscribe to floor |
+| Event                  | Direction       | Description          |
+| ---------------------- | --------------- | -------------------- |
+| `room:status`          | Server → Client | Room status change   |
+| `admission:created`    | Server → Client | New admission        |
+| `admission:discharged` | Server → Client | Discharge processed  |
+| `vital:recorded`       | Server → Client | Vital signs recorded |
+| `round:started`        | Server → Client | Rounding started     |
+| `subscribe:floor`      | Client → Server | Subscribe to floor   |
 
 ### 9.3 Event Payload Examples
 
@@ -983,36 +1011,36 @@ const socket = io('wss://api.hospital-erp.com', {
 
 ### 10.1 Authentication Related
 
-| Code | Message | HTTP |
-|------|---------|------|
-| AUTH_INVALID_CREDENTIALS | Invalid username or password | 401 |
-| AUTH_TOKEN_EXPIRED | Token has expired | 401 |
-| AUTH_TOKEN_INVALID | Invalid token | 401 |
-| AUTH_INSUFFICIENT_PERMISSIONS | Insufficient permissions | 403 |
+| Code                          | Message                      | HTTP |
+| ----------------------------- | ---------------------------- | ---- |
+| AUTH_INVALID_CREDENTIALS      | Invalid username or password | 401  |
+| AUTH_TOKEN_EXPIRED            | Token has expired            | 401  |
+| AUTH_TOKEN_INVALID            | Invalid token                | 401  |
+| AUTH_INSUFFICIENT_PERMISSIONS | Insufficient permissions     | 403  |
 
 ### 10.2 Patient Related
 
-| Code | Message | HTTP |
-|------|---------|------|
-| PATIENT_NOT_FOUND | Patient not found | 404 |
-| PATIENT_ALREADY_EXISTS | Patient number already registered | 409 |
-| PATIENT_HAS_ACTIVE_ADMISSION | Patient is currently admitted | 409 |
+| Code                         | Message                           | HTTP |
+| ---------------------------- | --------------------------------- | ---- |
+| PATIENT_NOT_FOUND            | Patient not found                 | 404  |
+| PATIENT_ALREADY_EXISTS       | Patient number already registered | 409  |
+| PATIENT_HAS_ACTIVE_ADMISSION | Patient is currently admitted     | 409  |
 
 ### 10.3 Room Related
 
-| Code | Message | HTTP |
-|------|---------|------|
-| ROOM_NOT_FOUND | Room not found | 404 |
-| BED_NOT_AVAILABLE | Bed is not available | 409 |
-| BED_ALREADY_OCCUPIED | Bed is already occupied | 409 |
+| Code                 | Message                 | HTTP |
+| -------------------- | ----------------------- | ---- |
+| ROOM_NOT_FOUND       | Room not found          | 404  |
+| BED_NOT_AVAILABLE    | Bed is not available    | 409  |
+| BED_ALREADY_OCCUPIED | Bed is already occupied | 409  |
 
 ### 10.4 Admission Related
 
-| Code | Message | HTTP |
-|------|---------|------|
-| ADMISSION_NOT_FOUND | Admission record not found | 404 |
-| ADMISSION_ALREADY_DISCHARGED | Patient already discharged | 409 |
-| TRANSFER_SAME_BED | Cannot transfer to the same bed | 400 |
+| Code                         | Message                         | HTTP |
+| ---------------------------- | ------------------------------- | ---- |
+| ADMISSION_NOT_FOUND          | Admission record not found      | 404  |
+| ADMISSION_ALREADY_DISCHARGED | Patient already discharged      | 409  |
+| TRANSFER_SAME_BED            | Cannot transfer to the same bed | 400  |
 
 ---
 

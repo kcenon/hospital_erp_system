@@ -2,13 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { PrismaService } from '../../../prisma';
-import {
-  Permissions,
-  RoleCodes,
-  hasScope,
-  getScope,
-  getBasePermission,
-} from '../constants';
+import { Permissions, getBasePermission } from '../constants';
 
 /**
  * RbacService for Role-Based Access Control
@@ -54,10 +48,7 @@ export class RbacService {
   /**
    * Check if user has any of the specified permissions
    */
-  async hasAnyPermission(
-    userId: string,
-    permissions: string[],
-  ): Promise<boolean> {
+  async hasAnyPermission(userId: string, permissions: string[]): Promise<boolean> {
     for (const permission of permissions) {
       if (await this.hasPermission(userId, permission)) {
         return true;
@@ -69,10 +60,7 @@ export class RbacService {
   /**
    * Check if user has all of the specified permissions
    */
-  async hasAllPermissions(
-    userId: string,
-    permissions: string[],
-  ): Promise<boolean> {
+  async hasAllPermissions(userId: string, permissions: string[]): Promise<boolean> {
     for (const permission of permissions) {
       if (!(await this.hasPermission(userId, permission))) {
         return false;
@@ -131,11 +119,7 @@ export class RbacService {
     const permissions = await this.fetchUserPermissions(userId);
 
     // Cache the result
-    await this.redis.setex(
-      cacheKey,
-      this.CACHE_TTL_SECONDS,
-      JSON.stringify(permissions),
-    );
+    await this.redis.setex(cacheKey, this.CACHE_TTL_SECONDS, JSON.stringify(permissions));
 
     return permissions;
   }
@@ -276,10 +260,7 @@ export class RbacService {
   /**
    * Check if user is the attending doctor for a patient
    */
-  private async checkPatientOwnership(
-    userId: string,
-    patientId: string,
-  ): Promise<boolean> {
+  private async checkPatientOwnership(userId: string, patientId: string): Promise<boolean> {
     const admission = await this.prisma.admission.findFirst({
       where: {
         patientId,
@@ -293,10 +274,7 @@ export class RbacService {
   /**
    * Check if user is the attending doctor for an admission
    */
-  private async checkAdmissionOwnership(
-    userId: string,
-    admissionId: string,
-  ): Promise<boolean> {
+  private async checkAdmissionOwnership(userId: string, admissionId: string): Promise<boolean> {
     const admission = await this.prisma.admission.findFirst({
       where: {
         id: admissionId,
@@ -309,10 +287,7 @@ export class RbacService {
   /**
    * Check if user (nurse) is assigned to patient
    */
-  private async checkPatientAssignment(
-    userId: string,
-    patientId: string,
-  ): Promise<boolean> {
+  private async checkPatientAssignment(userId: string, patientId: string): Promise<boolean> {
     const admission = await this.prisma.admission.findFirst({
       where: {
         patientId,
@@ -326,10 +301,7 @@ export class RbacService {
   /**
    * Check if user (nurse) is assigned to admission
    */
-  private async checkAdmissionAssignment(
-    userId: string,
-    admissionId: string,
-  ): Promise<boolean> {
+  private async checkAdmissionAssignment(userId: string, admissionId: string): Promise<boolean> {
     const admission = await this.prisma.admission.findFirst({
       where: {
         id: admissionId,

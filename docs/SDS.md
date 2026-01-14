@@ -1,26 +1,27 @@
 # Software Design Specification (SDS)
+
 # Inpatient Management ERP System
 
 ---
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Maintainer | kcenon@naver.com |
+| Item                | Content                             |
+| ------------------- | ----------------------------------- |
+| Document Version    | 1.0.0                               |
+| Created Date        | 2025-12-29                          |
+| Status              | Draft                               |
+| Maintainer          | kcenon@naver.com                    |
 | Standards Reference | IEEE 1016-2009 / IEEE Std 1016-1998 |
-| Product Name | Inpatient Management ERP System |
+| Product Name        | Inpatient Management ERP System     |
 
 ---
 
 ## Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0.0 | 2025-12-29 | - | Initial draft |
+| Version | Date       | Author | Changes       |
+| ------- | ---------- | ------ | ------------- |
+| 1.0.0   | 2025-12-29 | -      | Initial draft |
 
 ---
 
@@ -46,6 +47,7 @@
 This document provides a detailed description of the software design for the **Inpatient Management ERP System**. It presents the system architecture, module structure, data design, and interface design to implement the functional and non-functional requirements defined in the SRS (Software Requirements Specification).
 
 **Target Audience:**
+
 - **Development Team**: Implementation reference and guidelines
 - **Architects**: Design review and approval
 - **Quality Assurance Team**: Test planning based on design
@@ -93,29 +95,29 @@ SDS Scope
 
 ### 1.3 Definitions and Abbreviations
 
-| Term/Abbreviation | Definition |
-|-------------------|------------|
-| **SDS** | Software Design Specification |
-| **SRS** | Software Requirements Specification |
-| **PRD** | Product Requirements Document |
-| **DDD** | Domain-Driven Design |
-| **CQRS** | Command Query Responsibility Segregation |
-| **DTO** | Data Transfer Object |
-| **VO** | Value Object |
+| Term/Abbreviation | Definition                               |
+| ----------------- | ---------------------------------------- |
+| **SDS**           | Software Design Specification            |
+| **SRS**           | Software Requirements Specification      |
+| **PRD**           | Product Requirements Document            |
+| **DDD**           | Domain-Driven Design                     |
+| **CQRS**          | Command Query Responsibility Segregation |
+| **DTO**           | Data Transfer Object                     |
+| **VO**            | Value Object                             |
 
 > **Traceability Reference**: [SRS.md](SRS.md) Section 1.3, [Glossary.md](reference/04-appendix/glossary.md)
 
 ### 1.4 Reference Documents
 
-| Document ID | Document Name | Location | Relationship |
-|-------------|---------------|----------|--------------|
-| **DOC-SRS** | Software Requirements Specification | [SRS.md](SRS.md) | Requirements Source |
-| **DOC-PRD** | Product Requirements Document | [PRD.md](PRD.md) | Business Requirements |
-| **DOC-ARCH** | System Architecture | [system-architecture.md](reference/02-design/system-architecture.md) | Architecture Details |
-| **DOC-DB** | Database Design Document | [database-design.md](reference/02-design/database-design.md) | DB Schema |
-| **DOC-API** | API Specification | [API-specification.md](reference/02-design/api-specification.md) | API Definition |
-| **DOC-UI** | UI Design Document | [UI-design.md](reference/02-design/ui-design.md) | UI Design |
-| **DOC-SEC** | Security Requirements | [security-requirements.md](reference/03-security/security-requirements.md) | Security Policy |
+| Document ID  | Document Name                       | Location                                                                   | Relationship          |
+| ------------ | ----------------------------------- | -------------------------------------------------------------------------- | --------------------- |
+| **DOC-SRS**  | Software Requirements Specification | [SRS.md](SRS.md)                                                           | Requirements Source   |
+| **DOC-PRD**  | Product Requirements Document       | [PRD.md](PRD.md)                                                           | Business Requirements |
+| **DOC-ARCH** | System Architecture                 | [system-architecture.md](reference/02-design/system-architecture.md)       | Architecture Details  |
+| **DOC-DB**   | Database Design Document            | [database-design.md](reference/02-design/database-design.md)               | DB Schema             |
+| **DOC-API**  | API Specification                   | [API-specification.md](reference/02-design/api-specification.md)           | API Definition        |
+| **DOC-UI**   | UI Design Document                  | [UI-design.md](reference/02-design/ui-design.md)                           | UI Design             |
+| **DOC-SEC**  | Security Requirements               | [security-requirements.md](reference/03-security/security-requirements.md) | Security Policy       |
 
 ---
 
@@ -125,13 +127,13 @@ SDS Scope
 
 The system design has been established to achieve the following goals:
 
-| ID | Goal | Related Requirements | Design Approach |
-|----|------|---------------------|-----------------|
-| **DG-01** | Maintainability | REQ-NFR-050~054 | Modular Monolith, DDD Application |
-| **DG-02** | Scalability | REQ-NFR-070~072 | Horizontally Scalable Architecture |
-| **DG-03** | Security | REQ-NFR-010~033 | Layered Security, Encryption |
-| **DG-04** | Performance | REQ-NFR-001~006 | Caching, Async Processing |
-| **DG-05** | Reliability | REQ-NFR-040~043 | High Availability, Disaster Recovery |
+| ID        | Goal            | Related Requirements | Design Approach                      |
+| --------- | --------------- | -------------------- | ------------------------------------ |
+| **DG-01** | Maintainability | REQ-NFR-050~054      | Modular Monolith, DDD Application    |
+| **DG-02** | Scalability     | REQ-NFR-070~072      | Horizontally Scalable Architecture   |
+| **DG-03** | Security        | REQ-NFR-010~033      | Layered Security, Encryption         |
+| **DG-04** | Performance     | REQ-NFR-001~006      | Caching, Async Processing            |
+| **DG-05** | Reliability     | REQ-NFR-040~043      | High Availability, Disaster Recovery |
 
 > **Traceability Reference**: [SRS.md](SRS.md) Section 5
 
@@ -166,13 +168,13 @@ The system design has been established to achieve the following goals:
 
 ### 2.3 Architecture Decision Records (ADR)
 
-| ADR ID | Decision | Rationale | Affected Requirements |
-|--------|----------|-----------|----------------------|
-| **ADR-001** | Modular Monolith | Initial scale, operational complexity | REQ-NFR-050, 054 |
-| **ADR-002** | PostgreSQL 16 | ACID, medical data reliability | REQ-NFR-040~043 |
-| **ADR-003** | NestJS + Next.js | Type safety, SSR | REQ-NFR-060, 061 |
-| **ADR-004** | JWT + Redis | Session management, scalability | REQ-NFR-010~015 |
-| **ADR-005** | WebSocket | Real-time dashboard | REQ-FR-013 |
+| ADR ID      | Decision         | Rationale                             | Affected Requirements |
+| ----------- | ---------------- | ------------------------------------- | --------------------- |
+| **ADR-001** | Modular Monolith | Initial scale, operational complexity | REQ-NFR-050, 054      |
+| **ADR-002** | PostgreSQL 16    | ACID, medical data reliability        | REQ-NFR-040~043       |
+| **ADR-003** | NestJS + Next.js | Type safety, SSR                      | REQ-NFR-060, 061      |
+| **ADR-004** | JWT + Redis      | Session management, scalability       | REQ-NFR-010~015       |
+| **ADR-005** | WebSocket        | Real-time dashboard                   | REQ-FR-013            |
 
 > **Traceability Reference**: [system-architecture.md](reference/02-design/system-architecture.md) Appendix ADR
 
@@ -364,13 +366,13 @@ The system design has been established to achieve the following goals:
 
 #### 3.2.2 Infrastructure Specifications
 
-| Component | Specification | Related Requirements |
-|-----------|---------------|---------------------|
-| **App Server** | Fargate 2vCPU, 4GB RAM | REQ-NFR-001~003 |
-| **Database** | RDS db.r6g.large (Multi-AZ) | REQ-NFR-040~043 |
-| **Cache** | ElastiCache cache.r6g.large | REQ-NFR-005, 006 |
-| **Storage** | S3 Standard | REQ-NFR-040~043 |
-| **CDN** | CloudFront | REQ-NFR-001 |
+| Component      | Specification               | Related Requirements |
+| -------------- | --------------------------- | -------------------- |
+| **App Server** | Fargate 2vCPU, 4GB RAM      | REQ-NFR-001~003      |
+| **Database**   | RDS db.r6g.large (Multi-AZ) | REQ-NFR-040~043      |
+| **Cache**      | ElastiCache cache.r6g.large | REQ-NFR-005, 006     |
+| **Storage**    | S3 Standard                 | REQ-NFR-040~043      |
+| **CDN**        | CloudFront                  | REQ-NFR-001          |
 
 ### 3.3 Integration Architecture
 
@@ -412,11 +414,11 @@ The system design has been established to achieve the following goals:
 
 #### 3.3.2 Synchronization Strategy
 
-| Data Type | Sync Method | Frequency | Cache TTL | Related Requirements |
-|-----------|-------------|-----------|-----------|---------------------|
-| Patient Basic Info | Pull (on query) | Real-time | 5 min | REQ-FR-005 |
-| Medical History | Pull (on query) | Real-time | 5 min | REQ-FR-005 |
-| Admission Status | Event-driven | Event | - | REQ-FR-006 |
+| Data Type          | Sync Method     | Frequency | Cache TTL | Related Requirements |
+| ------------------ | --------------- | --------- | --------- | -------------------- |
+| Patient Basic Info | Pull (on query) | Real-time | 5 min     | REQ-FR-005           |
+| Medical History    | Pull (on query) | Real-time | 5 min     | REQ-FR-005           |
+| Admission Status   | Event-driven    | Event     | -         | REQ-FR-006           |
 
 > **Traceability Reference**: [system-architecture.md](reference/02-design/system-architecture.md) Section 6
 
@@ -428,11 +430,11 @@ The system design has been established to achieve the following goals:
 
 #### 4.1.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | User authentication, session management, permission verification |
-| **Related Requirements** | REQ-NFR-010~015, REQ-FR-060~064 |
-| **External Dependencies** | Redis (session), PostgreSQL (users) |
+| Item                      | Content                                                          |
+| ------------------------- | ---------------------------------------------------------------- |
+| **Responsibility**        | User authentication, session management, permission verification |
+| **Related Requirements**  | REQ-NFR-010~015, REQ-FR-060~064                                  |
+| **External Dependencies** | Redis (session), PostgreSQL (users)                              |
 
 #### 4.1.2 Component Structure
 
@@ -527,29 +529,20 @@ export class AuthModule {}
 
 #### 4.2.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | Patient CRUD, search, legacy system integration |
-| **Related Requirements** | REQ-FR-001~006 |
-| **External Dependencies** | Integration Module (legacy system) |
+| Item                      | Content                                         |
+| ------------------------- | ----------------------------------------------- |
+| **Responsibility**        | Patient CRUD, search, legacy system integration |
+| **Related Requirements**  | REQ-FR-001~006                                  |
+| **External Dependencies** | Integration Module (legacy system)              |
 
 #### 4.2.2 Component Structure
 
 ```typescript
 // Patient Module Structure
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Patient, PatientDetail]),
-    IntegrationModule,
-    CacheModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Patient, PatientDetail]), IntegrationModule, CacheModule],
   controllers: [PatientController],
-  providers: [
-    PatientService,
-    PatientRepository,
-    PatientSearchService,
-    LegacyPatientAdapter,
-  ],
+  providers: [PatientService, PatientRepository, PatientSearchService, LegacyPatientAdapter],
   exports: [PatientService],
 })
 export class PatientModule {}
@@ -565,7 +558,7 @@ export class Patient {
   id: string;
 
   @Column({ unique: true })
-  patientNumber: string;  // P2025001234
+  patientNumber: string; // P2025001234
 
   @Column()
   name: string;
@@ -583,12 +576,12 @@ export class Patient {
   phone?: string;
 
   @Column({ nullable: true })
-  legacyPatientId?: string;  // Legacy system ID (REQ-FR-005)
+  legacyPatientId?: string; // Legacy system ID (REQ-FR-005)
 
-  @OneToOne(() => PatientDetail, detail => detail.patient)
+  @OneToOne(() => PatientDetail, (detail) => detail.patient)
   detail: PatientDetail;
 
-  @OneToMany(() => Admission, admission => admission.patient)
+  @OneToMany(() => Admission, (admission) => admission.patient)
   admissions: Admission[];
 }
 
@@ -603,10 +596,10 @@ export class PatientDetail {
   patient: Patient;
 
   @Column({ type: 'bytea', nullable: true })
-  ssnEncrypted?: Buffer;  // Social Security Number (REQ-NFR-020)
+  ssnEncrypted?: Buffer; // Social Security Number (REQ-NFR-020)
 
   @Column({ type: 'bytea', nullable: true })
-  medicalHistoryEncrypted?: Buffer;  // Medical History (REQ-NFR-020)
+  medicalHistoryEncrypted?: Buffer; // Medical History (REQ-NFR-020)
 
   @Column({ type: 'text', nullable: true })
   allergies?: string;
@@ -619,27 +612,24 @@ export class PatientDetail {
 
 #### 4.3.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | Room status, bed management, real-time updates |
-| **Related Requirements** | REQ-FR-010~015 |
-| **External Dependencies** | WebSocket Gateway |
+| Item                      | Content                                        |
+| ------------------------- | ---------------------------------------------- |
+| **Responsibility**        | Room status, bed management, real-time updates |
+| **Related Requirements**  | REQ-FR-010~015                                 |
+| **External Dependencies** | WebSocket Gateway                              |
 
 #### 4.3.2 Component Structure
 
 ```typescript
 // Room Module Structure
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Building, Floor, Room, Bed]),
-    CacheModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Building, Floor, Room, Bed]), CacheModule],
   controllers: [RoomController],
   providers: [
     RoomService,
     BedService,
     RoomDashboardService,
-    RoomGateway,  // WebSocket (REQ-FR-013)
+    RoomGateway, // WebSocket (REQ-FR-013)
   ],
   exports: [RoomService, BedService],
 })
@@ -668,13 +658,11 @@ export class RoomGateway implements OnGatewayConnection {
   // Broadcast on bed status change
   async broadcastRoomUpdate(roomId: string, status: RoomStatus) {
     const room = await this.roomService.findById(roomId);
-    this.server
-      .to(`floor:${room.floorId}`)
-      .emit('room:status', {
-        roomId,
-        status,
-        updatedAt: new Date(),
-      });
+    this.server.to(`floor:${room.floorId}`).emit('room:status', {
+      roomId,
+      status,
+      updatedAt: new Date(),
+    });
   }
 }
 ```
@@ -685,11 +673,11 @@ export class RoomGateway implements OnGatewayConnection {
 
 #### 4.4.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | Admission, transfer, discharge processing |
-| **Related Requirements** | REQ-FR-020~025 |
-| **External Dependencies** | Patient, Room, Integration |
+| Item                      | Content                                   |
+| ------------------------- | ----------------------------------------- |
+| **Responsibility**        | Admission, transfer, discharge processing |
+| **Related Requirements**  | REQ-FR-020~025                            |
+| **External Dependencies** | Patient, Room, Integration                |
 
 #### 4.4.2 Domain Service Design
 
@@ -817,11 +805,11 @@ export class AdmissionEventHandler {
 
 #### 4.5.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | Vital signs, I/O, medications, nursing notes management |
-| **Related Requirements** | REQ-FR-030~045 |
-| **External Dependencies** | Admission Module |
+| Item                      | Content                                                 |
+| ------------------------- | ------------------------------------------------------- |
+| **Responsibility**        | Vital signs, I/O, medications, nursing notes management |
+| **Related Requirements**  | REQ-FR-030~045                                          |
+| **External Dependencies** | Admission Module                                        |
 
 #### 4.5.2 Value Object Design
 
@@ -829,13 +817,13 @@ export class AdmissionEventHandler {
 // VitalSigns Value Object (REQ-FR-030~035)
 export class VitalSigns {
   constructor(
-    public readonly temperature: number,      // Temperature (°C)
-    public readonly systolicBp: number,       // Systolic BP (mmHg)
-    public readonly diastolicBp: number,      // Diastolic BP (mmHg)
-    public readonly pulseRate: number,        // Pulse Rate (bpm)
-    public readonly respiratoryRate: number,  // Respiratory Rate (/min)
+    public readonly temperature: number, // Temperature (°C)
+    public readonly systolicBp: number, // Systolic BP (mmHg)
+    public readonly diastolicBp: number, // Diastolic BP (mmHg)
+    public readonly pulseRate: number, // Pulse Rate (bpm)
+    public readonly respiratoryRate: number, // Respiratory Rate (/min)
     public readonly oxygenSaturation: number, // Oxygen Saturation (%)
-    public readonly bloodGlucose?: number,    // Blood Glucose (mg/dL)
+    public readonly bloodGlucose?: number, // Blood Glucose (mg/dL)
   ) {
     this.validate();
   }
@@ -916,10 +904,14 @@ export class DailyReportAggregator {
   }
 
   private calculateIOBalance(ios: IntakeOutput[]): IOBalance {
-    const totalIntake = ios.reduce((sum, io) =>
-      sum + io.oralIntake + io.ivIntake + io.otherIntake, 0);
-    const totalOutput = ios.reduce((sum, io) =>
-      sum + io.urineOutput + io.stoolOutput + io.vomitOutput + io.drainageOutput, 0);
+    const totalIntake = ios.reduce(
+      (sum, io) => sum + io.oralIntake + io.ivIntake + io.otherIntake,
+      0,
+    );
+    const totalOutput = ios.reduce(
+      (sum, io) => sum + io.urineOutput + io.stoolOutput + io.vomitOutput + io.drainageOutput,
+      0,
+    );
 
     return {
       totalIntake,
@@ -936,11 +928,11 @@ export class DailyReportAggregator {
 
 #### 4.6.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | Rounding session management, record input |
-| **Related Requirements** | REQ-FR-050~054 |
-| **External Dependencies** | Admission, Report Module |
+| Item                      | Content                                   |
+| ------------------------- | ----------------------------------------- |
+| **Responsibility**        | Rounding session management, record input |
+| **Related Requirements**  | REQ-FR-050~054                            |
+| **External Dependencies** | Admission, Report Module                  |
 
 #### 4.6.2 Rounding Session State Machine
 
@@ -992,20 +984,22 @@ export class TabletRoundingService {
     const round = await this.roundRepo.findById(roundId);
     const admissions = await this.admissionService.findActiveByFloor(round.floorId);
 
-    return Promise.all(admissions.map(async (admission) => {
-      const latestVitals = await this.vitalService.findLatest(admission.id);
-      const previousRecords = await this.roundRepo.findPreviousRecords(admission.id);
+    return Promise.all(
+      admissions.map(async (admission) => {
+        const latestVitals = await this.vitalService.findLatest(admission.id);
+        const previousRecords = await this.roundRepo.findPreviousRecords(admission.id);
 
-      return {
-        admissionId: admission.id,
-        patient: admission.patient,
-        bed: admission.bed,
-        latestVitals,
-        diagnosis: admission.diagnosis,
-        admissionDays: this.calculateAdmissionDays(admission.admissionDate),
-        previousNotes: previousRecords[0]?.observation,
-      };
-    }));
+        return {
+          admissionId: admission.id,
+          patient: admission.patient,
+          bed: admission.bed,
+          latestVitals,
+          diagnosis: admission.diagnosis,
+          admissionDays: this.calculateAdmissionDays(admission.admissionDate),
+          previousNotes: previousRecords[0]?.observation,
+        };
+      }),
+    );
   }
 
   // Add rounding record (REQ-FR-051)
@@ -1038,11 +1032,11 @@ export class TabletRoundingService {
 
 #### 4.7.1 Module Overview
 
-| Item | Content |
-|------|---------|
-| **Responsibility** | User management, role/permission management, audit logs |
-| **Related Requirements** | REQ-FR-060~064, REQ-NFR-030~033 |
-| **External Dependencies** | Auth Module |
+| Item                      | Content                                                 |
+| ------------------------- | ------------------------------------------------------- |
+| **Responsibility**        | User management, role/permission management, audit logs |
+| **Related Requirements**  | REQ-FR-060~064, REQ-NFR-030~033                         |
+| **External Dependencies** | Auth Module                                             |
 
 #### 4.7.2 Audit Log Service
 
@@ -1166,37 +1160,37 @@ export class AuditService {
 
 ### 5.2 Schema-Table Mapping
 
-| Schema | Tables | Related Requirements |
-|--------|--------|---------------------|
-| **public** | users, roles, permissions, user_roles | REQ-FR-060~064 |
-| **patient** | patients, patient_details | REQ-FR-001~006 |
-| **room** | buildings, floors, rooms, beds | REQ-FR-010~015 |
-| **admission** | admissions, transfers, discharges | REQ-FR-020~025 |
-| **report** | vital_signs, intake_outputs, medications, nursing_notes, daily_reports | REQ-FR-030~045 |
-| **rounding** | rounds, round_records | REQ-FR-050~054 |
-| **audit** | access_logs, change_logs, login_history | REQ-NFR-030~033 |
+| Schema        | Tables                                                                 | Related Requirements |
+| ------------- | ---------------------------------------------------------------------- | -------------------- |
+| **public**    | users, roles, permissions, user_roles                                  | REQ-FR-060~064       |
+| **patient**   | patients, patient_details                                              | REQ-FR-001~006       |
+| **room**      | buildings, floors, rooms, beds                                         | REQ-FR-010~015       |
+| **admission** | admissions, transfers, discharges                                      | REQ-FR-020~025       |
+| **report**    | vital_signs, intake_outputs, medications, nursing_notes, daily_reports | REQ-FR-030~045       |
+| **rounding**  | rounds, round_records                                                  | REQ-FR-050~054       |
+| **audit**     | access_logs, change_logs, login_history                                | REQ-NFR-030~033      |
 
 ### 5.3 Encrypted Fields
 
-| Table | Field | Encryption Method | Related Requirements |
-|-------|-------|-------------------|---------------------|
-| patient_details | ssn_encrypted | AES-256-GCM (pgcrypto) | REQ-NFR-020 |
-| patient_details | medical_history | AES-256-GCM | REQ-NFR-020 |
-| patient_details | insurance_info | AES-256-GCM | REQ-NFR-020 |
-| users | password_hash | bcrypt (cost 12) | REQ-NFR-011 |
+| Table           | Field           | Encryption Method      | Related Requirements |
+| --------------- | --------------- | ---------------------- | -------------------- |
+| patient_details | ssn_encrypted   | AES-256-GCM (pgcrypto) | REQ-NFR-020          |
+| patient_details | medical_history | AES-256-GCM            | REQ-NFR-020          |
+| patient_details | insurance_info  | AES-256-GCM            | REQ-NFR-020          |
+| users           | password_hash   | bcrypt (cost 12)       | REQ-NFR-011          |
 
 > **Traceability Reference**: [security-requirements.md](reference/03-security/security-requirements.md) Section 4
 
 ### 5.4 Index Strategy
 
-| Table | Index | Purpose | Related Requirements |
-|-------|-------|---------|---------------------|
-| patients | (patient_number) | Patient number search | REQ-FR-001 |
-| patients | (name) | Name search | REQ-FR-001 |
-| admissions | (patient_id, status) | Active admission query | REQ-FR-002 |
-| beds | (room_id, status) | Empty bed search | REQ-FR-011 |
-| vital_signs | (admission_id, measured_at DESC) | Latest vitals | REQ-FR-031 |
-| access_logs | (created_at, user_id) | Audit log query | REQ-NFR-030 |
+| Table       | Index                            | Purpose                | Related Requirements |
+| ----------- | -------------------------------- | ---------------------- | -------------------- |
+| patients    | (patient_number)                 | Patient number search  | REQ-FR-001           |
+| patients    | (name)                           | Name search            | REQ-FR-001           |
+| admissions  | (patient_id, status)             | Active admission query | REQ-FR-002           |
+| beds        | (room_id, status)                | Empty bed search       | REQ-FR-011           |
+| vital_signs | (admission_id, measured_at DESC) | Latest vitals          | REQ-FR-031           |
+| access_logs | (created_at, user_id)            | Audit log query        | REQ-NFR-030          |
 
 ---
 
@@ -1206,75 +1200,75 @@ export class AuditService {
 
 #### 6.1.1 Screen-Requirements Mapping
 
-| Screen ID | Screen Name | Related Requirements | Users |
-|-----------|-------------|---------------------|-------|
-| SCR-01 | Login | REQ-NFR-010~015 | All |
-| SCR-02 | Dashboard | REQ-FR-010, 013 | All |
-| SCR-03 | Patient List | REQ-FR-001 | All |
-| SCR-04 | Patient Detail | REQ-FR-002, 031, 032 | All |
-| SCR-05 | Room Dashboard | REQ-FR-010~015 | All |
-| SCR-06 | Admission Registration | REQ-FR-020, 024 | Administrative Staff |
-| SCR-07 | Vital Signs Input | REQ-FR-030, 034, 035 | Nurses |
-| SCR-08 | Rounding | REQ-FR-050~054 | Physicians |
-| SCR-09 | Admin | REQ-FR-060~064 | Administrators |
+| Screen ID | Screen Name            | Related Requirements | Users                |
+| --------- | ---------------------- | -------------------- | -------------------- |
+| SCR-01    | Login                  | REQ-NFR-010~015      | All                  |
+| SCR-02    | Dashboard              | REQ-FR-010, 013      | All                  |
+| SCR-03    | Patient List           | REQ-FR-001           | All                  |
+| SCR-04    | Patient Detail         | REQ-FR-002, 031, 032 | All                  |
+| SCR-05    | Room Dashboard         | REQ-FR-010~015       | All                  |
+| SCR-06    | Admission Registration | REQ-FR-020, 024      | Administrative Staff |
+| SCR-07    | Vital Signs Input      | REQ-FR-030, 034, 035 | Nurses               |
+| SCR-08    | Rounding               | REQ-FR-050~054       | Physicians           |
+| SCR-09    | Admin                  | REQ-FR-060~064       | Administrators       |
 
 > **Traceability Reference**: [UI-design.md](reference/02-design/ui-design.md)
 
 #### 6.1.2 Responsive Design
 
-| Platform | Resolution | Optimized Screens | Related Requirements |
-|----------|------------|------------------|---------------------|
-| PC Web | 1024px+ | All screens | UI-01, REQ-NFR-061 |
-| Tablet | 768px+ | Rounding, Patient Detail | UI-02, REQ-NFR-061 |
-| Mobile PWA | 320px+ | Vital Signs Input, Query | UI-03, REQ-NFR-061, 062 |
+| Platform   | Resolution | Optimized Screens        | Related Requirements    |
+| ---------- | ---------- | ------------------------ | ----------------------- |
+| PC Web     | 1024px+    | All screens              | UI-01, REQ-NFR-061      |
+| Tablet     | 768px+     | Rounding, Patient Detail | UI-02, REQ-NFR-061      |
+| Mobile PWA | 320px+     | Vital Signs Input, Query | UI-03, REQ-NFR-061, 062 |
 
 ### 6.2 API Interface
 
 #### 6.2.1 API Endpoint Mapping
 
-| Endpoint | Method | Related Requirements | Auth | Permission |
-|----------|--------|---------------------|------|------------|
-| `/auth/login` | POST | REQ-NFR-010 | - | - |
-| `/auth/refresh` | POST | REQ-NFR-013 | JWT | - |
-| `/patients` | GET | REQ-FR-001 | JWT | patient:read |
-| `/patients/:id` | GET | REQ-FR-002 | JWT | patient:read |
-| `/patients` | POST | REQ-FR-003 | JWT | patient:create |
-| `/patients/:id` | PATCH | REQ-FR-004 | JWT | patient:update |
-| `/patients/search/legacy` | GET | REQ-FR-005 | JWT | patient:read |
-| `/rooms` | GET | REQ-FR-010 | JWT | room:read |
-| `/rooms/dashboard/floor/:id` | GET | REQ-FR-010 | JWT | room:read |
-| `/beds/available` | GET | REQ-FR-011 | JWT | room:read |
-| `/admissions` | POST | REQ-FR-020 | JWT | admission:create |
-| `/admissions/:id/transfer` | POST | REQ-FR-021 | JWT | admission:update |
-| `/admissions/:id/discharge` | POST | REQ-FR-022 | JWT | admission:update |
-| `/admissions/:id/vitals` | POST | REQ-FR-030 | JWT | vital:write |
-| `/admissions/:id/vitals` | GET | REQ-FR-031 | JWT | vital:read |
-| `/rounds` | POST | REQ-FR-050 | JWT | round:write |
-| `/rounds/:id/records` | POST | REQ-FR-051 | JWT | round:write |
-| `/admin/users` | GET/POST | REQ-FR-060 | JWT | admin:users |
-| `/admin/audit/access-logs` | GET | REQ-FR-062 | JWT | admin:audit |
+| Endpoint                     | Method   | Related Requirements | Auth | Permission       |
+| ---------------------------- | -------- | -------------------- | ---- | ---------------- |
+| `/auth/login`                | POST     | REQ-NFR-010          | -    | -                |
+| `/auth/refresh`              | POST     | REQ-NFR-013          | JWT  | -                |
+| `/patients`                  | GET      | REQ-FR-001           | JWT  | patient:read     |
+| `/patients/:id`              | GET      | REQ-FR-002           | JWT  | patient:read     |
+| `/patients`                  | POST     | REQ-FR-003           | JWT  | patient:create   |
+| `/patients/:id`              | PATCH    | REQ-FR-004           | JWT  | patient:update   |
+| `/patients/search/legacy`    | GET      | REQ-FR-005           | JWT  | patient:read     |
+| `/rooms`                     | GET      | REQ-FR-010           | JWT  | room:read        |
+| `/rooms/dashboard/floor/:id` | GET      | REQ-FR-010           | JWT  | room:read        |
+| `/beds/available`            | GET      | REQ-FR-011           | JWT  | room:read        |
+| `/admissions`                | POST     | REQ-FR-020           | JWT  | admission:create |
+| `/admissions/:id/transfer`   | POST     | REQ-FR-021           | JWT  | admission:update |
+| `/admissions/:id/discharge`  | POST     | REQ-FR-022           | JWT  | admission:update |
+| `/admissions/:id/vitals`     | POST     | REQ-FR-030           | JWT  | vital:write      |
+| `/admissions/:id/vitals`     | GET      | REQ-FR-031           | JWT  | vital:read       |
+| `/rounds`                    | POST     | REQ-FR-050           | JWT  | round:write      |
+| `/rounds/:id/records`        | POST     | REQ-FR-051           | JWT  | round:write      |
+| `/admin/users`               | GET/POST | REQ-FR-060           | JWT  | admin:users      |
+| `/admin/audit/access-logs`   | GET      | REQ-FR-062           | JWT  | admin:audit      |
 
 > **Traceability Reference**: [API-specification.md](reference/02-design/api-specification.md)
 
 #### 6.2.2 WebSocket Events
 
-| Event | Direction | Related Requirements | Description |
-|-------|-----------|---------------------|-------------|
-| `room:status` | S->C | REQ-FR-013 | Room status change |
-| `admission:created` | S->C | REQ-FR-025 | New admission notification |
-| `admission:discharged` | S->C | REQ-FR-025 | Discharge notification |
-| `vital:recorded` | S->C | REQ-FR-033 | Vital signs recorded (abnormal) |
-| `subscribe:floor` | C->S | REQ-FR-013 | Floor subscription |
+| Event                  | Direction | Related Requirements | Description                     |
+| ---------------------- | --------- | -------------------- | ------------------------------- |
+| `room:status`          | S->C      | REQ-FR-013           | Room status change              |
+| `admission:created`    | S->C      | REQ-FR-025           | New admission notification      |
+| `admission:discharged` | S->C      | REQ-FR-025           | Discharge notification          |
+| `vital:recorded`       | S->C      | REQ-FR-033           | Vital signs recorded (abnormal) |
+| `subscribe:floor`      | C->S      | REQ-FR-013           | Floor subscription              |
 
 ### 6.3 External System Interface
 
 #### 6.3.1 Legacy Medical Program Integration
 
-| Interface | Method | Data | Related Requirements |
-|-----------|--------|------|---------------------|
-| Patient Basic Info Query | JDBC/API | Name, DOB, Gender, etc. | REQ-FR-005 |
-| Medical Record Query | JDBC/API | Prescriptions, Test Results | REQ-FR-005 |
-| Patient Sync | Event-based | Patient Basic Info | REQ-FR-006 |
+| Interface                | Method      | Data                        | Related Requirements |
+| ------------------------ | ----------- | --------------------------- | -------------------- |
+| Patient Basic Info Query | JDBC/API    | Name, DOB, Gender, etc.     | REQ-FR-005           |
+| Medical Record Query     | JDBC/API    | Prescriptions, Test Results | REQ-FR-005           |
+| Patient Sync             | Event-based | Patient Basic Info          | REQ-FR-006           |
 
 ```typescript
 // Legacy Adapter Interface
@@ -1337,32 +1331,32 @@ interface LegacyPatientAdapter {
 
 #### 7.1.2 Password Policy
 
-| Policy Item | Setting | Related Requirements |
-|-------------|---------|---------------------|
-| Minimum Length | 8 characters | REQ-NFR-010 |
-| Uppercase Required | Yes | REQ-NFR-010 |
-| Lowercase Required | Yes | REQ-NFR-010 |
-| Number Required | Yes | REQ-NFR-010 |
-| Special Character Required | Yes | REQ-NFR-010 |
-| Hashing Algorithm | bcrypt (cost 12) | REQ-NFR-011 |
-| Login Failure Limit | 5 attempts/15 min lockout | REQ-NFR-015 |
+| Policy Item                | Setting                   | Related Requirements |
+| -------------------------- | ------------------------- | -------------------- |
+| Minimum Length             | 8 characters              | REQ-NFR-010          |
+| Uppercase Required         | Yes                       | REQ-NFR-010          |
+| Lowercase Required         | Yes                       | REQ-NFR-010          |
+| Number Required            | Yes                       | REQ-NFR-010          |
+| Special Character Required | Yes                       | REQ-NFR-010          |
+| Hashing Algorithm          | bcrypt (cost 12)          | REQ-NFR-011          |
+| Login Failure Limit        | 5 attempts/15 min lockout | REQ-NFR-015          |
 
 ### 7.2 Authorization Design
 
 #### 7.2.1 RBAC Permission Matrix
 
 | Resource | Permission | ADMIN | DOCTOR | HEAD_NURSE | NURSE | CLERK |
-|----------|------------|:-----:|:------:|:----------:|:-----:|:-----:|
-| patient | read | Y | Y | Y | Y* | Y |
-| patient | create | Y | N | N | N | Y |
-| patient | update | Y | Y* | Y | N | Y |
-| room | read | Y | Y | Y | Y | Y |
-| room | assign | Y | N | Y | N | Y |
-| vital | write | Y | Y | Y | Y | N |
-| report | write | Y | Y | Y | Y | N |
-| admin | * | Y | N | N | N | N |
+| -------- | ---------- | :---: | :----: | :--------: | :---: | :---: |
+| patient  | read       |   Y   |   Y    |     Y      |  Y\*  |   Y   |
+| patient  | create     |   Y   |   N    |     N      |   N   |   Y   |
+| patient  | update     |   Y   |  Y\*   |     Y      |   N   |   Y   |
+| room     | read       |   Y   |   Y    |     Y      |   Y   |   Y   |
+| room     | assign     |   Y   |   N    |     Y      |   N   |   Y   |
+| vital    | write      |   Y   |   Y    |     Y      |   Y   |   N   |
+| report   | write      |   Y   |   Y    |     Y      |   Y   |   N   |
+| admin    | \*         |   Y   |   N    |     N      |   N   |   N   |
 
-*Limited permission (assigned patients only, own records only)
+\*Limited permission (assigned patients only, own records only)
 
 > **Traceability**: REQ-NFR-023, [security-requirements.md](reference/03-security/security-requirements.md) Section 3
 
@@ -1415,12 +1409,12 @@ interface LegacyPatientAdapter {
 
 ### 7.4 Audit Logging Design
 
-| Log Type | Recorded Items | Retention Period | Related Requirements |
-|----------|---------------|------------------|---------------------|
-| Login/Logout | User, time, IP, result | 2 years | REQ-NFR-030 |
-| Patient Info Access | User, patient ID, accessed fields | 2 years | REQ-NFR-031 |
-| Data Changes | Before/after values, modifier | Permanent | REQ-NFR-032 |
-| Permission Changes | Admin, target, change details | Permanent | REQ-NFR-033 |
+| Log Type            | Recorded Items                    | Retention Period | Related Requirements |
+| ------------------- | --------------------------------- | ---------------- | -------------------- |
+| Login/Logout        | User, time, IP, result            | 2 years          | REQ-NFR-030          |
+| Patient Info Access | User, patient ID, accessed fields | 2 years          | REQ-NFR-031          |
+| Data Changes        | Before/after values, modifier     | Permanent        | REQ-NFR-032          |
+| Permission Changes  | Admin, target, change details     | Permanent        | REQ-NFR-033          |
 
 > **Traceability Reference**: [security-requirements.md](reference/03-security/security-requirements.md) Section 5
 
@@ -1430,33 +1424,33 @@ interface LegacyPatientAdapter {
 
 ### 8.1 Technical Constraints
 
-| ID | Constraint | Impact | Design Response | Related Requirements |
-|----|------------|--------|-----------------|---------------------|
-| CON-01 | Legacy medical program DB structure dependency | Integration scope | Adapter Pattern | REQ-FR-005 |
-| CON-02 | Web browser-based | Compatibility | Chrome/Edge/Safari latest 2 versions | REQ-NFR-060 |
-| CON-03 | Cloud environment | Cost | Cost-optimized design | REQ-NFR-070 |
+| ID     | Constraint                                     | Impact            | Design Response                      | Related Requirements |
+| ------ | ---------------------------------------------- | ----------------- | ------------------------------------ | -------------------- |
+| CON-01 | Legacy medical program DB structure dependency | Integration scope | Adapter Pattern                      | REQ-FR-005           |
+| CON-02 | Web browser-based                              | Compatibility     | Chrome/Edge/Safari latest 2 versions | REQ-NFR-060          |
+| CON-03 | Cloud environment                              | Cost              | Cost-optimized design                | REQ-NFR-070          |
 
 > **Traceability Reference**: [SRS.md](SRS.md) Section 2.4
 
 ### 8.2 External Dependencies
 
-| ID | Dependency | Version | Purpose | Related Requirements |
-|----|------------|---------|---------|---------------------|
-| DEP-01 | PostgreSQL | 16.x | Primary database | REQ-NFR-040~043 |
-| DEP-02 | Redis | 7.x | Cache/Session | REQ-NFR-005, 013 |
-| DEP-03 | Node.js | 20.x LTS | Runtime | SW-01 |
-| DEP-04 | Next.js | 14.x | Frontend | SW-04 |
-| DEP-05 | NestJS | 10.x | Backend | SW-05 |
+| ID     | Dependency | Version  | Purpose          | Related Requirements |
+| ------ | ---------- | -------- | ---------------- | -------------------- |
+| DEP-01 | PostgreSQL | 16.x     | Primary database | REQ-NFR-040~043      |
+| DEP-02 | Redis      | 7.x      | Cache/Session    | REQ-NFR-005, 013     |
+| DEP-03 | Node.js    | 20.x LTS | Runtime          | SW-01                |
+| DEP-04 | Next.js    | 14.x     | Frontend         | SW-04                |
+| DEP-05 | NestJS     | 10.x     | Backend          | SW-05                |
 
 > **Traceability Reference**: [SRS.md](SRS.md) Section 3.3, [tech-stack.md](reference/01-overview/technology-stack.md)
 
 ### 8.3 Design Assumptions
 
-| ID | Assumption | Verification Point | Design Impact if Not Met |
-|----|------------|-------------------|-------------------------|
-| ASM-01 | Direct access to legacy DB | Phase 1 | Integration Module design change |
-| ASM-02 | Good hospital WiFi coverage | Phase 1 | Enhanced PWA offline features |
-| ASM-03 | Concurrent users under 100 | In operation | Horizontal scaling required |
+| ID     | Assumption                  | Verification Point | Design Impact if Not Met         |
+| ------ | --------------------------- | ------------------ | -------------------------------- |
+| ASM-01 | Direct access to legacy DB  | Phase 1            | Integration Module design change |
+| ASM-02 | Good hospital WiFi coverage | Phase 1            | Enhanced PWA offline features    |
+| ASM-03 | Concurrent users under 100  | In operation       | Horizontal scaling required      |
 
 ---
 
@@ -1464,62 +1458,62 @@ interface LegacyPatientAdapter {
 
 ### 9.1 Functional Requirements -> Design Elements Mapping
 
-| Requirement ID | Requirement Name | Module | Class/Component | DB Table | API Endpoint |
-|----------------|-----------------|--------|-----------------|----------|--------------|
-| REQ-FR-001 | Patient List Query | Patient | PatientService, PatientController | patients | GET /patients |
-| REQ-FR-002 | Patient Detail Query | Patient | PatientService | patients, patient_details | GET /patients/:id |
-| REQ-FR-003 | Patient Registration | Patient | PatientService | patients | POST /patients |
-| REQ-FR-004 | Patient Info Update | Patient | PatientService | patients | PATCH /patients/:id |
-| REQ-FR-005 | Legacy System Patient Query | Integration | LegacyPatientAdapter | - | GET /patients/search/legacy |
-| REQ-FR-006 | Patient Info Sync | Integration | PatientSyncService | patients | - |
-| REQ-FR-010 | Room Dashboard | Room | RoomDashboardService | rooms, beds | GET /rooms/dashboard/floor/:id |
-| REQ-FR-011 | Available Bed Query | Room | BedService | beds | GET /beds/available |
-| REQ-FR-012 | Bed Assignment | Admission | AdmissionDomainService | admissions, beds | POST /admissions |
-| REQ-FR-013 | Real-time Status Update | Room | RoomGateway (WebSocket) | - | WS room:status |
-| REQ-FR-020 | Admission Registration | Admission | AdmissionDomainService | admissions | POST /admissions |
-| REQ-FR-021 | Transfer Processing | Admission | AdmissionDomainService | transfers | POST /admissions/:id/transfer |
-| REQ-FR-022 | Discharge Processing | Admission | AdmissionDomainService | discharges | POST /admissions/:id/discharge |
-| REQ-FR-030 | Vital Signs Input | Report | VitalSignService | vital_signs | POST /admissions/:id/vitals |
-| REQ-FR-031 | Vital Signs Query | Report | VitalSignService | vital_signs | GET /admissions/:id/vitals |
-| REQ-FR-032 | Vital Signs Trend Graph | Report | VitalChartService | vital_signs | GET /admissions/:id/vitals/chart |
-| REQ-FR-033 | Abnormal Value Alert | Report | VitalAlertService | vital_signs | WS vital:recorded |
-| REQ-FR-040 | Daily Report Creation | Report | DailyReportService | daily_reports | POST /admissions/:id/daily-reports |
-| REQ-FR-050 | Rounding Session Creation | Rounding | RoundingService | rounds | POST /rounds |
-| REQ-FR-051 | Rounding Record Input | Rounding | TabletRoundingService | round_records | POST /rounds/:id/records |
-| REQ-FR-060 | User Account Management | Admin | UserService | users | /admin/users |
-| REQ-FR-061 | Role/Permission Management | Admin | RoleService | roles, permissions | /admin/roles |
-| REQ-FR-062 | Audit Log Query | Admin | AuditService | access_logs, change_logs | GET /admin/audit/access-logs |
+| Requirement ID | Requirement Name            | Module      | Class/Component                   | DB Table                  | API Endpoint                       |
+| -------------- | --------------------------- | ----------- | --------------------------------- | ------------------------- | ---------------------------------- |
+| REQ-FR-001     | Patient List Query          | Patient     | PatientService, PatientController | patients                  | GET /patients                      |
+| REQ-FR-002     | Patient Detail Query        | Patient     | PatientService                    | patients, patient_details | GET /patients/:id                  |
+| REQ-FR-003     | Patient Registration        | Patient     | PatientService                    | patients                  | POST /patients                     |
+| REQ-FR-004     | Patient Info Update         | Patient     | PatientService                    | patients                  | PATCH /patients/:id                |
+| REQ-FR-005     | Legacy System Patient Query | Integration | LegacyPatientAdapter              | -                         | GET /patients/search/legacy        |
+| REQ-FR-006     | Patient Info Sync           | Integration | PatientSyncService                | patients                  | -                                  |
+| REQ-FR-010     | Room Dashboard              | Room        | RoomDashboardService              | rooms, beds               | GET /rooms/dashboard/floor/:id     |
+| REQ-FR-011     | Available Bed Query         | Room        | BedService                        | beds                      | GET /beds/available                |
+| REQ-FR-012     | Bed Assignment              | Admission   | AdmissionDomainService            | admissions, beds          | POST /admissions                   |
+| REQ-FR-013     | Real-time Status Update     | Room        | RoomGateway (WebSocket)           | -                         | WS room:status                     |
+| REQ-FR-020     | Admission Registration      | Admission   | AdmissionDomainService            | admissions                | POST /admissions                   |
+| REQ-FR-021     | Transfer Processing         | Admission   | AdmissionDomainService            | transfers                 | POST /admissions/:id/transfer      |
+| REQ-FR-022     | Discharge Processing        | Admission   | AdmissionDomainService            | discharges                | POST /admissions/:id/discharge     |
+| REQ-FR-030     | Vital Signs Input           | Report      | VitalSignService                  | vital_signs               | POST /admissions/:id/vitals        |
+| REQ-FR-031     | Vital Signs Query           | Report      | VitalSignService                  | vital_signs               | GET /admissions/:id/vitals         |
+| REQ-FR-032     | Vital Signs Trend Graph     | Report      | VitalChartService                 | vital_signs               | GET /admissions/:id/vitals/chart   |
+| REQ-FR-033     | Abnormal Value Alert        | Report      | VitalAlertService                 | vital_signs               | WS vital:recorded                  |
+| REQ-FR-040     | Daily Report Creation       | Report      | DailyReportService                | daily_reports             | POST /admissions/:id/daily-reports |
+| REQ-FR-050     | Rounding Session Creation   | Rounding    | RoundingService                   | rounds                    | POST /rounds                       |
+| REQ-FR-051     | Rounding Record Input       | Rounding    | TabletRoundingService             | round_records             | POST /rounds/:id/records           |
+| REQ-FR-060     | User Account Management     | Admin       | UserService                       | users                     | /admin/users                       |
+| REQ-FR-061     | Role/Permission Management  | Admin       | RoleService                       | roles, permissions        | /admin/roles                       |
+| REQ-FR-062     | Audit Log Query             | Admin       | AuditService                      | access_logs, change_logs  | GET /admin/audit/access-logs       |
 
 ### 9.2 Non-Functional Requirements -> Design Elements Mapping
 
-| Requirement ID | Requirement Name | Design Element | Implementation |
-|----------------|-----------------|----------------|----------------|
-| REQ-NFR-001 | Page Load 3 sec | CDN, SSR | CloudFront, Next.js SSR |
-| REQ-NFR-002 | API Response 500ms | Caching, Index | Redis cache, DB index |
-| REQ-NFR-003 | 100 Concurrent Users | Auto Scaling | ECS Fargate Auto Scaling |
-| REQ-NFR-005 | Dashboard Refresh 3 sec | WebSocket | RoomGateway |
-| REQ-NFR-010 | Password Policy | AuthService | PasswordValidator |
-| REQ-NFR-011 | Password Hashing | AuthService | bcrypt (cost 12) |
-| REQ-NFR-013 | Session Timeout | SessionService | Redis TTL 30 min |
-| REQ-NFR-014 | Concurrent Session Limit | SessionService | Redis session count |
-| REQ-NFR-020 | Storage Data Encryption | PatientDetail Entity | pgcrypto AES-256 |
-| REQ-NFR-021 | Transport Data Encryption | ALB, nginx | TLS 1.3 |
-| REQ-NFR-023 | RBAC | RbacService, Guards | PermissionGuard |
-| REQ-NFR-030 | Login Logging | AuditService | audit.login_history |
-| REQ-NFR-031 | Patient Access Logging | AuditService | audit.patient_access_logs |
-| REQ-NFR-040 | System Availability 99.5% | Multi-AZ | RDS Multi-AZ, ECS Multi-AZ |
-| REQ-NFR-050 | Code Quality | CI/CD | ESLint, Prettier, SonarQube |
-| REQ-NFR-051 | Test Coverage 80% | Testing | Jest, Cypress |
+| Requirement ID | Requirement Name          | Design Element       | Implementation              |
+| -------------- | ------------------------- | -------------------- | --------------------------- |
+| REQ-NFR-001    | Page Load 3 sec           | CDN, SSR             | CloudFront, Next.js SSR     |
+| REQ-NFR-002    | API Response 500ms        | Caching, Index       | Redis cache, DB index       |
+| REQ-NFR-003    | 100 Concurrent Users      | Auto Scaling         | ECS Fargate Auto Scaling    |
+| REQ-NFR-005    | Dashboard Refresh 3 sec   | WebSocket            | RoomGateway                 |
+| REQ-NFR-010    | Password Policy           | AuthService          | PasswordValidator           |
+| REQ-NFR-011    | Password Hashing          | AuthService          | bcrypt (cost 12)            |
+| REQ-NFR-013    | Session Timeout           | SessionService       | Redis TTL 30 min            |
+| REQ-NFR-014    | Concurrent Session Limit  | SessionService       | Redis session count         |
+| REQ-NFR-020    | Storage Data Encryption   | PatientDetail Entity | pgcrypto AES-256            |
+| REQ-NFR-021    | Transport Data Encryption | ALB, nginx           | TLS 1.3                     |
+| REQ-NFR-023    | RBAC                      | RbacService, Guards  | PermissionGuard             |
+| REQ-NFR-030    | Login Logging             | AuditService         | audit.login_history         |
+| REQ-NFR-031    | Patient Access Logging    | AuditService         | audit.patient_access_logs   |
+| REQ-NFR-040    | System Availability 99.5% | Multi-AZ             | RDS Multi-AZ, ECS Multi-AZ  |
+| REQ-NFR-050    | Code Quality              | CI/CD                | ESLint, Prettier, SonarQube |
+| REQ-NFR-051    | Test Coverage 80%         | Testing              | Jest, Cypress               |
 
 ### 9.3 Design Document Cross-Reference
 
-| Design Area | SDS Section | Detailed Design Document | Related SRS Section |
-|-------------|-------------|-------------------------|---------------------|
-| Architecture | 3 | [system-architecture.md](reference/02-design/system-architecture.md) | 2.1, 3.3 |
-| Data | 5 | [database-design.md](reference/02-design/database-design.md) | Appendix A |
-| API | 6.2 | [API-specification.md](reference/02-design/api-specification.md) | 3.4, Appendix B |
-| UI | 6.1 | [UI-design.md](reference/02-design/ui-design.md) | 3.1, Appendix C |
-| Security | 7 | [security-requirements.md](reference/03-security/security-requirements.md) | 5.2 |
+| Design Area  | SDS Section | Detailed Design Document                                                   | Related SRS Section |
+| ------------ | ----------- | -------------------------------------------------------------------------- | ------------------- |
+| Architecture | 3           | [system-architecture.md](reference/02-design/system-architecture.md)       | 2.1, 3.3            |
+| Data         | 5           | [database-design.md](reference/02-design/database-design.md)               | Appendix A          |
+| API          | 6.2         | [API-specification.md](reference/02-design/api-specification.md)           | 3.4, Appendix B     |
+| UI           | 6.1         | [UI-design.md](reference/02-design/ui-design.md)                           | 3.1, Appendix C     |
+| Security     | 7           | [security-requirements.md](reference/03-security/security-requirements.md) | 5.2                 |
 
 ---
 
@@ -1550,19 +1544,19 @@ Examples:
 
 ### Appendix B: Technology Stack Summary
 
-| Layer | Technology | Version | Purpose |
-|-------|------------|---------|---------|
-| Frontend | Next.js | 14.x | SSR, Responsive UI |
-| Frontend | TypeScript | 5.x | Type safety |
-| Frontend | Tailwind CSS | 3.x | Styling |
-| Frontend | shadcn/ui | latest | UI components |
-| Backend | NestJS | 10.x | API server |
-| Backend | TypeScript | 5.x | Type safety |
-| ORM | Prisma | 5.x | Database access |
-| Database | PostgreSQL | 16.x | Primary database |
-| Cache | Redis | 7.x | Cache/Session |
-| Realtime | Socket.io | 4.x | WebSocket |
-| Cloud | AWS (ECS, RDS) | - | Infrastructure |
+| Layer    | Technology     | Version | Purpose            |
+| -------- | -------------- | ------- | ------------------ |
+| Frontend | Next.js        | 14.x    | SSR, Responsive UI |
+| Frontend | TypeScript     | 5.x     | Type safety        |
+| Frontend | Tailwind CSS   | 3.x     | Styling            |
+| Frontend | shadcn/ui      | latest  | UI components      |
+| Backend  | NestJS         | 10.x    | API server         |
+| Backend  | TypeScript     | 5.x     | Type safety        |
+| ORM      | Prisma         | 5.x     | Database access    |
+| Database | PostgreSQL     | 16.x    | Primary database   |
+| Cache    | Redis          | 7.x     | Cache/Session      |
+| Realtime | Socket.io      | 4.x     | WebSocket          |
+| Cloud    | AWS (ECS, RDS) | -       | Infrastructure     |
 
 ### Appendix C: Term Definitions
 
@@ -1572,13 +1566,13 @@ Examples:
 
 ## Approval
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| Author | | | |
-| Architect | | | |
-| Technical Reviewer | | | |
-| PM | | | |
+| Role               | Name | Signature | Date |
+| ------------------ | ---- | --------- | ---- |
+| Author             |      |           |      |
+| Architect          |      |           |      |
+| Technical Reviewer |      |           |      |
+| PM                 |      |           |      |
 
 ---
 
-*This document was prepared based on the IEEE 1016-2009 standard.*
+_This document was prepared based on the IEEE 1016-2009 standard._

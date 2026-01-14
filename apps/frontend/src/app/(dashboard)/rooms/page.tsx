@@ -2,15 +2,7 @@
 
 import { useState } from 'react';
 import { useFloors, useFloorDashboard, useRoomWebSocket } from '@/hooks';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Select,
-  Badge,
-  Skeleton,
-} from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle, Select, Badge, Skeleton } from '@/components/ui';
 import { SummaryCard, RoomCard } from '@/components/room';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
 
@@ -103,25 +95,10 @@ export default function RoomDashboardPage() {
 
       {selectedFloorId && dashboard && (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          <SummaryCard
-            title="Total Beds"
-            value={dashboard.summary.totalBeds}
-          />
-          <SummaryCard
-            title="Occupied"
-            value={dashboard.summary.occupiedBeds}
-            variant="occupied"
-          />
-          <SummaryCard
-            title="Empty"
-            value={dashboard.summary.emptyBeds}
-            variant="empty"
-          />
-          <SummaryCard
-            title="Reserved"
-            value={dashboard.summary.reservedBeds}
-            variant="reserved"
-          />
+          <SummaryCard title="Total Beds" value={dashboard.summary.totalBeds} />
+          <SummaryCard title="Occupied" value={dashboard.summary.occupiedBeds} variant="occupied" />
+          <SummaryCard title="Empty" value={dashboard.summary.emptyBeds} variant="empty" />
+          <SummaryCard title="Reserved" value={dashboard.summary.reservedBeds} variant="reserved" />
           <SummaryCard
             title="Maintenance"
             value={dashboard.summary.maintenanceBeds}
@@ -154,16 +131,12 @@ export default function RoomDashboardPage() {
             <div className="col-span-full">
               <Card>
                 <CardContent className="p-12 text-center">
-                  <p className="text-muted-foreground">
-                    No rooms found for the selected filter.
-                  </p>
+                  <p className="text-muted-foreground">No rooms found for the selected filter.</p>
                 </CardContent>
               </Card>
             </div>
           ) : (
-            filteredRooms.map((room) => (
-              <RoomCard key={room.id} room={room} />
-            ))
+            filteredRooms.map((room) => <RoomCard key={room.id} room={room} />)
           )}
         </div>
       )}

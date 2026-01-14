@@ -27,8 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message:
         typeof exceptionResponse === 'string'
           ? exceptionResponse
-          : (exceptionResponse as Record<string, unknown>).message ||
-            exception.message,
+          : (exceptionResponse as Record<string, unknown>).message || exception.message,
     };
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {

@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Proposal |
-| Maintainer | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Proposal         |
+| Maintainer       | kcenon@naver.com |
 
 ---
 
@@ -15,12 +15,12 @@
 
 ### 1.1 Schedule Summary
 
-| Item | Content |
-|------|---------|
-| Project Name | Inpatient Management ERP System |
-| Start Date | Immediately upon contract signing |
-| Total Duration | Approximately 4-5 months (detailed discussion required) |
-| Major Milestones | 4 phases |
+| Item             | Content                                                 |
+| ---------------- | ------------------------------------------------------- |
+| Project Name     | Inpatient Management ERP System                         |
+| Start Date       | Immediately upon contract signing                       |
+| Total Duration   | Approximately 4-5 months (detailed discussion required) |
+| Major Milestones | 4 phases                                                |
 
 ### 1.2 Overall Schedule Overview
 
@@ -88,14 +88,14 @@ Week 3-4: System Design
     └── Final design confirmation
 ```
 
-| Deliverable | Completion Criteria |
-|-------------|---------------------|
+| Deliverable                      | Completion Criteria          |
+| -------------------------------- | ---------------------------- |
 | Requirements Definition Document | Stakeholder review completed |
-| System Design Document | Technical review completed |
-| Screen Design Document | User confirmation completed |
-| Prototype | Main screens clickable |
-| DB Design Document | ERD and DDL completed |
-| API Specification | OpenAPI spec completed |
+| System Design Document           | Technical review completed   |
+| Screen Design Document           | User confirmation completed  |
+| Prototype                        | Main screens clickable       |
+| DB Design Document               | ERD and DDL completed        |
+| API Specification                | OpenAPI spec completed       |
 
 ### 2.2 Phase 2: Development - Core (6 weeks)
 
@@ -141,13 +141,13 @@ Week 9-10: Admission/Discharge & Integration
     └── Data consistency verification
 ```
 
-| Deliverable | Completion Criteria |
-|-------------|---------------------|
-| Authentication Module | Login/permission management functional |
-| Patient Management | CRUD functions operational |
-| Room Status Board | Real-time updates operational |
-| Admission/Discharge Management | Complete process operational |
-| System Integration | Legacy DB data retrieval working |
+| Deliverable                    | Completion Criteria                    |
+| ------------------------------ | -------------------------------------- |
+| Authentication Module          | Login/permission management functional |
+| Patient Management             | CRUD functions operational             |
+| Room Status Board              | Real-time updates operational          |
+| Admission/Discharge Management | Complete process operational           |
+| System Integration             | Legacy DB data retrieval working       |
 
 ### 2.3 Phase 3: Development - Extended (4 weeks)
 
@@ -194,13 +194,13 @@ Week 13-14: Rounding & Mobile
     └── Audit log lookup
 ```
 
-| Deliverable | Completion Criteria |
-|-------------|---------------------|
-| Vital Signs Management | Entry/lookup/graphs operational |
-| I/O Management | Entry/total calculation operational |
-| Nursing Log | CRUD functions operational |
-| Rounding | Complete process operational |
-| Mobile UI | Tablet optimization completed |
+| Deliverable             | Completion Criteria                  |
+| ----------------------- | ------------------------------------ |
+| Vital Signs Management  | Entry/lookup/graphs operational      |
+| I/O Management          | Entry/total calculation operational  |
+| Nursing Log             | CRUD functions operational           |
+| Rounding                | Complete process operational         |
+| Mobile UI               | Tablet optimization completed        |
 | Administrator Functions | All management functions operational |
 
 ### 2.4 Phase 4: Stabilization & Deployment (3 weeks)
@@ -249,13 +249,13 @@ Week 17: Training & Stabilization
     └── Operations handover
 ```
 
-| Deliverable | Completion Criteria |
-|-------------|---------------------|
-| Test Results Report | Major bugs: 0 |
-| Migration Complete | Data consistency: 100% |
-| User Manual | Distribution completed |
-| Administrator Manual | Handover completed |
-| Completion Report | Final approval |
+| Deliverable          | Completion Criteria    |
+| -------------------- | ---------------------- |
+| Test Results Report  | Major bugs: 0          |
+| Migration Complete   | Data consistency: 100% |
+| User Manual          | Distribution completed |
+| Administrator Manual | Handover completed     |
+| Completion Report    | Final approval         |
 
 ---
 
@@ -263,12 +263,12 @@ Week 17: Training & Stabilization
 
 ### 3.1 Major Milestones
 
-| Milestone | Target Date | Key Content | Completion Criteria |
-|-----------|-------------|-------------|---------------------|
-| **M1: Design Complete** | W4 | Design documents completed | Design review approved |
-| **M2: Core Development Complete** | W10 | Core functions completed | Functional testing passed |
-| **M3: Full Development Complete** | W14 | All functions completed | UAT ready to start |
-| **M4: Service Launch** | W17 | Production operations begin | Stable operations confirmed |
+| Milestone                         | Target Date | Key Content                 | Completion Criteria         |
+| --------------------------------- | ----------- | --------------------------- | --------------------------- |
+| **M1: Design Complete**           | W4          | Design documents completed  | Design review approved      |
+| **M2: Core Development Complete** | W10         | Core functions completed    | Functional testing passed   |
+| **M3: Full Development Complete** | W14         | All functions completed     | UAT ready to start          |
+| **M4: Service Launch**            | W17         | Production operations begin | Stable operations confirmed |
 
 ### 3.2 Milestone Checkpoints
 
@@ -314,14 +314,14 @@ Week 17: Training & Stabilization
 
 ### 4.1 Expected Resource Allocation
 
-| Role | Headcount | Allocation Period | Primary Tasks |
-|------|-----------|-------------------|---------------|
-| PM/PL | 1 | Entire period | Project management, client communication |
-| Backend Developer | 2 | W3-W15 | API development, DB, integration |
-| Frontend Developer | 2 | W3-W15 | UI development, responsive |
-| UI/UX Designer | 1 | W1-W6 | Design, prototype |
-| QA Engineer | 1 | W5-W17 | Testing, quality management |
-| Infrastructure/DevOps | 0.5 | W1-W17 | Servers, CI/CD, deployment |
+| Role                  | Headcount | Allocation Period | Primary Tasks                            |
+| --------------------- | --------- | ----------------- | ---------------------------------------- |
+| PM/PL                 | 1         | Entire period     | Project management, client communication |
+| Backend Developer     | 2         | W3-W15            | API development, DB, integration         |
+| Frontend Developer    | 2         | W3-W15            | UI development, responsive               |
+| UI/UX Designer        | 1         | W1-W6             | Design, prototype                        |
+| QA Engineer           | 1         | W5-W17            | Testing, quality management              |
+| Infrastructure/DevOps | 0.5       | W1-W17            | Servers, CI/CD, deployment               |
 
 ### 4.2 Resource Allocation Plan
 
@@ -344,13 +344,13 @@ Week 17: Training & Stabilization
 
 ### 5.1 Major Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| Legacy system integration delay | High | Medium | Early DB analysis, use of mock server |
-| Requirements changes | Medium | High | Change management process, schedule buffer |
-| Key personnel departure | High | Low | Documentation, knowledge sharing |
-| Technical challenges | Medium | Medium | Early PoC execution, expert consultation |
-| Data migration issues | High | Medium | Pre-analysis of data, automated verification |
+| Risk                            | Impact | Probability | Mitigation                                   |
+| ------------------------------- | ------ | ----------- | -------------------------------------------- |
+| Legacy system integration delay | High   | Medium      | Early DB analysis, use of mock server        |
+| Requirements changes            | Medium | High        | Change management process, schedule buffer   |
+| Key personnel departure         | High   | Low         | Documentation, knowledge sharing             |
+| Technical challenges            | Medium | Medium      | Early PoC execution, expert consultation     |
+| Data migration issues           | High   | Medium      | Pre-analysis of data, automated verification |
 
 ### 5.2 Risk Response Plan
 
@@ -381,13 +381,13 @@ Week 17: Training & Stabilization
 
 ### 6.1 Regular Meetings
 
-| Meeting Type | Frequency | Attendees | Purpose |
-|--------------|-----------|-----------|---------|
-| Kickoff Meeting | Once | All | Project start, goal sharing |
-| Weekly Progress Meeting | Weekly | PM, Dev team | Progress status, issue sharing |
-| Client Review | Bi-weekly | PM, Client | Deliverable review, feedback |
-| Milestone Review | Per milestone | All | Phase completion confirmation |
-| Daily Standup | Daily | Dev team | Daily progress/issue sharing |
+| Meeting Type            | Frequency     | Attendees    | Purpose                        |
+| ----------------------- | ------------- | ------------ | ------------------------------ |
+| Kickoff Meeting         | Once          | All          | Project start, goal sharing    |
+| Weekly Progress Meeting | Weekly        | PM, Dev team | Progress status, issue sharing |
+| Client Review           | Bi-weekly     | PM, Client   | Deliverable review, feedback   |
+| Milestone Review        | Per milestone | All          | Phase completion confirmation  |
+| Daily Standup           | Daily         | Dev team     | Daily progress/issue sharing   |
 
 ### 6.2 Reporting Structure
 
@@ -418,13 +418,13 @@ Project Reporting Structure
 
 ### 7.1 Quality Standards
 
-| Area | Quality Standard | Measurement Method |
-|------|------------------|-------------------|
-| Functionality | 100% requirements implementation | Functional testing |
-| Performance | Response time within 3 seconds | Performance testing |
-| Security | High/Critical vulnerabilities: 0 | Security scan |
-| Usability | User satisfaction 80%+ | UAT survey |
-| Reliability | Availability 99.5%+ | Monitoring |
+| Area          | Quality Standard                 | Measurement Method  |
+| ------------- | -------------------------------- | ------------------- |
+| Functionality | 100% requirements implementation | Functional testing  |
+| Performance   | Response time within 3 seconds   | Performance testing |
+| Security      | High/Critical vulnerabilities: 0 | Security scan       |
+| Usability     | User satisfaction 80%+           | UAT survey          |
+| Reliability   | Availability 99.5%+              | Monitoring          |
 
 ### 7.2 Test Strategy
 
@@ -466,11 +466,11 @@ Test Pyramid
 
 ### 8.2 Change Approval Criteria
 
-| Change Scale | Approval Authority | Processing Deadline |
-|--------------|-------------------|-------------------|
-| Minor (UI modifications, etc.) | PM | 3 days |
-| Moderate (Function modifications) | PM + Client Representative | 1 week |
-| Major (Schedule impact) | Client Decision Maker | 2 weeks |
+| Change Scale                      | Approval Authority         | Processing Deadline |
+| --------------------------------- | -------------------------- | ------------------- |
+| Minor (UI modifications, etc.)    | PM                         | 3 days              |
+| Moderate (Function modifications) | PM + Client Representative | 1 week              |
+| Major (Schedule impact)           | Client Decision Maker      | 2 weeks             |
 
 ---
 

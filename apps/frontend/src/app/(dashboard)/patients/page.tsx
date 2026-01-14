@@ -136,9 +136,7 @@ export default function PatientsPage() {
               Failed to load patients. Please try again.
             </div>
           ) : data?.data.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground">
-              No patients found.
-            </div>
+            <div className="p-6 text-center text-muted-foreground">No patients found.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -156,9 +154,7 @@ export default function PatientsPage() {
               <TableBody>
                 {data?.data.map((patient) => (
                   <TableRow key={patient.id}>
-                    <TableCell className="font-mono text-sm">
-                      {patient.patientNumber}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm">{patient.patientNumber}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-muted-foreground" />
@@ -192,7 +188,8 @@ export default function PatientsPage() {
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Showing {(page - 1) * limit + 1} to {Math.min(page * limit, data.total)} of {data.total} patients
+            Showing {(page - 1) * limit + 1} to {Math.min(page * limit, data.total)} of {data.total}{' '}
+            patients
           </p>
           <div className="flex items-center gap-2">
             <Button

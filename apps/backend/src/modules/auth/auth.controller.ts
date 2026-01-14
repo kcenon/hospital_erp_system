@@ -42,10 +42,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Req() req: Request,
-    @Body() loginDto: LoginDto,
-  ): Promise<LoginResponseDto> {
+  async login(@Req() req: Request, @Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     const user = req.user as User;
     const ipAddress = this.getClientIp(req);
     const deviceInfo = this.getDeviceInfo(req, loginDto.deviceInfo);
@@ -59,12 +56,8 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<TokenResponseDto> {
-    const tokenPair = await this.authService.refreshTokens(
-      refreshTokenDto.refreshToken,
-    );
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponseDto> {
+    const tokenPair = await this.authService.refreshTokens(refreshTokenDto.refreshToken);
 
     return new TokenResponseDto({
       accessToken: tokenPair.accessToken,
@@ -80,9 +73,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<LogoutResponseDto> {
+  async logout(@CurrentUser() user: AuthenticatedUser): Promise<LogoutResponseDto> {
     await this.authService.logout(user.sessionId);
     return new LogoutResponseDto();
   }
@@ -93,9 +84,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('logout-all')
   @HttpCode(HttpStatus.OK)
-  async logoutAll(
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<LogoutResponseDto> {
+  async logoutAll(@CurrentUser() user: AuthenticatedUser): Promise<LogoutResponseDto> {
     await this.authService.logoutAll(user.id);
     return new LogoutResponseDto('Logged out from all sessions');
   }
@@ -105,9 +94,7 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getCurrentUser(
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<AuthenticatedUser> {
+  async getCurrentUser(@CurrentUser() user: AuthenticatedUser): Promise<AuthenticatedUser> {
     return user;
   }
 
@@ -116,13 +103,8 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('sessions')
-  async getSessions(
-    @CurrentUser() user: AuthenticatedUser,
-  ): Promise<SessionListResponseDto> {
-    const sessions = await this.sessionService.getUserSessions(
-      user.id,
-      user.sessionId,
-    );
+  async getSessions(@CurrentUser() user: AuthenticatedUser): Promise<SessionListResponseDto> {
+    const sessions = await this.sessionService.getUserSessions(user.id, user.sessionId);
 
     return {
       sessions: sessions.map((s) => ({
@@ -177,9 +159,7 @@ export class AuthController {
   private getClientIp(req: Request): string {
     const forwardedFor = req.headers['x-forwarded-for'];
     if (forwardedFor) {
-      const ips = Array.isArray(forwardedFor)
-        ? forwardedFor[0]
-        : forwardedFor.split(',')[0];
+      const ips = Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor.split(',')[0];
       return ips.trim();
     }
     return req.ip || req.socket?.remoteAddress || 'unknown';

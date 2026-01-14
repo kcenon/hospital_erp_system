@@ -198,12 +198,7 @@ async function main() {
   });
 
   // Clerk permissions
-  const clerkPermissions = [
-    'patient:read',
-    'patient:create',
-    'room:read',
-    'admission:read',
-  ];
+  const clerkPermissions = ['patient:read', 'patient:create', 'room:read', 'admission:read'];
   await prisma.rolePermission.createMany({
     data: clerkPermissions.map((code) => ({
       roleId: clerkRole.id,
@@ -380,10 +375,7 @@ async function main() {
   console.log('Creating rooms and beds...');
 
   // Helper function to create beds for a room
-  async function createBedsForRoom(
-    roomId: string,
-    bedCount: number,
-  ): Promise<void> {
+  async function createBedsForRoom(roomId: string, bedCount: number): Promise<void> {
     const bedLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
     const beds = [];
 

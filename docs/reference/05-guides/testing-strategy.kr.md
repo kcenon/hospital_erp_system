@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -32,22 +32,22 @@
 
 ### 1.2 테스트 목표
 
-| 메트릭 | 목표 | 측정 방법 |
-|--------|------|----------|
-| 코드 커버리지 | ≥ 80% | Jest coverage |
-| 주요 기능 커버리지 | 100% | 체크리스트 |
-| 테스트 실행 시간 | < 5분 | CI 파이프라인 |
-| 버그 탈출률 | < 5% | 배포 후 버그 수 |
+| 메트릭             | 목표  | 측정 방법       |
+| ------------------ | ----- | --------------- |
+| 코드 커버리지      | ≥ 80% | Jest coverage   |
+| 주요 기능 커버리지 | 100%  | 체크리스트      |
+| 테스트 실행 시간   | < 5분 | CI 파이프라인   |
+| 버그 탈출률        | < 5%  | 배포 후 버그 수 |
 
 ### 1.3 테스트 도구
 
-| 도구 | 용도 | 레이어 |
-|------|------|--------|
-| **Jest** | 단위/통합 테스트 | Backend, Shared |
-| **React Testing Library** | 컴포넌트 테스트 | Frontend |
-| **Playwright** | E2E 테스트 | 전체 |
-| **Supertest** | API 테스트 | Backend |
-| **MSW** | API 모킹 | Frontend |
+| 도구                      | 용도             | 레이어          |
+| ------------------------- | ---------------- | --------------- |
+| **Jest**                  | 단위/통합 테스트 | Backend, Shared |
+| **React Testing Library** | 컴포넌트 테스트  | Frontend        |
+| **Playwright**            | E2E 테스트       | 전체            |
+| **Supertest**             | API 테스트       | Backend         |
+| **MSW**                   | API 모킹         | Frontend        |
 
 ---
 
@@ -120,9 +120,7 @@ describe('PatientService', () => {
       repository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findOne('invalid-id')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -354,8 +352,8 @@ describe('PatientController (Integration)', () => {
     it('유효하지 않은 데이터는 400 에러를 반환해야 한다', async () => {
       const invalidDto = {
         patientNumber: 'INVALID', // 잘못된 형식
-        name: '',                  // 빈 문자열
-        birthDate: 'not-a-date',   // 잘못된 날짜
+        name: '', // 빈 문자열
+        birthDate: 'not-a-date', // 잘못된 날짜
       };
 
       const response = await request(app.getHttpServer())
@@ -441,9 +439,24 @@ describe('PatientRepository (Integration)', () => {
       // 테스트 데이터 생성
       await prisma.patient.createMany({
         data: [
-          { patientNumber: 'REPO_TEST_001', name: '김환자', birthDate: new Date('1990-01-01'), gender: 'M' },
-          { patientNumber: 'REPO_TEST_002', name: '이환자', birthDate: new Date('1985-06-15'), gender: 'F' },
-          { patientNumber: 'REPO_TEST_003', name: '박환자', birthDate: new Date('1970-12-25'), gender: 'M' },
+          {
+            patientNumber: 'REPO_TEST_001',
+            name: '김환자',
+            birthDate: new Date('1990-01-01'),
+            gender: 'M',
+          },
+          {
+            patientNumber: 'REPO_TEST_002',
+            name: '이환자',
+            birthDate: new Date('1985-06-15'),
+            gender: 'F',
+          },
+          {
+            patientNumber: 'REPO_TEST_003',
+            name: '박환자',
+            birthDate: new Date('1970-12-25'),
+            gender: 'M',
+          },
         ],
       });
     });

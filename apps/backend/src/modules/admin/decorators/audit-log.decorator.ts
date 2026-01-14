@@ -35,5 +35,4 @@ export interface AuditLogConfig {
  * async findById(@Param('id') id: string) { ... }
  * ```
  */
-export const AuditLog = (config: AuditLogConfig) =>
-  SetMetadata(AUDIT_LOG_KEY, config);
+export const AuditLog = (config: AuditLogConfig) => SetMetadata(AUDIT_LOG_KEY, config);

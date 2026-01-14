@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -15,28 +15,28 @@
 
 ### 1.1 Runtime and Package Manager
 
-| Software | Version | Purpose | Installation |
-|-----------|------|------|----------|
-| **Node.js** | 20.x LTS | JavaScript runtime | [nodejs.org](https://nodejs.org) or nvm |
-| **pnpm** | 8.x+ | Package manager | `npm install -g pnpm` |
-| **Docker** | 24.x+ | Container environment | [docker.com](https://docker.com) |
-| **Docker Compose** | 2.x+ | Multi-container management | Included in Docker Desktop |
+| Software           | Version  | Purpose                    | Installation                            |
+| ------------------ | -------- | -------------------------- | --------------------------------------- |
+| **Node.js**        | 20.x LTS | JavaScript runtime         | [nodejs.org](https://nodejs.org) or nvm |
+| **pnpm**           | 8.x+     | Package manager            | `npm install -g pnpm`                   |
+| **Docker**         | 24.x+    | Container environment      | [docker.com](https://docker.com)        |
+| **Docker Compose** | 2.x+     | Multi-container management | Included in Docker Desktop              |
 
 ### 1.2 Database and Cache
 
-| Software | Version | Purpose | Note |
-|-----------|------|------|------|
-| **PostgreSQL** | 16.x | Main database | Docker or local installation |
-| **Redis** | 7.x | Session/cache | Docker recommended |
+| Software       | Version | Purpose       | Note                         |
+| -------------- | ------- | ------------- | ---------------------------- |
+| **PostgreSQL** | 16.x    | Main database | Docker or local installation |
+| **Redis**      | 7.x     | Session/cache | Docker recommended           |
 
 ### 1.3 Development Tools
 
-| Tool | Purpose | Note |
-|------|------|------|
-| **VS Code** | IDE | Recommended editor |
-| **Git** | Version control | 2.40+ |
-| **Postman / Insomnia** | API testing | Optional |
-| **DBeaver** | DB client | Optional |
+| Tool                   | Purpose         | Note               |
+| ---------------------- | --------------- | ------------------ |
+| **VS Code**            | IDE             | Recommended editor |
+| **Git**                | Version control | 2.40+              |
+| **Postman / Insomnia** | API testing     | Optional           |
+| **DBeaver**            | DB client       | Optional           |
 
 ---
 
@@ -111,7 +111,7 @@ services:
     container_name: hospital-erp-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: hospital_user
       POSTGRES_PASSWORD: hospital_dev_password
@@ -120,7 +120,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hospital_user -d hospital_erp_dev"]
+      test: ['CMD-SHELL', 'pg_isready -U hospital_user -d hospital_erp_dev']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -130,12 +130,12 @@ services:
     container_name: hospital-erp-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -145,8 +145,8 @@ services:
     image: mailhog/mailhog
     container_name: hospital-erp-mail
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # Web UI
+      - '1025:1025' # SMTP
+      - '8025:8025' # Web UI
 
 volumes:
   postgres_data:
@@ -419,16 +419,10 @@ open http://localhost:8080
   "typescript.updateImportsOnFileMove.enabled": "always",
 
   // ESLint
-  "eslint.workingDirectories": [
-    "apps/frontend",
-    "apps/backend",
-    "packages/*"
-  ],
+  "eslint.workingDirectories": ["apps/frontend", "apps/backend", "packages/*"],
 
   // Tailwind CSS
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
+  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
 
   // File associations
   "[typescript]": {
@@ -521,16 +515,9 @@ EOF
 // package.json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yml}": [
-      "prettier --write"
-    ],
-    "*.prisma": [
-      "prisma format"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yml}": ["prettier --write"],
+    "*.prisma": ["prisma format"]
   }
 }
 ```
@@ -546,34 +533,24 @@ module.exports = {
       2,
       'always',
       [
-        'feat',     // New feature
-        'fix',      // Bug fix
-        'docs',     // Documentation
-        'style',    // Formatting
+        'feat', // New feature
+        'fix', // Bug fix
+        'docs', // Documentation
+        'style', // Formatting
         'refactor', // Refactoring
-        'test',     // Tests
-        'chore',    // Other
-        'perf',     // Performance
-        'ci',       // CI/CD
-        'revert'    // Rollback
-      ]
+        'test', // Tests
+        'chore', // Other
+        'perf', // Performance
+        'ci', // CI/CD
+        'revert', // Rollback
+      ],
     ],
     'scope-enum': [
       2,
       'always',
-      [
-        'frontend',
-        'backend',
-        'shared',
-        'ui',
-        'db',
-        'auth',
-        'patient',
-        'room',
-        'report'
-      ]
-    ]
-  }
+      ['frontend', 'backend', 'shared', 'ui', 'db', 'auth', 'patient', 'room', 'report'],
+    ],
+  },
 };
 ```
 
@@ -583,12 +560,12 @@ module.exports = {
 
 ### 9.1 Common Issues
 
-| Issue | Cause | Solution |
-|------|------|------|
-| `EACCES` permission error | npm global permission | Use nvm or change npm prefix |
-| Port conflict | Port already in use | `lsof -i :3000` then kill process |
-| Prisma client error | Not generated | `pnpm prisma generate` |
-| Docker connection failed | Service not running | `docker compose up -d` |
+| Issue                     | Cause                 | Solution                          |
+| ------------------------- | --------------------- | --------------------------------- |
+| `EACCES` permission error | npm global permission | Use nvm or change npm prefix      |
+| Port conflict             | Port already in use   | `lsof -i :3000` then kill process |
+| Prisma client error       | Not generated         | `pnpm prisma generate`            |
+| Docker connection failed  | Service not running   | `docker compose up -d`            |
 
 ### 9.2 Frequently Used Commands
 

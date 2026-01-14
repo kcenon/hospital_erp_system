@@ -93,9 +93,7 @@ describe('PatientService', () => {
     it('should throw when patient not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(service.findById('nonexistent-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findById('nonexistent-id')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -113,9 +111,7 @@ describe('PatientService', () => {
     it('should throw when patient not found', async () => {
       mockRepository.findByPatientNumber.mockResolvedValue(null);
 
-      await expect(service.findByPatientNumber('P0000000000')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findByPatientNumber('P0000000000')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -132,9 +128,7 @@ describe('PatientService', () => {
     it('should throw when not found', async () => {
       mockRepository.findByLegacyId.mockResolvedValue(null);
 
-      await expect(service.findByLegacyId('NOTFOUND')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findByLegacyId('NOTFOUND')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -195,9 +189,9 @@ describe('PatientService', () => {
     it('should throw when patient not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        service.update('nonexistent', { name: 'Test' }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.update('nonexistent', { name: 'Test' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -215,9 +209,7 @@ describe('PatientService', () => {
     it('should throw when patient not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(service.softDelete('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.softDelete('nonexistent')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -269,9 +261,9 @@ describe('PatientService', () => {
     it('should throw when patient not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        service.createDetail('nonexistent', { allergies: 'None' }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.createDetail('nonexistent', { allergies: 'None' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw when detail already exists', async () => {
@@ -301,9 +293,9 @@ describe('PatientService', () => {
     it('should throw when detail not found', async () => {
       mockRepository.findDetailByPatientId.mockResolvedValue(null);
 
-      await expect(
-        service.updateDetail('nonexistent', { allergies: 'Test' }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.updateDetail('nonexistent', { allergies: 'Test' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

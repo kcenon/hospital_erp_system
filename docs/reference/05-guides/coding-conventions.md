@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -15,12 +15,12 @@
 
 ### 1.1 Core Principles
 
-| Principle | Description |
-|------|------|
-| **Clarity** | Code should be self-documenting |
+| Principle       | Description                                    |
+| --------------- | ---------------------------------------------- |
+| **Clarity**     | Code should be self-documenting                |
 | **Consistency** | Maintain the same style throughout the project |
-| **Simplicity** | Remove unnecessary complexity |
-| **Testability** | Write code that is easy to test |
+| **Simplicity**  | Remove unnecessary complexity                  |
+| **Testability** | Write code that is easy to test                |
 
 ### 1.2 Automation Tools
 
@@ -93,7 +93,7 @@ interface ApiResponse<TData> {
 }
 
 // ❌ Single character generics (for complex cases)
-interface Response<T, E> {}  // T, E are unclear
+interface Response<T, E> {} // T, E are unclear
 
 // ✅ Explicit generics
 interface Response<TData, TError = Error> {}
@@ -134,7 +134,7 @@ function createPatient(
   gender: string,
   phone: string,
   address: string,
-  emergencyContact: string
+  emergencyContact: string,
 ) {}
 ```
 
@@ -143,12 +143,7 @@ function createPatient(
 ```typescript
 // ✅ Type guard functions
 function isPatient(value: unknown): value is Patient {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'name' in value
-  );
+  return typeof value === 'object' && value !== null && 'id' in value && 'name' in value;
 }
 
 // ✅ Usage
@@ -162,7 +157,7 @@ const STATUS = {
   INACTIVE: 'inactive',
 } as const;
 
-type Status = typeof STATUS[keyof typeof STATUS];
+type Status = (typeof STATUS)[keyof typeof STATUS];
 
 // ❌ Pattern to avoid overusing
 const data = response as Patient; // Runtime error possible
@@ -428,9 +423,7 @@ export class PatientController {
   @Get()
   @ApiOperation({ summary: 'Get patient list' })
   @ApiResponse({ status: 200, type: PatientListResponseDto })
-  async findAll(
-    @Query() query: FindPatientsQueryDto,
-  ): Promise<PatientListResponseDto> {
+  async findAll(@Query() query: FindPatientsQueryDto): Promise<PatientListResponseDto> {
     return this.patientService.findAll(query);
   }
 
@@ -689,7 +682,7 @@ GET /patients?page=1&limit=20&status=admitted&search=John
 
 ### 6.1 JSDoc
 
-```typescript
+````typescript
 /**
  * Retrieves patient information.
  *
@@ -706,7 +699,7 @@ GET /patients?page=1&limit=20&status=admitted&search=John
 async findOne(patientId: string): Promise<Patient | null> {
   // ...
 }
-```
+````
 
 ### 6.2 TODO Comments
 
@@ -745,14 +738,7 @@ module.exports = {
     'import/order': [
       'error',
       {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'always',
         alphabetize: { order: 'asc' },
       },
