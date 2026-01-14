@@ -1,2 +1,2 @@
-// API service functions will be exported here
-export {};
+export { patientApi } from './patient-api';
+export { admissionApi } from './admission-api';
