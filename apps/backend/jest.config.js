@@ -10,13 +10,12 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(@faker-js|uuid)/)'],
+  transformIgnorePatterns: ['node_modules/(?!(.pnpm/(@faker-js\\+faker|uuid))|(@faker-js|uuid)/)'],
   collectCoverageFrom: ['**/*.(t|j)s', '!**/*.module.ts', '!**/index.ts', '!main.ts'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
-    '^uuid$': '<rootDir>/../node_modules/uuid/dist/index.js',
   },
   setupFilesAfterEnv: ['<rootDir>/../test/setup.ts'],
   coverageThreshold: {
