@@ -6,7 +6,7 @@ export class ApiError extends Error {
   constructor(
     public statusCode: number,
     message: string,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -42,7 +42,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
     throw new ApiError(
       error.statusCode || response.status,
       error.message || response.statusText,
-      error.code
+      error.code,
     );
   }
   return response.json();
@@ -88,10 +88,7 @@ async function handleTokenRefresh(): Promise<string | null> {
   }
 }
 
-async function fetchWithRetry<T>(
-  endpoint: string,
-  options: RequestInit
-): Promise<T> {
+async function fetchWithRetry<T>(endpoint: string, options: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
   if (response.status === 401) {
@@ -128,10 +125,7 @@ export async function apiPost<T>(endpoint: string, data?: unknown): Promise<T> {
   });
 }
 
-export async function apiPatch<T>(
-  endpoint: string,
-  data?: unknown
-): Promise<T> {
+export async function apiPatch<T>(endpoint: string, data?: unknown): Promise<T> {
   return fetchWithRetry<T>(endpoint, {
     method: 'PATCH',
     headers: await getHeaders(),

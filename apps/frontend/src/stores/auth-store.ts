@@ -40,8 +40,7 @@ export const useAuthStore = create<AuthState>()(
             error: null,
           });
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : 'Login failed';
+          const message = error instanceof Error ? error.message : 'Login failed';
           set({ isLoading: false, error: message });
           throw error;
         }
@@ -94,8 +93,8 @@ export const useAuthStore = create<AuthState>()(
         accessToken: state.accessToken,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export type { User };

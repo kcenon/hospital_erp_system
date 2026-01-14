@@ -124,14 +124,10 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
                 </div>
                 <div>
                   <CardTitle className="text-xl">{patient.name}</CardTitle>
-                  <CardDescription className="font-mono">
-                    {patient.patientNumber}
-                  </CardDescription>
+                  <CardDescription className="font-mono">{patient.patientNumber}</CardDescription>
                 </div>
               </div>
-              {currentAdmission && (
-                <Badge variant="success">Currently Admitted</Badge>
-              )}
+              {currentAdmission && <Badge variant="success">Currently Admitted</Badge>}
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -232,22 +228,16 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Insurance Company</p>
-                <p className="font-medium">
-                  {patient.detail.insuranceCompany || '-'}
-                </p>
+                <p className="font-medium">{patient.detail.insuranceCompany || '-'}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Insurance Type</p>
-                <p className="font-medium">
-                  {patient.detail.insuranceType || '-'}
-                </p>
+                <p className="font-medium">{patient.detail.insuranceType || '-'}</p>
               </div>
               {patient.detail.notes && (
                 <div className="col-span-2">
                   <p className="text-sm text-muted-foreground">Notes</p>
-                  <p className="font-medium whitespace-pre-wrap">
-                    {patient.detail.notes}
-                  </p>
+                  <p className="font-medium whitespace-pre-wrap">{patient.detail.notes}</p>
                 </div>
               )}
             </div>
@@ -258,9 +248,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
       <Card>
         <CardHeader>
           <CardTitle>Admission History</CardTitle>
-          <CardDescription>
-            {admissions?.length || 0} admission records
-          </CardDescription>
+          <CardDescription>{admissions?.length || 0} admission records</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           {isLoadingAdmissions ? (
@@ -270,9 +258,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               ))}
             </div>
           ) : !admissions || admissions.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground">
-              No admission history found.
-            </div>
+            <div className="p-6 text-center text-muted-foreground">No admission history found.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -288,9 +274,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               <TableBody>
                 {admissions.map((admission) => (
                   <TableRow key={admission.id}>
-                    <TableCell className="font-mono">
-                      {admission.admissionNumber}
-                    </TableCell>
+                    <TableCell className="font-mono">{admission.admissionNumber}</TableCell>
                     <TableCell>{formatDate(admission.admissionDate)}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{admission.admissionType}</Badge>
@@ -304,9 +288,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {admission.discharge
-                        ? formatDate(admission.discharge.dischargeDate)
-                        : '-'}
+                      {admission.discharge ? formatDate(admission.discharge.dischargeDate) : '-'}
                     </TableCell>
                   </TableRow>
                 ))}

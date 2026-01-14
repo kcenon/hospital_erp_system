@@ -130,9 +130,7 @@ export default function AvailableBedsPage() {
                     <TableCell className="font-medium">{bed.room.roomNumber}</TableCell>
                     <TableCell>{bed.bedNumber}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">
-                        {roomTypeLabels[bed.room.roomType]}
-                      </Badge>
+                      <Badge variant="outline">{roomTypeLabels[bed.room.roomType]}</Badge>
                     </TableCell>
                   </TableRow>
                 ))}

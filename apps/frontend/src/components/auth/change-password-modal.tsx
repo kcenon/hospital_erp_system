@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  changePasswordSchema,
-  type ChangePasswordFormData,
-} from '@/lib/validations';
+import { changePasswordSchema, type ChangePasswordFormData } from '@/lib/validations';
 import { authApi } from '@/services';
 import { ApiError } from '@/lib/api-client';
 import {
@@ -34,11 +31,7 @@ interface ChangePasswordModalProps {
   onSuccess?: () => void;
 }
 
-export function ChangePasswordModal({
-  isOpen,
-  onClose,
-  onSuccess,
-}: ChangePasswordModalProps) {
+export function ChangePasswordModal({ isOpen, onClose, onSuccess }: ChangePasswordModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ChangePasswordFormData>({
@@ -159,12 +152,7 @@ export function ChangePasswordModal({
             />
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>

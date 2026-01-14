@@ -6,13 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores';
 import { loginSchema, type LoginFormData } from '@/lib/validations';
 import { ApiError } from '@/lib/api-client';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -63,12 +57,8 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md mx-4">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">
-          Hospital ERP System
-        </CardTitle>
-        <CardDescription className="text-center">
-          Sign in to your account
-        </CardDescription>
+        <CardTitle className="text-2xl font-bold text-center">Hospital ERP System</CardTitle>
+        <CardDescription className="text-center">Sign in to your account</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

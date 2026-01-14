@@ -30,7 +30,9 @@ export const admissionApi = {
   },
 
   findByPatientId: async (patientId: string): Promise<Admission[]> => {
-    const response = await apiGet<PaginatedAdmissions>(`/admissions?patientId=${patientId}&limit=100`);
+    const response = await apiGet<PaginatedAdmissions>(
+      `/admissions?patientId=${patientId}&limit=100`,
+    );
     return response.data;
   },
 };

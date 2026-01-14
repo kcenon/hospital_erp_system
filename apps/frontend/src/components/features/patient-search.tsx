@@ -34,7 +34,7 @@ export function PatientSearch({
       setQuery('');
       setIsOpen(false);
     },
-    [onSelect]
+    [onSelect],
   );
 
   const handleBlur = useCallback(() => {
@@ -67,9 +67,7 @@ export function PatientSearch({
               ))}
             </div>
           ) : !patients || patients.length === 0 ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              No patients found.
-            </div>
+            <div className="p-4 text-center text-sm text-muted-foreground">No patients found.</div>
           ) : (
             <ul className="py-1">
               {patients.map((patient) => (

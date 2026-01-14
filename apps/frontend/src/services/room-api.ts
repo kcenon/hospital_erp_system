@@ -1,10 +1,5 @@
 import { apiGet } from '@/lib/api-client';
-import type {
-  Floor,
-  FloorDashboard,
-  AvailableBed,
-  AvailableBedFilters,
-} from '@/types';
+import type { Floor, FloorDashboard, AvailableBed, AvailableBedFilters } from '@/types';
 
 const ROOM_ENDPOINTS = {
   FLOORS: '/api/v1/floors',
@@ -33,7 +28,7 @@ export const roomApi = {
 
   getAvailableBeds: (filters: AvailableBedFilters = {}): Promise<AvailableBed[]> => {
     return apiGet<AvailableBed[]>(
-      `${ROOM_ENDPOINTS.AVAILABLE_BEDS}${buildAvailableBedsQuery(filters)}`
+      `${ROOM_ENDPOINTS.AVAILABLE_BEDS}${buildAvailableBedsQuery(filters)}`,
     );
   },
 };
