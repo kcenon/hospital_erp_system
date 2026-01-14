@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -15,28 +15,28 @@
 
 ### 1.1 런타임 및 패키지 매니저
 
-| 소프트웨어 | 버전 | 용도 | 설치 방법 |
-|-----------|------|------|----------|
-| **Node.js** | 20.x LTS | JavaScript 런타임 | [nodejs.org](https://nodejs.org) 또는 nvm |
-| **pnpm** | 8.x+ | 패키지 매니저 | `npm install -g pnpm` |
-| **Docker** | 24.x+ | 컨테이너 환경 | [docker.com](https://docker.com) |
-| **Docker Compose** | 2.x+ | 멀티 컨테이너 관리 | Docker Desktop 포함 |
+| 소프트웨어         | 버전     | 용도               | 설치 방법                                 |
+| ------------------ | -------- | ------------------ | ----------------------------------------- |
+| **Node.js**        | 20.x LTS | JavaScript 런타임  | [nodejs.org](https://nodejs.org) 또는 nvm |
+| **pnpm**           | 8.x+     | 패키지 매니저      | `npm install -g pnpm`                     |
+| **Docker**         | 24.x+    | 컨테이너 환경      | [docker.com](https://docker.com)          |
+| **Docker Compose** | 2.x+     | 멀티 컨테이너 관리 | Docker Desktop 포함                       |
 
 ### 1.2 데이터베이스 및 캐시
 
-| 소프트웨어 | 버전 | 용도 | 비고 |
-|-----------|------|------|------|
+| 소프트웨어     | 버전 | 용도              | 비고                  |
+| -------------- | ---- | ----------------- | --------------------- |
 | **PostgreSQL** | 16.x | 메인 데이터베이스 | Docker 또는 로컬 설치 |
-| **Redis** | 7.x | 세션/캐시 | Docker 권장 |
+| **Redis**      | 7.x  | 세션/캐시         | Docker 권장           |
 
 ### 1.3 개발 도구
 
-| 도구 | 용도 | 비고 |
-|------|------|------|
-| **VS Code** | IDE | 권장 에디터 |
-| **Git** | 버전 관리 | 2.40+ |
-| **Postman / Insomnia** | API 테스트 | 선택 |
-| **DBeaver** | DB 클라이언트 | 선택 |
+| 도구                   | 용도          | 비고        |
+| ---------------------- | ------------- | ----------- |
+| **VS Code**            | IDE           | 권장 에디터 |
+| **Git**                | 버전 관리     | 2.40+       |
+| **Postman / Insomnia** | API 테스트    | 선택        |
+| **DBeaver**            | DB 클라이언트 | 선택        |
 
 ---
 
@@ -111,7 +111,7 @@ services:
     container_name: hospital-erp-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: hospital_user
       POSTGRES_PASSWORD: hospital_dev_password
@@ -120,7 +120,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hospital_user -d hospital_erp_dev"]
+      test: ['CMD-SHELL', 'pg_isready -U hospital_user -d hospital_erp_dev']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -130,12 +130,12 @@ services:
     container_name: hospital-erp-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -145,8 +145,8 @@ services:
     image: mailhog/mailhog
     container_name: hospital-erp-mail
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # Web UI
+      - '1025:1025' # SMTP
+      - '8025:8025' # Web UI
 
 volumes:
   postgres_data:
@@ -419,16 +419,10 @@ open http://localhost:8080
   "typescript.updateImportsOnFileMove.enabled": "always",
 
   // ESLint
-  "eslint.workingDirectories": [
-    "apps/frontend",
-    "apps/backend",
-    "packages/*"
-  ],
+  "eslint.workingDirectories": ["apps/frontend", "apps/backend", "packages/*"],
 
   // Tailwind CSS
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
+  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
 
   // 파일 연결
   "[typescript]": {
@@ -521,16 +515,9 @@ EOF
 // package.json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yml}": [
-      "prettier --write"
-    ],
-    "*.prisma": [
-      "prisma format"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yml}": ["prettier --write"],
+    "*.prisma": ["prisma format"]
   }
 }
 ```
@@ -546,34 +533,24 @@ module.exports = {
       2,
       'always',
       [
-        'feat',     // 새 기능
-        'fix',      // 버그 수정
-        'docs',     // 문서
-        'style',    // 포맷팅
+        'feat', // 새 기능
+        'fix', // 버그 수정
+        'docs', // 문서
+        'style', // 포맷팅
         'refactor', // 리팩토링
-        'test',     // 테스트
-        'chore',    // 기타
-        'perf',     // 성능
-        'ci',       // CI/CD
-        'revert'    // 롤백
-      ]
+        'test', // 테스트
+        'chore', // 기타
+        'perf', // 성능
+        'ci', // CI/CD
+        'revert', // 롤백
+      ],
     ],
     'scope-enum': [
       2,
       'always',
-      [
-        'frontend',
-        'backend',
-        'shared',
-        'ui',
-        'db',
-        'auth',
-        'patient',
-        'room',
-        'report'
-      ]
-    ]
-  }
+      ['frontend', 'backend', 'shared', 'ui', 'db', 'auth', 'patient', 'room', 'report'],
+    ],
+  },
 };
 ```
 
@@ -583,12 +560,12 @@ module.exports = {
 
 ### 9.1 일반적인 문제
 
-| 문제 | 원인 | 해결 |
-|------|------|------|
-| `EACCES` 권한 오류 | npm 글로벌 권한 | nvm 사용 또는 npm prefix 변경 |
-| 포트 충돌 | 이미 사용 중인 포트 | `lsof -i :3000` 후 프로세스 종료 |
-| Prisma 클라이언트 오류 | 생성 안됨 | `pnpm prisma generate` |
-| Docker 연결 실패 | 서비스 미실행 | `docker compose up -d` |
+| 문제                   | 원인                | 해결                             |
+| ---------------------- | ------------------- | -------------------------------- |
+| `EACCES` 권한 오류     | npm 글로벌 권한     | nvm 사용 또는 npm prefix 변경    |
+| 포트 충돌              | 이미 사용 중인 포트 | `lsof -i :3000` 후 프로세스 종료 |
+| Prisma 클라이언트 오류 | 생성 안됨           | `pnpm prisma generate`           |
+| Docker 연결 실패       | 서비스 미실행       | `docker compose up -d`           |
 
 ### 9.2 자주 사용하는 명령어
 

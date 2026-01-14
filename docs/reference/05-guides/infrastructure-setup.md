@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -15,11 +15,11 @@
 
 ### 1.1 Environment Classification
 
-| Environment | Purpose | Characteristics |
-|------|------|------|
-| **Development** | Developer local | Docker Compose |
-| **Staging** | Testing/QA | Production-like |
-| **Production** | Live operations | High availability, security |
+| Environment     | Purpose         | Characteristics             |
+| --------------- | --------------- | --------------------------- |
+| **Development** | Developer local | Docker Compose              |
+| **Staging**     | Testing/QA      | Production-like             |
+| **Production**  | Live operations | High availability, security |
 
 ### 1.2 AWS Service Mapping
 
@@ -740,17 +740,17 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
 
 ### 9.1 Monthly Cost Estimate (Seoul Region)
 
-| Service | Specification | Monthly Cost (USD) |
-|--------|------|---------------|
-| ECS Fargate | 2 vCPU, 4GB x 2 tasks | ~$80 |
-| RDS PostgreSQL | db.t3.medium, Multi-AZ | ~$120 |
-| ElastiCache Redis | cache.t3.micro x 2 | ~$30 |
-| ALB | Basic usage | ~$20 |
-| CloudFront | 100GB transfer | ~$10 |
-| S3 | 50GB storage | ~$2 |
-| NAT Gateway | 2 instances | ~$70 |
-| CloudWatch | Logs, metrics | ~$20 |
-| **Total** | | **~$352/month** |
+| Service           | Specification          | Monthly Cost (USD) |
+| ----------------- | ---------------------- | ------------------ |
+| ECS Fargate       | 2 vCPU, 4GB x 2 tasks  | ~$80               |
+| RDS PostgreSQL    | db.t3.medium, Multi-AZ | ~$120              |
+| ElastiCache Redis | cache.t3.micro x 2     | ~$30               |
+| ALB               | Basic usage            | ~$20               |
+| CloudFront        | 100GB transfer         | ~$10               |
+| S3                | 50GB storage           | ~$2                |
+| NAT Gateway       | 2 instances            | ~$70               |
+| CloudWatch        | Logs, metrics          | ~$20               |
+| **Total**         |                        | **~$352/month**    |
 
 ### 9.2 Cost Optimization Options
 

@@ -2,13 +2,13 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
-| Security Classification | Internal Use |
+| Item                    | Content          |
+| ----------------------- | ---------------- |
+| Document Version        | 0.1.0.0          |
+| Created Date            | 2025-12-29       |
+| Status                  | Draft            |
+| Manager                 | kcenon@naver.com |
+| Security Classification | Internal Use     |
 
 ---
 
@@ -38,12 +38,12 @@
 
 ### 1.2 Related Laws and Regulations
 
-| Law/Regulation | Scope | Key Requirements |
-|----------|----------|--------------|
-| **Personal Information Protection Act** | All patient personal information | Encryption, access control, consent management |
-| **Medical Service Act** | Medical records | 5-year retention, access control |
-| **Electronic Documents Act** | Electronic records | Integrity, authenticity |
-| **Information and Communications Network Act** | Entire system | Security measures, incident response |
+| Law/Regulation                                 | Scope                            | Key Requirements                               |
+| ---------------------------------------------- | -------------------------------- | ---------------------------------------------- |
+| **Personal Information Protection Act**        | All patient personal information | Encryption, access control, consent management |
+| **Medical Service Act**                        | Medical records                  | 5-year retention, access control               |
+| **Electronic Documents Act**                   | Electronic records               | Integrity, authenticity                        |
+| **Information and Communications Network Act** | Entire system                    | Security measures, incident response           |
 
 ### 1.3 Security Architecture Overview
 
@@ -81,14 +81,14 @@
 
 ### 2.1 Authentication Requirements
 
-| Requirement | Details | Priority |
-|----------|------|----------|
-| **Strong Password** | 8+ characters, combination of uppercase/lowercase/numbers/special characters | Required |
-| **Password Hashing** | bcrypt (cost factor 12 or higher) | Required |
-| **MFA Support** | TOTP (Google Authenticator, etc.) | Recommended |
-| **Session Management** | 30-minute idle timeout | Required |
-| **Concurrent Session Limit** | Maximum 3 sessions per user | Required |
-| **Login Attempt Limit** | 15-minute lockout after 5 failed attempts | Required |
+| Requirement                  | Details                                                                      | Priority    |
+| ---------------------------- | ---------------------------------------------------------------------------- | ----------- |
+| **Strong Password**          | 8+ characters, combination of uppercase/lowercase/numbers/special characters | Required    |
+| **Password Hashing**         | bcrypt (cost factor 12 or higher)                                            | Required    |
+| **MFA Support**              | TOTP (Google Authenticator, etc.)                                            | Recommended |
+| **Session Management**       | 30-minute idle timeout                                                       | Required    |
+| **Concurrent Session Limit** | Maximum 3 sessions per user                                                  | Required    |
+| **Login Attempt Limit**      | 15-minute lockout after 5 failed attempts                                    | Required    |
 
 ### 2.2 Password Policy
 
@@ -102,11 +102,11 @@ const passwordPolicy = {
   requireNumber: true,
   requireSpecial: true,
   specialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-  preventCommon: true,        // Block common passwords
-  preventUserInfo: true,      // Block passwords containing user info
-  historyCount: 5,            // Prevent reuse of last 5 passwords
-  maxAge: 90,                 // Password change required every 90 days
-  warnBefore: 14              // Warning 14 days before expiration
+  preventCommon: true, // Block common passwords
+  preventUserInfo: true, // Block passwords containing user info
+  historyCount: 5, // Prevent reuse of last 5 passwords
+  maxAge: 90, // Password change required every 90 days
+  warnBefore: 14, // Warning 14 days before expiration
 };
 
 // Password strength validation
@@ -149,25 +149,25 @@ function validatePassword(password: string, user: User): ValidationResult {
 const jwtConfig = {
   accessToken: {
     secret: process.env.JWT_ACCESS_SECRET,
-    expiresIn: '1h',          // 1 hour
-    algorithm: 'HS256'
+    expiresIn: '1h', // 1 hour
+    algorithm: 'HS256',
   },
   refreshToken: {
     secret: process.env.JWT_REFRESH_SECRET,
-    expiresIn: '7d',          // 7 days
-    algorithm: 'HS256'
-  }
+    expiresIn: '7d', // 7 days
+    algorithm: 'HS256',
+  },
 };
 
 // Token payload
 interface TokenPayload {
-  sub: string;                // User ID
+  sub: string; // User ID
   username: string;
   roles: string[];
   permissions: string[];
-  iat: number;                // Issued at
-  exp: number;                // Expiration time
-  jti: string;                // Token unique ID (for revocation)
+  iat: number; // Issued at
+  exp: number; // Expiration time
+  jti: string; // Token unique ID (for revocation)
 }
 ```
 
@@ -187,10 +187,10 @@ interface SessionData {
 
 // Session policy
 const sessionPolicy = {
-  maxConcurrentSessions: 3,   // Maximum concurrent sessions
-  idleTimeout: 30 * 60,       // 30 minutes (seconds)
+  maxConcurrentSessions: 3, // Maximum concurrent sessions
+  idleTimeout: 30 * 60, // 30 minutes (seconds)
   absoluteTimeout: 8 * 60 * 60, // 8 hours (seconds)
-  renewThreshold: 5 * 60      // Renew when 5 minutes remaining
+  renewThreshold: 5 * 60, // Renew when 5 minutes remaining
 };
 ```
 
@@ -235,25 +235,25 @@ const sessionPolicy = {
 
 ### 3.2 Permission Matrix
 
-| Resource | ADMIN | DOCTOR | HEAD_NURSE | NURSE | CLERK |
-|--------|-------|--------|------------|-------|-------|
+| Resource                | ADMIN | DOCTOR            | HEAD_NURSE | NURSE         | CLERK |
+| ----------------------- | ----- | ----------------- | ---------- | ------------- | ----- |
 | **Patient Information** |
-| - View | ✅ | ✅ | ✅ | ✅ (assigned) | ✅ |
-| - Create | ✅ | ❌ | ❌ | ❌ | ✅ |
-| - Update | ✅ | ✅ (own patients) | ✅ | ❌ | ✅ |
-| - Delete | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Room Management** |
-| - View | ✅ | ✅ | ✅ | ✅ | ✅ |
-| - Assign | ✅ | ❌ | ✅ | ❌ | ✅ |
-| - Configure | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Reports** |
-| - View | ✅ | ✅ | ✅ | ✅ (assigned) | ❌ |
-| - Create | ✅ | ✅ | ✅ | ✅ | ❌ |
-| - Update | ✅ | ✅ (own) | ✅ | ✅ (own) | ❌ |
-| **Audit Logs** |
-| - View | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **User Management** |
-| - Full Access | ✅ | ❌ | ❌ | ❌ | ❌ |
+| - View                  | ✅    | ✅                | ✅         | ✅ (assigned) | ✅    |
+| - Create                | ✅    | ❌                | ❌         | ❌            | ✅    |
+| - Update                | ✅    | ✅ (own patients) | ✅         | ❌            | ✅    |
+| - Delete                | ✅    | ❌                | ❌         | ❌            | ❌    |
+| **Room Management**     |
+| - View                  | ✅    | ✅                | ✅         | ✅            | ✅    |
+| - Assign                | ✅    | ❌                | ✅         | ❌            | ✅    |
+| - Configure             | ✅    | ❌                | ❌         | ❌            | ❌    |
+| **Reports**             |
+| - View                  | ✅    | ✅                | ✅         | ✅ (assigned) | ❌    |
+| - Create                | ✅    | ✅                | ✅         | ✅            | ❌    |
+| - Update                | ✅    | ✅ (own)          | ✅         | ✅ (own)      | ❌    |
+| **Audit Logs**          |
+| - View                  | ✅    | ❌                | ❌         | ❌            | ❌    |
+| **User Management**     |
+| - Full Access           | ✅    | ❌                | ❌         | ❌            | ❌    |
 
 ### 3.3 Permission Verification Implementation
 
@@ -264,10 +264,7 @@ export class PermissionGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredPermissions = this.reflector.get<string[]>(
-      'permissions',
-      context.getHandler()
-    );
+    const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
 
     if (!requiredPermissions) {
       return true;
@@ -276,9 +273,7 @@ export class PermissionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return requiredPermissions.every(permission =>
-      user.permissions.includes(permission)
-    );
+    return requiredPermissions.every((permission) => user.permissions.includes(permission));
   }
 }
 
@@ -305,15 +300,15 @@ export class PatientController {
 
 ### 4.1 Encryption Requirements
 
-| Data Type | At-Rest Encryption | In-Transit Encryption | Method |
-|------------|--------------|--------------|------|
-| Password | ✅ | ✅ | bcrypt (one-way) |
-| Social Security Number | ✅ | ✅ | AES-256-GCM |
-| Medical Records | ✅ | ✅ | AES-256-GCM |
-| Diagnosis Information | ✅ | ✅ | AES-256-GCM |
-| Insurance Information | ✅ | ✅ | AES-256-GCM |
-| General Personal Information | ❌ | ✅ | TLS 1.3 |
-| API Communication | N/A | ✅ | TLS 1.3 |
+| Data Type                    | At-Rest Encryption | In-Transit Encryption | Method           |
+| ---------------------------- | ------------------ | --------------------- | ---------------- |
+| Password                     | ✅                 | ✅                    | bcrypt (one-way) |
+| Social Security Number       | ✅                 | ✅                    | AES-256-GCM      |
+| Medical Records              | ✅                 | ✅                    | AES-256-GCM      |
+| Diagnosis Information        | ✅                 | ✅                    | AES-256-GCM      |
+| Insurance Information        | ✅                 | ✅                    | AES-256-GCM      |
+| General Personal Information | ❌                 | ✅                    | TLS 1.3          |
+| API Communication            | N/A                | ✅                    | TLS 1.3          |
 
 ### 4.2 Encryption Implementation
 
@@ -328,9 +323,7 @@ export class EncryptionService {
   private readonly ivLength = 16;
   private readonly authTagLength = 16;
 
-  constructor(
-    @Inject('ENCRYPTION_KEY') private readonly key: Buffer
-  ) {}
+  constructor(@Inject('ENCRYPTION_KEY') private readonly key: Buffer) {}
 
   encrypt(plaintext: string): EncryptedData {
     const iv = crypto.randomBytes(this.ivLength);
@@ -344,7 +337,7 @@ export class EncryptionService {
     return {
       iv: iv.toString('base64'),
       data: encrypted,
-      authTag: authTag.toString('base64')
+      authTag: authTag.toString('base64'),
     };
   }
 
@@ -364,7 +357,7 @@ export class EncryptionService {
 
 // Sensitive field decorator
 function Encrypted() {
-  return function(target: any, propertyKey: string) {
+  return function (target: any, propertyKey: string) {
     // Automatic encryption/decryption handling
   };
 }
@@ -372,10 +365,10 @@ function Encrypted() {
 // Usage example
 class PatientDetails {
   @Encrypted()
-  ssn: string;  // Social Security Number
+  ssn: string; // Social Security Number
 
   @Encrypted()
-  medicalHistory: string;  // Medical history
+  medicalHistory: string; // Medical history
 }
 ```
 
@@ -445,7 +438,7 @@ const maskingRules = {
     // test@example.com -> t***@example.com
     const [local, domain] = value.split('@');
     return local[0] + '***@' + domain;
-  }
+  },
 };
 
 // Response filtering (masking based on permissions)
@@ -454,7 +447,7 @@ function applyMasking(data: any, userPermissions: string[]): any {
     return {
       ...data,
       ssn: maskingRules.ssn(data.ssn),
-      phone: maskingRules.phone(data.phone)
+      phone: maskingRules.phone(data.phone),
     };
   }
   return data;
@@ -467,14 +460,14 @@ function applyMasking(data: any, userPermissions: string[]): any {
 
 ### 5.1 Audit Log Requirements
 
-| Event Type | Logged Items | Retention Period |
-|------------|----------|----------|
-| Login/Logout | User, time, IP, result | 2 years |
-| Patient Information View | User, time, patient ID, viewed fields | 2 years |
-| Patient Information Update | User, time, before/after values | Permanent |
-| Report Create/Update | User, time, document ID, content | 5 years |
-| Permission Changes | Admin, time, target, change details | Permanent |
-| Data Export/Download | User, time, data scope | 2 years |
+| Event Type                 | Logged Items                          | Retention Period |
+| -------------------------- | ------------------------------------- | ---------------- |
+| Login/Logout               | User, time, IP, result                | 2 years          |
+| Patient Information View   | User, time, patient ID, viewed fields | 2 years          |
+| Patient Information Update | User, time, before/after values       | Permanent        |
+| Report Create/Update       | User, time, document ID, content      | 5 years          |
+| Permission Changes         | Admin, time, target, change details   | Permanent        |
+| Data Export/Download       | User, time, data scope                | 2 years          |
 
 ### 5.2 Audit Log Structure
 
@@ -498,7 +491,7 @@ interface AuditLog {
   // Detail information
   requestPath: string;
   requestMethod: string;
-  requestBody?: object;       // Excluding sensitive info
+  requestBody?: object; // Excluding sensitive info
 
   // Result
   success: boolean;
@@ -541,7 +534,7 @@ export class AuditLogInterceptor implements NestInterceptor {
             requestPath: request.path,
             requestMethod: request.method,
             success: true,
-            duration: Date.now() - startTime
+            duration: Date.now() - startTime,
           });
         },
         error: (error) => {
@@ -558,10 +551,10 @@ export class AuditLogInterceptor implements NestInterceptor {
             success: false,
             errorCode: error.code,
             errorMessage: error.message,
-            duration: Date.now() - startTime
+            duration: Date.now() - startTime,
           });
-        }
-      })
+        },
+      }),
     );
   }
 }
@@ -642,14 +635,14 @@ server {
 
 ### 6.2 WAF Rules
 
-| Rule | Description | Action |
-|------|------|------|
-| SQL Injection | SQL injection pattern detection | Block |
-| XSS | Script injection attempt | Block |
-| Path Traversal | Path manipulation attempt | Block |
-| Rate Limit | Exceeding 1000 requests per minute | Temporary block |
-| Bot Detection | Known malicious bots | Block |
-| GeoIP | Access from non-allowed countries | Block (optional) |
+| Rule           | Description                        | Action           |
+| -------------- | ---------------------------------- | ---------------- |
+| SQL Injection  | SQL injection pattern detection    | Block            |
+| XSS            | Script injection attempt           | Block            |
+| Path Traversal | Path manipulation attempt          | Block            |
+| Rate Limit     | Exceeding 1000 requests per minute | Temporary block  |
+| Bot Detection  | Known malicious bots               | Block            |
+| GeoIP          | Access from non-allowed countries  | Block (optional) |
 
 ### 6.3 Rate Limiting
 
@@ -658,27 +651,27 @@ server {
 const rateLimitConfig = {
   // General API
   default: {
-    windowMs: 60 * 1000,  // 1 minute
-    max: 100              // 100 requests
+    windowMs: 60 * 1000, // 1 minute
+    max: 100, // 100 requests
   },
 
   // Login API (brute force prevention)
   login: {
-    windowMs: 15 * 60 * 1000,  // 15 minutes
-    max: 5                      // 5 attempts
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 attempts
   },
 
   // Sensitive information API
   sensitive: {
-    windowMs: 60 * 1000,  // 1 minute
-    max: 20               // 20 requests
+    windowMs: 60 * 1000, // 1 minute
+    max: 20, // 20 requests
   },
 
   // Data export
   export: {
-    windowMs: 60 * 60 * 1000,  // 1 hour
-    max: 10                     // 10 times
-  }
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 10, // 10 times
+  },
 };
 ```
 
@@ -694,13 +687,13 @@ class CreatePatientDto {
   @IsString()
   @Length(2, 50)
   @Matches(/^[가-힣a-zA-Z\s]+$/, {
-    message: 'Name can only contain Korean, English, and spaces.'
+    message: 'Name can only contain Korean, English, and spaces.',
   })
   name: string;
 
   @IsString()
   @Matches(/^P\d{10}$/, {
-    message: 'Invalid patient number format. (e.g., P2025001234)'
+    message: 'Invalid patient number format. (e.g., P2025001234)',
   })
   patientNumber: string;
 
@@ -714,14 +707,14 @@ class CreatePatientDto {
   @IsOptional()
   @IsString()
   @Matches(/^01[0-9]-\d{3,4}-\d{4}$/, {
-    message: 'Invalid phone number format.'
+    message: 'Invalid phone number format.',
   })
   phone?: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(500)
-  @Transform(({ value }) => sanitizeHtml(value))  // XSS prevention
+  @Transform(({ value }) => sanitizeHtml(value)) // XSS prevention
   notes?: string;
 }
 ```
@@ -732,8 +725,8 @@ class CreatePatientDto {
 // Using Prisma ORM (automatic parameter binding)
 const patient = await prisma.patient.findFirst({
   where: {
-    patientNumber: userInput  // Automatically escaped
-  }
+    patientNumber: userInput, // Automatically escaped
+  },
 });
 
 // Required parameter binding for raw queries
@@ -756,8 +749,8 @@ import DOMPurify from 'isomorphic-dompurify';
 // Input sanitization
 function sanitizeInput(input: string): string {
   return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [],  // Remove all tags
-    ALLOWED_ATTR: []   // Remove all attributes
+    ALLOWED_TAGS: [], // Remove all tags
+    ALLOWED_ATTR: [], // Remove all attributes
   });
 }
 
@@ -765,7 +758,7 @@ function sanitizeInput(input: string): string {
 function sanitizeRichText(input: string): string {
   return DOMPurify.sanitize(input, {
     ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'u', 'ul', 'ol', 'li'],
-    ALLOWED_ATTR: []
+    ALLOWED_ATTR: [],
   });
 }
 ```
@@ -776,14 +769,14 @@ function sanitizeRichText(input: string): string {
 
 ### 8.1 Security Event Definitions
 
-| Event | Severity | Alert |
-|--------|--------|------|
-| Multiple login failures | HIGH | Immediate (Slack, SMS) |
-| Access during unusual hours | MEDIUM | Within 15 minutes |
-| Bulk data query | HIGH | Immediate |
-| Privilege escalation attempt | CRITICAL | Immediate (entire team) |
-| Bulk sensitive information access | CRITICAL | Immediate |
-| Admin access from new IP | HIGH | Immediate |
+| Event                             | Severity | Alert                   |
+| --------------------------------- | -------- | ----------------------- |
+| Multiple login failures           | HIGH     | Immediate (Slack, SMS)  |
+| Access during unusual hours       | MEDIUM   | Within 15 minutes       |
+| Bulk data query                   | HIGH     | Immediate               |
+| Privilege escalation attempt      | CRITICAL | Immediate (entire team) |
+| Bulk sensitive information access | CRITICAL | Immediate               |
+| Admin access from new IP          | HIGH     | Immediate               |
 
 ### 8.2 Anomaly Detection Rules
 
@@ -794,44 +787,44 @@ const anomalyRules = {
   unusualHours: {
     condition: (event) => {
       const hour = event.timestamp.getHours();
-      return hour < 6 || hour > 22;  // Outside 6 AM - 10 PM
+      return hour < 6 || hour > 22; // Outside 6 AM - 10 PM
     },
-    severity: 'MEDIUM'
+    severity: 'MEDIUM',
   },
 
   // Bulk access
   bulkAccess: {
     condition: (events) => {
       const recentEvents = events.filter(
-        e => e.action === 'VIEW' &&
-        e.resourceType === 'patient' &&
-        Date.now() - e.timestamp < 5 * 60 * 1000  // 5 minutes
+        (e) =>
+          e.action === 'VIEW' &&
+          e.resourceType === 'patient' &&
+          Date.now() - e.timestamp < 5 * 60 * 1000, // 5 minutes
       );
-      return recentEvents.length > 50;  // More than 50 within 5 minutes
+      return recentEvents.length > 50; // More than 50 within 5 minutes
     },
-    severity: 'HIGH'
+    severity: 'HIGH',
   },
 
   // Unauthorized access attempt
   unauthorizedAccess: {
     condition: (event) => {
-      return event.success === false &&
-             event.errorCode === 'FORBIDDEN';
+      return event.success === false && event.errorCode === 'FORBIDDEN';
     },
-    severity: 'HIGH'
-  }
+    severity: 'HIGH',
+  },
 };
 ```
 
 ### 8.3 Security Dashboard Metrics
 
-| Metric | Description | Threshold |
-|--------|------|--------|
-| Login failure rate | Failure ratio of total logins | > 10% |
-| Abnormal access attempts | Unauthorized resource access | > 5/hour |
-| Sensitive information access frequency | SSN queries, etc. | 200% of baseline |
-| Suspected session hijacking | Sessions with sudden IP/device change | > 0 |
-| API error rate | 4xx/5xx response ratio | > 5% |
+| Metric                                 | Description                           | Threshold        |
+| -------------------------------------- | ------------------------------------- | ---------------- |
+| Login failure rate                     | Failure ratio of total logins         | > 10%            |
+| Abnormal access attempts               | Unauthorized resource access          | > 5/hour         |
+| Sensitive information access frequency | SSN queries, etc.                     | 200% of baseline |
+| Suspected session hijacking            | Sessions with sudden IP/device change | > 0              |
+| API error rate                         | 4xx/5xx response ratio                | > 5%             |
 
 ---
 
@@ -839,22 +832,22 @@ const anomalyRules = {
 
 ### 9.1 Regular Security Checks
 
-| Check Type | Frequency | Responsible |
-|----------|------|------|
-| Dependency vulnerability scan | Daily (CI/CD) | Automated |
-| Static code analysis (SAST) | Per PR | Automated |
-| Dynamic analysis (DAST) | Weekly | Security team |
-| Penetration testing | Quarterly | External vendor |
-| Security code review | Per release | Development team |
+| Check Type                    | Frequency     | Responsible      |
+| ----------------------------- | ------------- | ---------------- |
+| Dependency vulnerability scan | Daily (CI/CD) | Automated        |
+| Static code analysis (SAST)   | Per PR        | Automated        |
+| Dynamic analysis (DAST)       | Weekly        | Security team    |
+| Penetration testing           | Quarterly     | External vendor  |
+| Security code review          | Per release   | Development team |
 
 ### 9.2 Vulnerability Response SLA
 
 | Severity | Response Time | Resolution Time |
-|--------|----------|----------|
-| CRITICAL | 1 hour | 24 hours |
-| HIGH | 4 hours | 72 hours |
-| MEDIUM | 24 hours | 7 days |
-| LOW | 72 hours | 30 days |
+| -------- | ------------- | --------------- |
+| CRITICAL | 1 hour        | 24 hours        |
+| HIGH     | 4 hours       | 72 hours        |
+| MEDIUM   | 24 hours      | 7 days          |
+| LOW      | 72 hours      | 30 days         |
 
 ### 9.3 Dependency Security
 
@@ -866,7 +859,7 @@ on:
   push:
     branches: [main, develop]
   schedule:
-    - cron: '0 9 * * *'  # Daily at 9 AM
+    - cron: '0 9 * * *' # Daily at 9 AM
 
 jobs:
   dependency-scan:
@@ -895,12 +888,12 @@ jobs:
 
 ### 10.1 Security Incident Classification
 
-| Level | Definition | Examples |
-|------|------|------|
-| P1 (Critical) | Patient data breach, system compromise | Ransomware, DB leak |
-| P2 (High) | Partial data access, service outage | Account takeover, DDoS |
-| P3 (Medium) | Limited impact, immediate response possible | Vulnerability discovered |
-| P4 (Low) | Minor impact | Policy violation attempt |
+| Level         | Definition                                  | Examples                 |
+| ------------- | ------------------------------------------- | ------------------------ |
+| P1 (Critical) | Patient data breach, system compromise      | Ransomware, DB leak      |
+| P2 (High)     | Partial data access, service outage         | Account takeover, DDoS   |
+| P3 (Medium)   | Limited impact, immediate response possible | Vulnerability discovered |
+| P4 (Low)      | Minor impact                                | Policy violation attempt |
 
 ### 10.2 Response Procedure
 
@@ -937,13 +930,13 @@ jobs:
 
 ### 10.3 Contact Chain
 
-| Level | Contact | Contact Info | Role |
-|------|--------|--------|------|
-| Primary | Security Manager | security@hospital.com | Initial response |
-| Secondary | IT Director | - | Decision making |
-| Tertiary | Executive | - | External response |
-| External | CERT Team | - | Legal reporting |
-| External | Cyber Police | 182 | Investigation cooperation |
+| Level     | Contact          | Contact Info          | Role                      |
+| --------- | ---------------- | --------------------- | ------------------------- |
+| Primary   | Security Manager | security@hospital.com | Initial response          |
+| Secondary | IT Director      | -                     | Decision making           |
+| Tertiary  | Executive        | -                     | External response         |
+| External  | CERT Team        | -                     | Legal reporting           |
+| External  | Cyber Police     | 182                   | Investigation cooperation |
 
 ---
 

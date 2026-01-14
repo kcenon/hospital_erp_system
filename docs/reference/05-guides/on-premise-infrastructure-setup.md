@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2026-01-12 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2026-01-12       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -15,14 +15,14 @@
 
 ### 1.1 When to Choose On-Premise
 
-| Consideration | On-Premise Advantage |
-|---------------|---------------------|
-| **Data Sovereignty** | Complete control over patient data location |
-| **Network Latency** | Ultra-low latency for real-time monitoring |
-| **Regulatory Compliance** | Easier to meet local medical data regulations |
-| **Existing Infrastructure** | Leverage current hospital IT investment |
-| **Long-term Cost** | Potentially lower TCO for 5+ year operation |
-| **Air-gapped Networks** | Support for isolated medical networks |
+| Consideration               | On-Premise Advantage                          |
+| --------------------------- | --------------------------------------------- |
+| **Data Sovereignty**        | Complete control over patient data location   |
+| **Network Latency**         | Ultra-low latency for real-time monitoring    |
+| **Regulatory Compliance**   | Easier to meet local medical data regulations |
+| **Existing Infrastructure** | Leverage current hospital IT investment       |
+| **Long-term Cost**          | Potentially lower TCO for 5+ year operation   |
+| **Air-gapped Networks**     | Support for isolated medical networks         |
 
 ### 1.2 On-Premise vs Cloud Comparison
 
@@ -47,11 +47,11 @@
 
 ### 1.3 Architecture Options
 
-| Scale | Recommended Setup | Use Case |
-|-------|-------------------|----------|
-| **Small** (< 50 beds) | Single Server + Docker Compose | Clinic, Small Hospital |
-| **Medium** (50-200 beds) | 3-Node K3s Cluster | General Hospital |
-| **Large** (200+ beds) | Full Kubernetes Cluster (5+ nodes) | University Hospital, Medical Center |
+| Scale                    | Recommended Setup                  | Use Case                            |
+| ------------------------ | ---------------------------------- | ----------------------------------- |
+| **Small** (< 50 beds)    | Single Server + Docker Compose     | Clinic, Small Hospital              |
+| **Medium** (50-200 beds) | 3-Node K3s Cluster                 | General Hospital                    |
+| **Large** (200+ beds)    | Full Kubernetes Cluster (5+ nodes) | University Hospital, Medical Center |
 
 ---
 
@@ -61,14 +61,14 @@
 
 #### Single Server Setup
 
-| Component | Minimum | Recommended |
-|-----------|---------|-------------|
-| **CPU** | 8 cores (Intel Xeon or AMD EPYC) | 16 cores |
-| **RAM** | 32 GB ECC | 64 GB ECC |
-| **Storage (OS)** | 256 GB NVMe SSD | 512 GB NVMe SSD |
-| **Storage (Data)** | 1 TB NVMe SSD (RAID 1) | 2 TB NVMe SSD (RAID 10) |
-| **Network** | 1 Gbps dual NIC | 10 Gbps dual NIC |
-| **Power** | Redundant PSU | Redundant PSU + UPS |
+| Component          | Minimum                          | Recommended             |
+| ------------------ | -------------------------------- | ----------------------- |
+| **CPU**            | 8 cores (Intel Xeon or AMD EPYC) | 16 cores                |
+| **RAM**            | 32 GB ECC                        | 64 GB ECC               |
+| **Storage (OS)**   | 256 GB NVMe SSD                  | 512 GB NVMe SSD         |
+| **Storage (Data)** | 1 TB NVMe SSD (RAID 1)           | 2 TB NVMe SSD (RAID 10) |
+| **Network**        | 1 Gbps dual NIC                  | 10 Gbps dual NIC        |
+| **Power**          | Redundant PSU                    | Redundant PSU + UPS     |
 
 ### 2.2 Medium Scale (K3s Cluster)
 
@@ -112,24 +112,24 @@
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-| Node Role | CPU | RAM | Storage | Quantity |
-|-----------|-----|-----|---------|----------|
-| K3s Master/Worker | 8 cores | 32 GB | 500 GB NVMe | 3 |
-| Database Server | 8 cores | 64 GB | 2 TB NVMe (RAID 10) | 2 |
-| Load Balancer | 4 cores | 8 GB | 100 GB SSD | 2 |
-| NFS Storage | 4 cores | 16 GB | 4 TB (RAID 6) | 1 |
+| Node Role         | CPU     | RAM   | Storage             | Quantity |
+| ----------------- | ------- | ----- | ------------------- | -------- |
+| K3s Master/Worker | 8 cores | 32 GB | 500 GB NVMe         | 3        |
+| Database Server   | 8 cores | 64 GB | 2 TB NVMe (RAID 10) | 2        |
+| Load Balancer     | 4 cores | 8 GB  | 100 GB SSD          | 2        |
+| NFS Storage       | 4 cores | 16 GB | 4 TB (RAID 6)       | 1        |
 
 ### 2.3 Large Scale (Full Kubernetes)
 
-| Node Role | CPU | RAM | Storage | Quantity |
-|-----------|-----|-----|---------|----------|
-| K8s Control Plane | 4 cores | 16 GB | 200 GB NVMe | 3 |
-| K8s Worker Node | 16 cores | 64 GB | 500 GB NVMe | 5+ |
-| Database Cluster | 16 cores | 128 GB | 4 TB NVMe (RAID 10) | 3 |
-| Redis Cluster | 8 cores | 32 GB | 500 GB NVMe | 3 |
-| Load Balancer | 4 cores | 8 GB | 100 GB SSD | 2 |
-| Storage (Ceph) | 8 cores | 32 GB | 8 TB (each) | 3 |
-| Monitoring | 8 cores | 32 GB | 1 TB SSD | 1 |
+| Node Role         | CPU      | RAM    | Storage             | Quantity |
+| ----------------- | -------- | ------ | ------------------- | -------- |
+| K8s Control Plane | 4 cores  | 16 GB  | 200 GB NVMe         | 3        |
+| K8s Worker Node   | 16 cores | 64 GB  | 500 GB NVMe         | 5+       |
+| Database Cluster  | 16 cores | 128 GB | 4 TB NVMe (RAID 10) | 3        |
+| Redis Cluster     | 8 cores  | 32 GB  | 500 GB NVMe         | 3        |
+| Load Balancer     | 4 cores  | 8 GB   | 100 GB SSD          | 2        |
+| Storage (Ceph)    | 8 cores  | 32 GB  | 8 TB (each)         | 3        |
+| Monitoring        | 8 cores  | 32 GB  | 1 TB SSD            | 1        |
 
 ---
 
@@ -259,8 +259,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -317,7 +317,7 @@ services:
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hospital -d hospital_erp"]
+      test: ['CMD-SHELL', 'pg_isready -U hospital -d hospital_erp']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -332,7 +332,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -365,7 +365,7 @@ networks:
     driver: bridge
   backend-network:
     driver: bridge
-    internal: true  # No external access
+    internal: true # No external access
 ```
 
 ### 4.3 Kubernetes Manifests
@@ -388,9 +388,9 @@ metadata:
   name: app-config
   namespace: hospital-erp
 data:
-  NODE_ENV: "production"
-  API_PORT: "3000"
-  LOG_LEVEL: "info"
+  NODE_ENV: 'production'
+  API_PORT: '3000'
+  LOG_LEVEL: 'info'
 ```
 
 #### Secrets (use external secret manager in production)
@@ -404,10 +404,10 @@ metadata:
   namespace: hospital-erp
 type: Opaque
 stringData:
-  DATABASE_URL: "postgresql://hospital:password@postgres-primary:5432/hospital_erp"
-  REDIS_URL: "redis://:password@redis:6379"
-  JWT_ACCESS_SECRET: "your-access-secret"
-  JWT_REFRESH_SECRET: "your-refresh-secret"
+  DATABASE_URL: 'postgresql://hospital:password@postgres-primary:5432/hospital_erp'
+  REDIS_URL: 'redis://:password@redis:6379'
+  JWT_ACCESS_SECRET: 'your-access-secret'
+  JWT_REFRESH_SECRET: 'your-refresh-secret'
 ```
 
 #### Backend Deployment
@@ -441,11 +441,11 @@ spec:
                 name: app-secrets
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: '512Mi'
+              cpu: '250m'
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: '1Gi'
+              cpu: '1000m'
           livenessProbe:
             httpGet:
               path: /health
@@ -492,9 +492,9 @@ metadata:
   name: hospital-erp-ingress
   namespace: hospital-erp
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   ingressClassName: nginx
   tls:
@@ -951,7 +951,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
     ports:
-      - "9090:9090"
+      - '9090:9090'
     restart: always
 
   grafana:
@@ -963,7 +963,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     ports:
-      - "3000:3000"
+      - '3000:3000'
     restart: always
 
   alertmanager:
@@ -971,7 +971,7 @@ services:
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     ports:
-      - "9093:9093"
+      - '9093:9093'
     restart: always
 
   node-exporter:
@@ -985,7 +985,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--path.rootfs=/rootfs'
     ports:
-      - "9100:9100"
+      - '9100:9100'
     restart: always
 
   postgres-exporter:
@@ -993,7 +993,7 @@ services:
     environment:
       - DATA_SOURCE_NAME=postgresql://hospital:${DB_PASSWORD}@postgres:5432/hospital_erp?sslmode=disable
     ports:
-      - "9187:9187"
+      - '9187:9187'
     restart: always
 
   redis-exporter:
@@ -1002,7 +1002,7 @@ services:
       - REDIS_ADDR=redis://redis:6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
-      - "9121:9121"
+      - '9121:9121'
     restart: always
 
 volumes:
@@ -1066,7 +1066,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High CPU usage on {{ $labels.instance }}"
+          summary: 'High CPU usage on {{ $labels.instance }}'
 
       - alert: HighMemoryUsage
         expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
@@ -1074,7 +1074,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High memory usage on {{ $labels.instance }}"
+          summary: 'High memory usage on {{ $labels.instance }}'
 
       - alert: PostgreSQLDown
         expr: pg_up == 0
@@ -1082,7 +1082,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "PostgreSQL is down"
+          summary: 'PostgreSQL is down'
 
       - alert: PostgreSQLReplicationLag
         expr: pg_replication_lag > 30
@@ -1090,7 +1090,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "PostgreSQL replication lag is {{ $value }} seconds"
+          summary: 'PostgreSQL replication lag is {{ $value }} seconds'
 
       - alert: RedisDown
         expr: redis_up == 0
@@ -1098,7 +1098,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Redis is down"
+          summary: 'Redis is down'
 
       - alert: HighAPILatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
@@ -1106,7 +1106,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "API latency P95 is {{ $value }}s"
+          summary: 'API latency P95 is {{ $value }}s'
 ```
 
 ---
@@ -1399,41 +1399,41 @@ cat hospital-erp.crt hospital-erp.key > hospital-erp.pem
 
 ### 12.1 Hardware Cost (One-time)
 
-| Item | Specification | Quantity | Unit Cost (USD) | Total |
-|------|--------------|----------|-----------------|-------|
-| **Small Scale** | | | | |
-| Server | Dell PowerEdge R650 (16 core, 64GB, 2TB) | 1 | $8,000 | $8,000 |
-| UPS | APC 3000VA | 1 | $1,500 | $1,500 |
-| Network Switch | 24-port Gigabit | 1 | $300 | $300 |
-| **Subtotal** | | | | **$9,800** |
-| | | | | |
-| **Medium Scale** | | | | |
-| K3s Nodes | Dell PowerEdge R650 (8 core, 32GB, 500GB) | 3 | $5,000 | $15,000 |
-| Database Servers | Dell PowerEdge R750 (8 core, 64GB, 2TB RAID) | 2 | $10,000 | $20,000 |
-| Load Balancers | Dell PowerEdge R450 (4 core, 8GB) | 2 | $3,000 | $6,000 |
-| Storage Server | Synology RS3621xs+ (4TB x 12) | 1 | $8,000 | $8,000 |
-| Network Switch | 10GbE 24-port | 2 | $2,000 | $4,000 |
-| UPS | APC 5000VA | 2 | $3,000 | $6,000 |
-| **Subtotal** | | | | **$59,000** |
+| Item             | Specification                                | Quantity | Unit Cost (USD) | Total       |
+| ---------------- | -------------------------------------------- | -------- | --------------- | ----------- |
+| **Small Scale**  |                                              |          |                 |             |
+| Server           | Dell PowerEdge R650 (16 core, 64GB, 2TB)     | 1        | $8,000          | $8,000      |
+| UPS              | APC 3000VA                                   | 1        | $1,500          | $1,500      |
+| Network Switch   | 24-port Gigabit                              | 1        | $300            | $300        |
+| **Subtotal**     |                                              |          |                 | **$9,800**  |
+|                  |                                              |          |                 |             |
+| **Medium Scale** |                                              |          |                 |             |
+| K3s Nodes        | Dell PowerEdge R650 (8 core, 32GB, 500GB)    | 3        | $5,000          | $15,000     |
+| Database Servers | Dell PowerEdge R750 (8 core, 64GB, 2TB RAID) | 2        | $10,000         | $20,000     |
+| Load Balancers   | Dell PowerEdge R450 (4 core, 8GB)            | 2        | $3,000          | $6,000      |
+| Storage Server   | Synology RS3621xs+ (4TB x 12)                | 1        | $8,000          | $8,000      |
+| Network Switch   | 10GbE 24-port                                | 2        | $2,000          | $4,000      |
+| UPS              | APC 5000VA                                   | 2        | $3,000          | $6,000      |
+| **Subtotal**     |                                              |          |                 | **$59,000** |
 
 ### 12.2 Operating Cost (Monthly)
 
-| Item | Small Scale | Medium Scale |
-|------|-------------|--------------|
-| Electricity | ~$100 | ~$500 |
-| Internet (Dedicated) | $200 | $500 |
-| IT Staff (Part-time) | $1,000 | $3,000 |
-| Software Licenses | $200 | $500 |
-| Backup Storage | $100 | $300 |
-| **Monthly Total** | **~$1,600** | **~$4,800** |
+| Item                 | Small Scale | Medium Scale |
+| -------------------- | ----------- | ------------ |
+| Electricity          | ~$100       | ~$500        |
+| Internet (Dedicated) | $200        | $500         |
+| IT Staff (Part-time) | $1,000      | $3,000       |
+| Software Licenses    | $200        | $500         |
+| Backup Storage       | $100        | $300         |
+| **Monthly Total**    | **~$1,600** | **~$4,800**  |
 
 ### 12.3 5-Year TCO Comparison
 
-| Deployment Model | Year 1 | Year 2-5 | 5-Year Total |
-|------------------|--------|----------|--------------|
-| **On-Premise (Small)** | $29,000 | $76,800 | **$105,800** |
+| Deployment Model        | Year 1   | Year 2-5 | 5-Year Total |
+| ----------------------- | -------- | -------- | ------------ |
+| **On-Premise (Small)**  | $29,000  | $76,800  | **$105,800** |
 | **On-Premise (Medium)** | $116,600 | $230,400 | **$347,000** |
-| **AWS Cloud** | $4,224 | $16,896 | **$21,120** |
+| **AWS Cloud**           | $4,224   | $16,896  | **$21,120**  |
 
 > **Note**: On-premise has higher upfront cost but may be required for compliance. Cloud costs assume basic usage and will scale with traffic.
 
@@ -1552,4 +1552,4 @@ ORDER BY pg_total_relation_size(schemaname || '.' || tablename) DESC;
 
 ---
 
-*Document End*
+_Document End_

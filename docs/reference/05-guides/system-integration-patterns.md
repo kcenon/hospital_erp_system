@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -38,13 +38,13 @@
 
 ### 1.2 Integration Strategies
 
-| Strategy | Description | Use Case |
-|------|------|----------|
-| **Direct DB Connection** | Query legacy DB directly | When no API is available |
-| **API Integration** | Call REST/SOAP API | When API is available (recommended) |
-| **ETL Batch** | Periodic data synchronization | Read-only data |
-| **Event-Based** | Real-time sync on changes | Bidirectional synchronization |
-| **pacs_bridge Gateway** | HL7/FHIR protocol translation | LIS/EMR integration (recommended) |
+| Strategy                 | Description                   | Use Case                            |
+| ------------------------ | ----------------------------- | ----------------------------------- |
+| **Direct DB Connection** | Query legacy DB directly      | When no API is available            |
+| **API Integration**      | Call REST/SOAP API            | When API is available (recommended) |
+| **ETL Batch**            | Periodic data synchronization | Read-only data                      |
+| **Event-Based**          | Real-time sync on changes     | Bidirectional synchronization       |
+| **pacs_bridge Gateway**  | HL7/FHIR protocol translation | LIS/EMR integration (recommended)   |
 
 ### 1.3 pacs_bridge Integration Layer (Recommended)
 
@@ -89,13 +89,13 @@ For healthcare protocol integration (HL7, FHIR, DICOM), leverage the existing `p
 
 #### 1.3.1 Integration Benefits
 
-| Benefit | Description | Impact |
-|---------|-------------|--------|
-| **Protocol Reuse** | HL7 v2.x parser/builder already implemented | 4-6 weeks development saved |
-| **Security Ready** | TLS, OAuth2, audit logging implemented | Security compliance acceleration |
-| **Message Queue** | Reliable SQLite-based message delivery | Guaranteed delivery, failure recovery |
-| **FHIR Support** | R4 gateway in development | Future-proof architecture |
-| **Monitoring** | Prometheus metrics, distributed tracing | Production-ready observability |
+| Benefit            | Description                                 | Impact                                |
+| ------------------ | ------------------------------------------- | ------------------------------------- |
+| **Protocol Reuse** | HL7 v2.x parser/builder already implemented | 4-6 weeks development saved           |
+| **Security Ready** | TLS, OAuth2, audit logging implemented      | Security compliance acceleration      |
+| **Message Queue**  | Reliable SQLite-based message delivery      | Guaranteed delivery, failure recovery |
+| **FHIR Support**   | R4 gateway in development                   | Future-proof architecture             |
+| **Monitoring**     | Prometheus metrics, distributed tracing     | Production-ready observability        |
 
 #### 1.3.2 pacs_bridge REST API Endpoints
 
@@ -130,13 +130,13 @@ export class PacsBridgeClient {
 
 #### 1.3.3 When to Use pacs_bridge
 
-| Scenario | Recommended Approach |
-|----------|---------------------|
-| LIS integration | ✅ pacs_bridge HL7/FHIR Gateway |
-| EMR/OCS patient query | ✅ pacs_bridge ADT Handler + Patient Cache |
-| PACS image viewer link | ✅ pacs_system DICOMweb API |
+| Scenario               | Recommended Approach                          |
+| ---------------------- | --------------------------------------------- |
+| LIS integration        | ✅ pacs_bridge HL7/FHIR Gateway               |
+| EMR/OCS patient query  | ✅ pacs_bridge ADT Handler + Patient Cache    |
+| PACS image viewer link | ✅ pacs_system DICOMweb API                   |
 | Direct legacy DB query | Direct DB connection (when HL7 not available) |
-| Simple data migration | ETL Batch |
+| Simple data migration  | ETL Batch                                     |
 
 > **Reference**: [lis-integration.md](../02-design/lis-integration.md) for detailed LIS integration specification
 
@@ -218,14 +218,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forRoot({
       name: 'legacy',
-      type: 'mssql',  // or 'oracle'
+      type: 'mssql', // or 'oracle'
       host: process.env.LEGACY_DB_HOST,
       port: parseInt(process.env.LEGACY_DB_PORT, 10),
       username: process.env.LEGACY_DB_USER,
       password: process.env.LEGACY_DB_PASSWORD,
       database: process.env.LEGACY_DB_NAME,
       entities: [LegacyPatient, LegacyAdmission],
-      synchronize: false,  // Do not synchronize legacy DB
+      synchronize: false, // Do not synchronize legacy DB
       extra: {
         trustServerCertificate: true,
       },
@@ -259,7 +259,7 @@ export class LegacyPatient {
   birthDate: Date;
 
   @Column({ name: 'SEX_CD' })
-  sexCode: string;  // '1': Male, '2': Female
+  sexCode: string; // '1': Male, '2': Female
 
   @Column({ name: 'BLOOD_TYPE_CD' })
   bloodTypeCode: string;
@@ -336,10 +336,14 @@ export class LegacyPatientAdapter implements PatientDataSource {
 
   private mapBloodType(code: string): string | null {
     const bloodTypeMap: Record<string, string> = {
-      '01': 'A+', '02': 'A-',
-      '03': 'B+', '04': 'B-',
-      '05': 'O+', '06': 'O-',
-      '07': 'AB+', '08': 'AB-',
+      '01': 'A+',
+      '02': 'A-',
+      '03': 'B+',
+      '04': 'B-',
+      '05': 'O+',
+      '06': 'O-',
+      '07': 'AB+',
+      '08': 'AB-',
     };
     return bloodTypeMap[code] ?? null;
   }
@@ -384,7 +388,9 @@ export class PatientSyncService {
     const legacyData = await this.legacyAdapter.findByPatientNumber(patientNumber);
 
     if (!legacyData) {
-      throw new NotFoundException(`Patient information not found in legacy system: ${patientNumber}`);
+      throw new NotFoundException(
+        `Patient information not found in legacy system: ${patientNumber}`,
+      );
     }
 
     // 2. Check existing patient
@@ -414,7 +420,10 @@ export class PatientSyncService {
   /**
    * Query cached patient information (sync on cache miss)
    */
-  async getPatientWithSync(patientNumber: string, maxAge: number = 5 * 60 * 1000): Promise<Patient> {
+  async getPatientWithSync(
+    patientNumber: string,
+    maxAge: number = 5 * 60 * 1000,
+  ): Promise<Patient> {
     const patient = await this.prisma.patient.findUnique({
       where: { patientNumber },
     });
@@ -509,18 +518,20 @@ export class LegacyApiClient {
     const url = `${this.baseUrl}/patients/${patientNumber}`;
 
     const response = await firstValueFrom(
-      this.httpService.get<LegacyPatientDto>(url, {
-        headers: {
-          'X-API-Key': this.apiKey,
-          'Content-Type': 'application/json',
-        },
-      }).pipe(
-        timeout(this.timeout),
-        retry({ count: 3, delay: 1000 }),
-        catchError((error: AxiosError) => {
-          throw this.handleError(error);
-        }),
-      ),
+      this.httpService
+        .get<LegacyPatientDto>(url, {
+          headers: {
+            'X-API-Key': this.apiKey,
+            'Content-Type': 'application/json',
+          },
+        })
+        .pipe(
+          timeout(this.timeout),
+          retry({ count: 3, delay: 1000 }),
+          catchError((error: AxiosError) => {
+            throw this.handleError(error);
+          }),
+        ),
     );
 
     return response.data;
@@ -530,18 +541,20 @@ export class LegacyApiClient {
     const url = `${this.baseUrl}/patients/search`;
 
     const response = await firstValueFrom(
-      this.httpService.get<LegacyPatientDto[]>(url, {
-        params: { q: query },
-        headers: {
-          'X-API-Key': this.apiKey,
-        },
-      }).pipe(
-        timeout(this.timeout),
-        retry({ count: 2, delay: 500 }),
-        catchError((error: AxiosError) => {
-          throw this.handleError(error);
-        }),
-      ),
+      this.httpService
+        .get<LegacyPatientDto[]>(url, {
+          params: { q: query },
+          headers: {
+            'X-API-Key': this.apiKey,
+          },
+        })
+        .pipe(
+          timeout(this.timeout),
+          retry({ count: 2, delay: 500 }),
+          catchError((error: AxiosError) => {
+            throw this.handleError(error);
+          }),
+        ),
     );
 
     return response.data;
@@ -590,11 +603,7 @@ export class CircuitBreaker {
   private readonly threshold = 5;
   private readonly resetTimeout = 30000; // 30 seconds
 
-  async execute<T>(
-    key: string,
-    fn: () => Promise<T>,
-    fallback?: () => T,
-  ): Promise<T> {
+  async execute<T>(key: string, fn: () => Promise<T>, fallback?: () => T): Promise<T> {
     const state = this.getState(key);
 
     // Check circuit open state
@@ -693,11 +702,11 @@ export class LegacyPatientService {
 
 ### 4.1 Synchronization Method Comparison
 
-| Method | Advantages | Disadvantages | Application |
-|------|------|------|------|
-| **On-Demand** | Always current, simple | Latency | Real-time queries |
-| **Scheduled** | Consistency, load distribution | Delay | Daily sync |
-| **Event-Based** | Real-time, efficient | Complex implementation | Bidirectional sync |
+| Method          | Advantages                     | Disadvantages          | Application        |
+| --------------- | ------------------------------ | ---------------------- | ------------------ |
+| **On-Demand**   | Always current, simple         | Latency                | Real-time queries  |
+| **Scheduled**   | Consistency, load distribution | Delay                  | Daily sync         |
+| **Event-Based** | Real-time, efficient           | Complex implementation | Bidirectional sync |
 
 ### 4.2 On-Demand Synchronization
 
@@ -824,9 +833,7 @@ export class FhirPatientMapper {
    * Convert FHIR Patient to internal Patient
    */
   fromFhir(fhir: FhirPatient): Partial<Patient> {
-    const identifier = fhir.identifier?.find(
-      (id) => id.system === 'urn:hospital:patient-number',
-    );
+    const identifier = fhir.identifier?.find((id) => id.system === 'urn:hospital:patient-number');
 
     return {
       patientNumber: identifier?.value,
@@ -863,9 +870,7 @@ export class Hl7Parser {
 
   parse(rawMessage: string): Hl7Message {
     const lines = rawMessage.split(this.segmentSeparator);
-    const segments = lines
-      .filter((line) => line.trim())
-      .map((line) => this.parseSegment(line));
+    const segments = lines.filter((line) => line.trim()).map((line) => this.parseSegment(line));
 
     return { segments };
   }
@@ -940,11 +945,7 @@ export class Hl7Parser {
 export function Retry(options: RetryOptions = {}) {
   const { maxAttempts = 3, delay = 1000, backoff = 2 } = options;
 
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {

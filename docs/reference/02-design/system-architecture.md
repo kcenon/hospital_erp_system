@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Owner | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Owner            | kcenon@naver.com |
 
 ---
 
@@ -61,13 +61,13 @@
 
 ### 1.2 Architecture Principles
 
-| Principle | Description | Application |
-|-----------|-------------|-------------|
-| **Layer Separation** | Separate Presentation, Business, Data | Improved maintainability |
-| **Modularization** | Independent modules per domain | Extensibility, easier testing |
-| **Loose Coupling** | Interface-based dependencies | Minimize change impact |
-| **Security First** | Apply security at all layers | Medical data protection |
-| **Scalability** | Horizontal scaling design | Handle usage growth |
+| Principle            | Description                           | Application                   |
+| -------------------- | ------------------------------------- | ----------------------------- |
+| **Layer Separation** | Separate Presentation, Business, Data | Improved maintainability      |
+| **Modularization**   | Independent modules per domain        | Extensibility, easier testing |
+| **Loose Coupling**   | Interface-based dependencies          | Minimize change impact        |
+| **Security First**   | Apply security at all layers          | Medical data protection       |
+| **Scalability**      | Horizontal scaling design             | Handle usage growth           |
 
 ---
 
@@ -124,16 +124,16 @@
 
 ### 2.2 Module Detailed Description
 
-| Module | Responsibility | Key Features |
-|--------|----------------|--------------|
-| **Auth Module** | Authentication/Authorization | Login, session management, permission verification |
-| **Patient Module** | Patient Management | Patient CRUD, search, history lookup |
-| **Room Module** | Room Management | Room status, layout, vacant beds |
-| **Admission Module** | Admission/Discharge Management | Admission, transfer, discharge processing |
-| **Report Module** | Reports/Logs | Nursing logs, treatment reports, vitals |
-| **Rounding Module** | Rounding Management | Round records, mobile input |
-| **Integration Module** | External Integration | Existing system synchronization |
-| **Admin Module** | Administration | Users, permissions, settings, logs |
+| Module                 | Responsibility                 | Key Features                                       |
+| ---------------------- | ------------------------------ | -------------------------------------------------- |
+| **Auth Module**        | Authentication/Authorization   | Login, session management, permission verification |
+| **Patient Module**     | Patient Management             | Patient CRUD, search, history lookup               |
+| **Room Module**        | Room Management                | Room status, layout, vacant beds                   |
+| **Admission Module**   | Admission/Discharge Management | Admission, transfer, discharge processing          |
+| **Report Module**      | Reports/Logs                   | Nursing logs, treatment reports, vitals            |
+| **Rounding Module**    | Rounding Management            | Round records, mobile input                        |
+| **Integration Module** | External Integration           | Existing system synchronization                    |
+| **Admin Module**       | Administration                 | Users, permissions, settings, logs                 |
 
 ---
 
@@ -206,7 +206,7 @@ services:
   app:
     build: ./apps/backend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://user:pass@db:5432/hospital_erp
       - REDIS_URL=redis://cache:6379
@@ -217,7 +217,7 @@ services:
   frontend:
     build: ./apps/frontend
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - API_URL=http://app:3000
 
@@ -373,36 +373,20 @@ volumes:
 ```typescript
 // Role and Permission Definitions
 enum Role {
-  ADMIN = 'ADMIN',           // System Administrator
-  DOCTOR = 'DOCTOR',         // Doctor
+  ADMIN = 'ADMIN', // System Administrator
+  DOCTOR = 'DOCTOR', // Doctor
   HEAD_NURSE = 'HEAD_NURSE', // Head Nurse
-  NURSE = 'NURSE',           // Nurse
-  CLERK = 'CLERK',           // Admissions Clerk
+  NURSE = 'NURSE', // Nurse
+  CLERK = 'CLERK', // Admissions Clerk
 }
 
 // Permission Mapping
 const permissions = {
-  [Role.ADMIN]: ['*'],  // Full Permissions
-  [Role.DOCTOR]: [
-    'patient:read', 'patient:update',
-    'report:read', 'report:write',
-    'rounding:*',
-  ],
-  [Role.HEAD_NURSE]: [
-    'patient:read', 'patient:update',
-    'room:read', 'room:update',
-    'report:*',
-  ],
-  [Role.NURSE]: [
-    'patient:read',
-    'vital:write',
-    'report:read', 'report:write:own',
-  ],
-  [Role.CLERK]: [
-    'patient:read', 'patient:create',
-    'admission:*',
-    'room:read',
-  ],
+  [Role.ADMIN]: ['*'], // Full Permissions
+  [Role.DOCTOR]: ['patient:read', 'patient:update', 'report:read', 'report:write', 'rounding:*'],
+  [Role.HEAD_NURSE]: ['patient:read', 'patient:update', 'room:read', 'room:update', 'report:*'],
+  [Role.NURSE]: ['patient:read', 'vital:write', 'report:read', 'report:write:own'],
+  [Role.CLERK]: ['patient:read', 'patient:create', 'admission:*', 'room:read'],
 };
 ```
 
@@ -448,12 +432,12 @@ const permissions = {
 
 ### 6.2 Synchronization Strategy
 
-| Data Type | Sync Method | Frequency | Notes |
-|-----------|-------------|-----------|-------|
-| Patient Basic Info | Pull (on query) | Real-time | 5-minute cache |
-| Medical Records | Pull (on query) | Real-time | Read-only |
-| Admission Status | Bidirectional | Event-based | Transaction processing |
-| Prescription Info | Pull | 5-minute batch | Read-only |
+| Data Type          | Sync Method     | Frequency      | Notes                  |
+| ------------------ | --------------- | -------------- | ---------------------- |
+| Patient Basic Info | Pull (on query) | Real-time      | 5-minute cache         |
+| Medical Records    | Pull (on query) | Real-time      | Read-only              |
+| Admission Status   | Bidirectional   | Event-based    | Transaction processing |
+| Prescription Info  | Pull            | 5-minute batch | Read-only              |
 
 ---
 
@@ -488,12 +472,12 @@ const permissions = {
 
 ### 7.2 Availability Design
 
-| Component | Availability Strategy | Target RTO | Target RPO |
-|-----------|----------------------|------------|------------|
-| Application | Multi-AZ Deployment | 1 min | 0 |
-| Database | RDS Multi-AZ | 5 min | 1 min |
-| Cache | Redis Cluster | 1 min | 5 min |
-| Storage | S3 Cross-Region | 1 hour | 0 |
+| Component   | Availability Strategy | Target RTO | Target RPO |
+| ----------- | --------------------- | ---------- | ---------- |
+| Application | Multi-AZ Deployment   | 1 min      | 0          |
+| Database    | RDS Multi-AZ          | 5 min      | 1 min      |
+| Cache       | Redis Cluster         | 1 min      | 5 min      |
+| Storage     | S3 Cross-Region       | 1 hour     | 0          |
 
 ---
 
@@ -531,14 +515,14 @@ const permissions = {
 
 ### 8.2 Key Metrics
 
-| Metric | Threshold | Alert |
-|--------|-----------|-------|
-| API Response Time (P95) | > 1 second | Warning |
-| API Error Rate | > 1% | Critical |
-| CPU Usage | > 80% | Warning |
-| Memory Usage | > 85% | Warning |
-| DB Connection Pool | > 80% | Warning |
-| Concurrent Users | > 100 | Info |
+| Metric                  | Threshold  | Alert    |
+| ----------------------- | ---------- | -------- |
+| API Response Time (P95) | > 1 second | Warning  |
+| API Error Rate          | > 1%       | Critical |
+| CPU Usage               | > 80%      | Warning  |
+| Memory Usage            | > 85%      | Warning  |
+| DB Connection Pool      | > 80%      | Warning  |
+| Concurrent Users        | > 100      | Info     |
 
 ---
 
@@ -551,6 +535,7 @@ const permissions = {
 **Decision**: Adopt Modular Monolithic Architecture
 
 **Rationale**:
+
 1. Microservices is excessive for initial scale (under 100 concurrent users)
 2. Minimize development/operations complexity
 3. Modules can be separated later if needed
@@ -562,6 +547,7 @@ const permissions = {
 **Decision**: Adopt PostgreSQL 16
 
 **Rationale**:
+
 1. ACID guarantees essential for medical data
 2. Flexible schema extension with JSONB
 3. Per-patient access control with Row-Level Security

@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -40,24 +40,24 @@
 
 ### 1.2 LIS 데이터 분류
 
-| 분류 | 데이터 유형 | ERP 활용 |
-|------|------------|----------|
-| **환자 인적사항** | 환자 ID, 이름, 생년월일, 성별 | 환자 식별 |
-| **검사 오더** | 오더 ID, 검사 코드, 오더 일시 | 오더 추적 |
-| **검사 결과** | 결과값, 단위, 참고치 | 임상 검토 |
-| **결과 상태** | 대기, 예비, 최종, 수정 | 워크플로우 관리 |
-| **검체 정보** | 채취일, 검체 유형 | 검체 추적 |
+| 분류              | 데이터 유형                   | ERP 활용        |
+| ----------------- | ----------------------------- | --------------- |
+| **환자 인적사항** | 환자 ID, 이름, 생년월일, 성별 | 환자 식별       |
+| **검사 오더**     | 오더 ID, 검사 코드, 오더 일시 | 오더 추적       |
+| **검사 결과**     | 결과값, 단위, 참고치          | 임상 검토       |
+| **결과 상태**     | 대기, 예비, 최종, 수정        | 워크플로우 관리 |
+| **검체 정보**     | 채취일, 검체 유형             | 검체 추적       |
 
 ### 1.3 주요 검사 항목
 
-| 분류 | 검사 항목 | 임상적 의의 |
-|------|----------|------------|
-| **혈액학** | CBC, WBC 감별, 혈색소 | 혈액 세포 분석 |
-| **생화학** | BUN, 크레아티닌, 전해질, 간기능 | 장기 기능 평가 |
-| **응고** | PT, aPTT, INR | 출혈/응고 장애 |
-| **요검사** | UA, 요배양 | 신장/요로감염 평가 |
-| **심장표지자** | 트로포닌, BNP, CK-MB | 심장 질환 |
-| **감염표지자** | CRP, 프로칼시토닌, ESR | 염증/감염 |
+| 분류           | 검사 항목                       | 임상적 의의        |
+| -------------- | ------------------------------- | ------------------ |
+| **혈액학**     | CBC, WBC 감별, 혈색소           | 혈액 세포 분석     |
+| **생화학**     | BUN, 크레아티닌, 전해질, 간기능 | 장기 기능 평가     |
+| **응고**       | PT, aPTT, INR                   | 출혈/응고 장애     |
+| **요검사**     | UA, 요배양                      | 신장/요로감염 평가 |
+| **심장표지자** | 트로포닌, BNP, CK-MB            | 심장 질환          |
+| **감염표지자** | CRP, 프로칼시토닌, ESR          | 염증/감염          |
 
 ---
 
@@ -69,13 +69,13 @@
 
 #### 2.1.1 LIS용 HL7 메시지 유형
 
-| 메시지 유형 | 트리거 이벤트 | 설명 |
-|------------|--------------|------|
-| **ORM^O01** | 오더 메시지 | 새 검사 오더 요청 |
-| **ORU^R01** | 관찰 결과 | 검사 결과 보고 |
-| **ORL^O22** | 일반 검사 오더 응답 | 오더 확인 |
-| **QRY^R02** | 결과 조회 | 결과 요청 |
-| **ADT^A01** | 입원/방문 알림 | 환자 입원 |
+| 메시지 유형 | 트리거 이벤트       | 설명              |
+| ----------- | ------------------- | ----------------- |
+| **ORM^O01** | 오더 메시지         | 새 검사 오더 요청 |
+| **ORU^R01** | 관찰 결과           | 검사 결과 보고    |
+| **ORL^O22** | 일반 검사 오더 응답 | 오더 확인         |
+| **QRY^R02** | 결과 조회           | 결과 요청         |
+| **ADT^A01** | 입원/방문 알림      | 환자 입원         |
 
 #### 2.1.2 HL7 v2.x 메시지 구조
 
@@ -90,22 +90,22 @@ OBX|3|NM|3094-0^BUN^LN||15|mg/dL|7-20|N|||F
 
 **세그먼트 설명:**
 
-| 세그먼트 | 명칭 | 주요 필드 |
-|---------|------|----------|
-| **MSH** | 메시지 헤더 | 송신/수신 앱, 메시지 유형, 버전 |
-| **PID** | 환자 식별 | 환자 ID, 이름, 생년월일, 성별 |
-| **OBR** | 관찰 요청 | 오더 ID, 검사 코드, 채취 시간 |
-| **OBX** | 관찰 결과 | 결과값, 단위, 참고치, 상태 |
+| 세그먼트 | 명칭        | 주요 필드                       |
+| -------- | ----------- | ------------------------------- |
+| **MSH**  | 메시지 헤더 | 송신/수신 앱, 메시지 유형, 버전 |
+| **PID**  | 환자 식별   | 환자 ID, 이름, 생년월일, 성별   |
+| **OBR**  | 관찰 요청   | 오더 ID, 검사 코드, 채취 시간   |
+| **OBX**  | 관찰 결과   | 결과값, 단위, 참고치, 상태      |
 
 #### 2.1.3 HL7 결과 상태 코드
 
-| 코드 | 의미 | 설명 |
-|------|------|------|
-| **F** | Final | 확인된 최종 결과 |
-| **P** | Preliminary | 미확인 예비 결과 |
-| **C** | Corrected | 이전 보고 결과 수정 |
-| **X** | Cancelled | 오더/결과 취소 |
-| **I** | Pending | 결과 대기 중 |
+| 코드  | 의미        | 설명                |
+| ----- | ----------- | ------------------- |
+| **F** | Final       | 확인된 최종 결과    |
+| **P** | Preliminary | 미확인 예비 결과    |
+| **C** | Corrected   | 이전 보고 결과 수정 |
+| **X** | Cancelled   | 오더/결과 취소      |
+| **I** | Pending     | 결과 대기 중        |
 
 ### 2.2 FHIR (Fast Healthcare Interoperability Resources)
 
@@ -113,13 +113,13 @@ OBX|3|NM|3094-0^BUN^LN||15|mg/dL|7-20|N|||F
 
 #### 2.2.1 검사 결과용 FHIR 리소스
 
-| 리소스 | 설명 | 사용 사례 |
-|--------|------|----------|
+| 리소스               | 설명             | 사용 사례          |
+| -------------------- | ---------------- | ------------------ |
 | **DiagnosticReport** | 전체 검사 보고서 | 패널/프로파일 결과 |
-| **Observation** | 개별 검사 결과 | 단일 검사값 |
-| **ServiceRequest** | 검사 오더 | 오더 생성 |
-| **Specimen** | 검체 정보 | 검체 추적 |
-| **Patient** | 환자 인적사항 | 환자 식별 |
+| **Observation**      | 개별 검사 결과   | 단일 검사값        |
+| **ServiceRequest**   | 검사 오더        | 오더 생성          |
+| **Specimen**         | 검체 정보        | 검체 추적          |
+| **Patient**          | 환자 인적사항    | 환자 식별          |
 
 #### 2.2.2 FHIR DiagnosticReport 예시
 
@@ -128,19 +128,25 @@ OBX|3|NM|3094-0^BUN^LN||15|mg/dL|7-20|N|||F
   "resourceType": "DiagnosticReport",
   "id": "lab-report-001",
   "status": "final",
-  "category": [{
-    "coding": [{
-      "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
-      "code": "LAB",
-      "display": "Laboratory"
-    }]
-  }],
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "LAB",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
   "code": {
-    "coding": [{
-      "system": "http://loinc.org",
-      "code": "24323-8",
-      "display": "종합 대사 패널"
-    }]
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "24323-8",
+        "display": "종합 대사 패널"
+      }
+    ]
   },
   "subject": {
     "reference": "Patient/12345678"
@@ -159,14 +165,14 @@ OBX|3|NM|3094-0^BUN^LN||15|mg/dL|7-20|N|||F
 
 **LOINC**은 검사 항목을 식별하는 국제 표준 코드입니다.
 
-| LOINC 코드 | 성분 | 속성 | 검체 |
-|-----------|------|------|------|
-| 2345-7 | 포도당 | 질량농도 | 혈청/혈장 |
-| 2160-0 | 크레아티닌 | 질량농도 | 혈청/혈장 |
-| 3094-0 | 요소질소 | 질량농도 | 혈청/혈장 |
-| 718-7 | 혈색소 | 질량농도 | 전혈 |
-| 4544-3 | 적혈구용적률 | 부피분율 | 전혈 |
-| 777-3 | 혈소판 | 수농도 | 전혈 |
+| LOINC 코드 | 성분         | 속성     | 검체      |
+| ---------- | ------------ | -------- | --------- |
+| 2345-7     | 포도당       | 질량농도 | 혈청/혈장 |
+| 2160-0     | 크레아티닌   | 질량농도 | 혈청/혈장 |
+| 3094-0     | 요소질소     | 질량농도 | 혈청/혈장 |
+| 718-7      | 혈색소       | 질량농도 | 전혈      |
+| 4544-3     | 적혈구용적률 | 부피분율 | 전혈      |
+| 777-3      | 혈소판       | 수농도   | 전혈      |
 
 ---
 
@@ -329,14 +335,14 @@ async receiveLabResult(@Body() hl7Message: string): Promise<void> {
 
 #### 3.4.2 LIS 연동을 위한 pacs_bridge 기능
 
-| 기능 | 설명 | 장점 |
-|------|------|------|
+| 기능                    | 설명                                         | 장점                                 |
+| ----------------------- | -------------------------------------------- | ------------------------------------ |
 | **HL7 v2.x 게이트웨이** | MLLP 전송을 포함한 완전한 HL7 v2.x 파서/빌더 | HL7 파싱을 처음부터 구현할 필요 없음 |
-| **FHIR R4 게이트웨이** | RESTful FHIR R4 클라이언트/서버 | 최신 API 지원 즉시 사용 가능 |
-| **메시지 큐** | 재시도 로직을 포함한 안정적인 메시지 큐잉 | 네트워크 장애를 우아하게 처리 |
-| **프로토콜 변환** | HL7/FHIR/JSON 간 자동 변환 | ERP를 위한 통합 REST API |
-| **감사 로깅** | 내장 의료 등급 감사 추적 | 규정 준수 준비 완료 |
-| **TLS/mTLS 지원** | 보안 통신 채널 | 보안 인프라 포함 |
+| **FHIR R4 게이트웨이**  | RESTful FHIR R4 클라이언트/서버              | 최신 API 지원 즉시 사용 가능         |
+| **메시지 큐**           | 재시도 로직을 포함한 안정적인 메시지 큐잉    | 네트워크 장애를 우아하게 처리        |
+| **프로토콜 변환**       | HL7/FHIR/JSON 간 자동 변환                   | ERP를 위한 통합 REST API             |
+| **감사 로깅**           | 내장 의료 등급 감사 추적                     | 규정 준수 준비 완료                  |
+| **TLS/mTLS 지원**       | 보안 통신 채널                               | 보안 인프라 포함                     |
 
 #### 3.4.3 연동 코드 예시
 
@@ -356,16 +362,19 @@ export class LabResultsService {
 
     const response = await this.httpService.get<LabResultDto[]>(url, {
       headers: {
-        'Authorization': `Bearer ${await this.getAccessToken()}`,
-        'Accept': 'application/json'
-      }
+        Authorization: `Bearer ${await this.getAccessToken()}`,
+        Accept: 'application/json',
+      },
     });
 
-    return response.data.map(dto => this.mapToLabResult(dto));
+    return response.data.map((dto) => this.mapToLabResult(dto));
   }
 
   // 실시간 검사 결과 알림 구독
-  async subscribeToResults(patientId: string, callback: (result: LabResult) => void): Promise<void> {
+  async subscribeToResults(
+    patientId: string,
+    callback: (result: LabResult) => void,
+  ): Promise<void> {
     const wsUrl = `${this.pacsBridgeUrl.replace('http', 'ws')}/ws/lab-results/${patientId}`;
     // pacs_bridge가 HL7 ORU^R01 → JSON 변환을 자동으로 처리
     this.websocketClient.connect(wsUrl, callback);
@@ -394,25 +403,27 @@ export class LabResultsService {
 
 #### 3.4.4 pacs_bridge 연동의 장점
 
-| 측면 | 직접 연동 | pacs_bridge 연동 |
-|------|----------|------------------|
-| **개발 시간** | 4-6주 | 1-2주 |
-| **HL7 파서** | 처음부터 구현 | 사전 구축 및 테스트 완료 |
-| **FHIR 클라이언트** | 처음부터 구현 | 사전 구축 및 테스트 완료 |
-| **오류 처리** | 커스텀 구현 | 프로덕션 준비 완료 |
-| **보안** | 커스텀 TLS/인증 설정 | 내장 TLS/OAuth2 |
-| **모니터링** | 커스텀 구현 | 내장 메트릭/로그 |
-| **유지보수** | 전체 소유권 | 공유 인프라 |
+| 측면                | 직접 연동            | pacs_bridge 연동         |
+| ------------------- | -------------------- | ------------------------ |
+| **개발 시간**       | 4-6주                | 1-2주                    |
+| **HL7 파서**        | 처음부터 구현        | 사전 구축 및 테스트 완료 |
+| **FHIR 클라이언트** | 처음부터 구현        | 사전 구축 및 테스트 완료 |
+| **오류 처리**       | 커스텀 구현          | 프로덕션 준비 완료       |
+| **보안**            | 커스텀 TLS/인증 설정 | 내장 TLS/OAuth2          |
+| **모니터링**        | 커스텀 구현          | 내장 메트릭/로그         |
+| **유지보수**        | 전체 소유권          | 공유 인프라              |
 
 #### 3.4.5 pacs_bridge 사용 시점
 
 **권장 상황:**
+
 - 병원이 이미 pacs_system을 PACS 연동에 사용 중이거나 사용 예정인 경우
 - 빠른 시장 출시가 필요한 경우
 - LIS가 표준 HL7 v2.x 또는 FHIR R4 프로토콜을 사용하는 경우
 - 여러 외부 시스템(LIS, EMR, PACS)과의 연동이 필요한 경우
 
 **직접 연동 고려 상황:**
+
 - LIS가 독자적/비표준 프로토콜을 사용하는 경우
 - 병원에 기존 연동 미들웨어가 있는 경우
 - pacs_bridge에서 지원하지 않는 특정 커스터마이징이 필요한 경우
@@ -435,9 +446,9 @@ interface LabResult {
   orderDateTime: Date;
 
   // 검사 정보
-  testCode: string;        // LOINC 코드 권장
+  testCode: string; // LOINC 코드 권장
   testName: string;
-  category: LabCategory;   // CHEM, HEME, COAG 등
+  category: LabCategory; // CHEM, HEME, COAG 등
 
   // 결과 정보
   value: string | number;
@@ -447,8 +458,8 @@ interface LabResult {
   referenceRangeText?: string;
 
   // 상태 및 플래그
-  status: ResultStatus;    // FINAL, PRELIMINARY, CORRECTED
-  abnormalFlag?: AbnormalFlag;  // L, H, LL, HH, N
+  status: ResultStatus; // FINAL, PRELIMINARY, CORRECTED
+  abnormalFlag?: AbnormalFlag; // L, H, LL, HH, N
   criticalFlag: boolean;
 
   // 타임스탬프
@@ -462,30 +473,30 @@ interface LabResult {
 }
 
 enum LabCategory {
-  CHEMISTRY = 'CHEM',      // 생화학
-  HEMATOLOGY = 'HEME',     // 혈액학
-  COAGULATION = 'COAG',    // 응고
-  URINALYSIS = 'UA',       // 요검사
-  MICROBIOLOGY = 'MICRO',  // 미생물
-  IMMUNOLOGY = 'IMMU',     // 면역
-  BLOOD_BANK = 'BB'        // 혈액은행
+  CHEMISTRY = 'CHEM', // 생화학
+  HEMATOLOGY = 'HEME', // 혈액학
+  COAGULATION = 'COAG', // 응고
+  URINALYSIS = 'UA', // 요검사
+  MICROBIOLOGY = 'MICRO', // 미생물
+  IMMUNOLOGY = 'IMMU', // 면역
+  BLOOD_BANK = 'BB', // 혈액은행
 }
 
 enum ResultStatus {
-  PENDING = 'P',           // 대기
-  PRELIMINARY = 'PR',      // 예비
-  FINAL = 'F',             // 최종
-  CORRECTED = 'C',         // 수정
-  CANCELLED = 'X'          // 취소
+  PENDING = 'P', // 대기
+  PRELIMINARY = 'PR', // 예비
+  FINAL = 'F', // 최종
+  CORRECTED = 'C', // 수정
+  CANCELLED = 'X', // 취소
 }
 
 enum AbnormalFlag {
-  LOW = 'L',               // 저
-  HIGH = 'H',              // 고
-  CRITICAL_LOW = 'LL',     // 위험 저
-  CRITICAL_HIGH = 'HH',    // 위험 고
-  NORMAL = 'N',            // 정상
-  ABNORMAL = 'A'           // 비정상
+  LOW = 'L', // 저
+  HIGH = 'H', // 고
+  CRITICAL_LOW = 'LL', // 위험 저
+  CRITICAL_HIGH = 'HH', // 위험 고
+  NORMAL = 'N', // 정상
+  ABNORMAL = 'A', // 비정상
 }
 ```
 
@@ -556,14 +567,14 @@ CREATE INDEX idx_lab_results_status ON lab.lab_results(status);
 
 **쿼리 파라미터:**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| `category` | string | 분류별 필터 (CHEM, HEME 등) |
-| `startDate` | ISO 날짜 | 이 날짜부터의 결과 |
-| `endDate` | ISO 날짜 | 이 날짜까지의 결과 |
-| `status` | string | 상태별 필터 (F, P, C) |
-| `criticalOnly` | boolean | 위험값만 |
-| `limit` | number | 최대 결과 수 (기본: 50) |
+| 파라미터       | 타입     | 설명                        |
+| -------------- | -------- | --------------------------- |
+| `category`     | string   | 분류별 필터 (CHEM, HEME 등) |
+| `startDate`    | ISO 날짜 | 이 날짜부터의 결과          |
+| `endDate`      | ISO 날짜 | 이 날짜까지의 결과          |
+| `status`       | string   | 상태별 필터 (F, P, C)       |
+| `criticalOnly` | boolean  | 위험값만                    |
+| `limit`        | number   | 최대 결과 수 (기본: 50)     |
 
 **응답:**
 
@@ -611,25 +622,25 @@ CREATE INDEX idx_lab_results_status ON lab.lab_results(status);
 
 ### 6.1 데이터 보호
 
-| 측면 | 요구사항 | 구현 |
-|------|----------|------|
-| **전송 중 암호화** | TLS 1.3 | 모든 API 호출에 HTTPS |
-| **저장 시 암호화** | AES-256 | 데이터베이스 암호화 |
-| **접근 제어** | 역할 기반 | 권한 있는 직원만 |
-| **감사 로깅** | 모든 접근 | 모든 결과 조회 기록 |
-| **데이터 보존** | 5년 이상 | 의료법 준수 |
+| 측면               | 요구사항  | 구현                  |
+| ------------------ | --------- | --------------------- |
+| **전송 중 암호화** | TLS 1.3   | 모든 API 호출에 HTTPS |
+| **저장 시 암호화** | AES-256   | 데이터베이스 암호화   |
+| **접근 제어**      | 역할 기반 | 권한 있는 직원만      |
+| **감사 로깅**      | 모든 접근 | 모든 결과 조회 기록   |
+| **데이터 보존**    | 5년 이상  | 의료법 준수           |
 
 ### 6.2 위험 수치 알림
 
 ```typescript
 // 위험 수치 임계값 (예시)
 const criticalThresholds = {
-  '2345-7': { low: 40, high: 500 },     // 포도당 mg/dL
-  '2160-0': { low: null, high: 10 },    // 크레아티닌 mg/dL
-  '2823-3': { low: 2.5, high: 6.5 },    // 칼륨 mEq/L
-  '2951-2': { low: 120, high: 160 },    // 나트륨 mEq/L
-  '718-7': { low: 7, high: 20 },        // 혈색소 g/dL
-  '777-3': { low: 50000, high: null }   // 혈소판 /uL
+  '2345-7': { low: 40, high: 500 }, // 포도당 mg/dL
+  '2160-0': { low: null, high: 10 }, // 크레아티닌 mg/dL
+  '2823-3': { low: 2.5, high: 6.5 }, // 칼륨 mEq/L
+  '2951-2': { low: 120, high: 160 }, // 나트륨 mEq/L
+  '718-7': { low: 7, high: 20 }, // 혈색소 g/dL
+  '777-3': { low: 50000, high: null }, // 혈소판 /uL
 };
 ```
 
@@ -674,13 +685,13 @@ const criticalThresholds = {
 
 ### 8.1 국내 주요 LIS 벤더
 
-| 벤더 | 일반 인터페이스 | 비고 |
-|------|----------------|------|
-| **유투바이오** | HL7 v2.x, Web API | 중소 병원에 일반적 |
-| **랩지노믹스** | HL7 v2.x | 유전자 검사 특화 |
-| **SCL (서울의과학연구소)** | HL7 v2.x, REST API | 수탁검사 기관 |
-| **GC녹십자의료재단** | HL7 v2.x | 대규모 네트워크 |
-| **삼광의료재단** | HL7 v2.x | 넓은 커버리지 |
+| 벤더                       | 일반 인터페이스    | 비고               |
+| -------------------------- | ------------------ | ------------------ |
+| **유투바이오**             | HL7 v2.x, Web API  | 중소 병원에 일반적 |
+| **랩지노믹스**             | HL7 v2.x           | 유전자 검사 특화   |
+| **SCL (서울의과학연구소)** | HL7 v2.x, REST API | 수탁검사 기관      |
+| **GC녹십자의료재단**       | HL7 v2.x           | 대규모 네트워크    |
+| **삼광의료재단**           | HL7 v2.x           | 넓은 커버리지      |
 
 ### 8.2 연동 시 고려사항
 
@@ -703,10 +714,10 @@ const criticalThresholds = {
 
 ## 변경 이력
 
-| 일자 | 버전 | 변경 내용 |
-|------|------|----------|
+| 일자       | 버전    | 변경 내용      |
+| ---------- | ------- | -------------- |
 | 2025-12-29 | 0.1.0.0 | 최초 문서 생성 |
 
 ---
 
-*최종 수정: 2025-12-29*
+_최종 수정: 2025-12-29_

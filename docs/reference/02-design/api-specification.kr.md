@@ -2,13 +2,13 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 관리자 | kcenon@naver.com |
-| API 버전 | v1 |
-| 기본 URL | `https://api.hospital-erp.com/v1` |
+| 항목      | 내용                              |
+| --------- | --------------------------------- |
+| 문서 버전 | 0.1.0.0                           |
+| 작성일    | 2025-12-29                        |
+| 관리자    | kcenon@naver.com                  |
+| API 버전  | v1                                |
+| 기본 URL  | `https://api.hospital-erp.com/v1` |
 
 ---
 
@@ -16,13 +16,13 @@
 
 ### 1.1 설계 원칙
 
-| 원칙 | 설명 |
-|------|------|
-| **RESTful** | 리소스 중심 설계, HTTP 메서드 활용 |
-| **JSON** | 요청/응답 본문은 JSON 형식 |
-| **버전 관리** | URL 경로에 버전 포함 (/v1/) |
-| **일관성** | 명명 규칙, 응답 형식 통일 |
-| **문서화** | OpenAPI 3.0 (Swagger) 자동 생성 |
+| 원칙          | 설명                               |
+| ------------- | ---------------------------------- |
+| **RESTful**   | 리소스 중심 설계, HTTP 메서드 활용 |
+| **JSON**      | 요청/응답 본문은 JSON 형식         |
+| **버전 관리** | URL 경로에 버전 포함 (/v1/)        |
+| **일관성**    | 명명 규칙, 응답 형식 통일          |
+| **문서화**    | OpenAPI 3.0 (Swagger) 자동 생성    |
 
 ### 1.2 공통 헤더
 
@@ -96,19 +96,19 @@ X-RateLimit-Reset: 1704067200
 
 ### 1.4 HTTP 상태 코드
 
-| 코드 | 의미 | 사용 상황 |
-|------|------|----------|
-| 200 | OK | 성공 (조회, 수정) |
-| 201 | Created | 리소스 생성 성공 |
-| 204 | No Content | 삭제 성공 |
-| 400 | Bad Request | 잘못된 요청 |
-| 401 | Unauthorized | 인증 필요 |
-| 403 | Forbidden | 권한 없음 |
-| 404 | Not Found | 리소스 없음 |
-| 409 | Conflict | 충돌 (중복 등) |
-| 422 | Unprocessable | 유효성 검증 실패 |
-| 429 | Too Many Requests | 요청 제한 초과 |
-| 500 | Internal Error | 서버 오류 |
+| 코드 | 의미              | 사용 상황         |
+| ---- | ----------------- | ----------------- |
+| 200  | OK                | 성공 (조회, 수정) |
+| 201  | Created           | 리소스 생성 성공  |
+| 204  | No Content        | 삭제 성공         |
+| 400  | Bad Request       | 잘못된 요청       |
+| 401  | Unauthorized      | 인증 필요         |
+| 403  | Forbidden         | 권한 없음         |
+| 404  | Not Found         | 리소스 없음       |
+| 409  | Conflict          | 충돌 (중복 등)    |
+| 422  | Unprocessable     | 유효성 검증 실패  |
+| 429  | Too Many Requests | 요청 제한 초과    |
+| 500  | Internal Error    | 서버 오류         |
 
 ---
 
@@ -121,6 +121,7 @@ POST /auth/login
 ```
 
 **요청**
+
 ```json
 {
   "username": "nurse001",
@@ -129,6 +130,7 @@ POST /auth/login
 ```
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -155,6 +157,7 @@ POST /auth/refresh
 ```
 
 **요청**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
@@ -168,6 +171,7 @@ POST /auth/logout
 ```
 
 **요청**
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
@@ -181,6 +185,7 @@ POST /auth/change-password
 ```
 
 **요청**
+
 ```json
 {
   "currentPassword": "OldP@ss123",
@@ -189,6 +194,7 @@ POST /auth/change-password
 ```
 
 **비밀번호 요구사항**
+
 - 최소 8자 이상
 - 대문자 1개 이상 포함
 - 소문자 1개 이상 포함
@@ -196,6 +202,7 @@ POST /auth/change-password
 - 특수문자 1개 이상 포함
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -207,11 +214,11 @@ POST /auth/change-password
 
 **에러 응답**
 
-| HTTP | 코드 | 설명 |
-|------|------|------|
-| 401 | AUTH_INVALID_CREDENTIALS | 현재 비밀번호가 올바르지 않음 |
-| 403 | AUTH_SAME_PASSWORD | 새 비밀번호가 현재 비밀번호와 동일함 |
-| 422 | VALIDATION_FAILED | 비밀번호가 요구사항을 충족하지 않음 |
+| HTTP | 코드                     | 설명                                 |
+| ---- | ------------------------ | ------------------------------------ |
+| 401  | AUTH_INVALID_CREDENTIALS | 현재 비밀번호가 올바르지 않음        |
+| 403  | AUTH_SAME_PASSWORD       | 새 비밀번호가 현재 비밀번호와 동일함 |
+| 422  | VALIDATION_FAILED        | 비밀번호가 요구사항을 충족하지 않음  |
 
 ---
 
@@ -225,17 +232,18 @@ GET /patients
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 | 기본값 |
-|----------|------|------|--------|
-| page | integer | 페이지 번호 | 1 |
-| limit | integer | 페이지당 항목 수 | 20 |
-| search | string | 이름/환자번호 검색 | - |
-| status | string | 상태 필터 (ADMITTED, DISCHARGED) | - |
-| floorId | uuid | 층별 필터 | - |
-| sortBy | string | 정렬 기준 | name |
-| sortOrder | string | 정렬 방향 (asc, desc) | asc |
+| 파라미터  | 타입    | 설명                             | 기본값 |
+| --------- | ------- | -------------------------------- | ------ |
+| page      | integer | 페이지 번호                      | 1      |
+| limit     | integer | 페이지당 항목 수                 | 20     |
+| search    | string  | 이름/환자번호 검색               | -      |
+| status    | string  | 상태 필터 (ADMITTED, DISCHARGED) | -      |
+| floorId   | uuid    | 층별 필터                        | -      |
+| sortBy    | string  | 정렬 기준                        | name   |
+| sortOrder | string  | 정렬 방향 (asc, desc)            | asc    |
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -276,6 +284,7 @@ GET /patients/{patientId}
 ```
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -334,6 +343,7 @@ POST /patients
 ```
 
 **요청**
+
 ```json
 {
   "patientNumber": "P2025001234",
@@ -356,6 +366,7 @@ PATCH /patients/{patientId}
 ```
 
 **요청**
+
 ```json
 {
   "phone": "010-1111-2222",
@@ -371,8 +382,8 @@ GET /patients/search/legacy
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
+| 파라미터        | 타입   | 설명                |
+| --------------- | ------ | ------------------- |
 | legacyPatientId | string | 기존 시스템 환자 ID |
 
 ---
@@ -387,14 +398,15 @@ GET /rooms
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| buildingId | uuid | 건물 필터 |
-| floorId | uuid | 층 필터 |
-| status | string | 상태 (AVAILABLE, FULL, MAINTENANCE) |
-| hasVacancy | boolean | 빈 병상 있음 |
+| 파라미터   | 타입    | 설명                                |
+| ---------- | ------- | ----------------------------------- |
+| buildingId | uuid    | 건물 필터                           |
+| floorId    | uuid    | 층 필터                             |
+| status     | string  | 상태 (AVAILABLE, FULL, MAINTENANCE) |
+| hasVacancy | boolean | 빈 병상 있음                        |
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -441,6 +453,7 @@ GET /rooms/dashboard/floor/{floorId}
 ```
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -479,9 +492,9 @@ GET /beds/available
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| floorId | uuid | 층 필터 |
+| 파라미터 | 타입   | 설명                              |
+| -------- | ------ | --------------------------------- |
+| floorId  | uuid   | 층 필터                           |
 | roomType | string | 병실 유형 (SINGLE, DOUBLE, MULTI) |
 
 ---
@@ -495,6 +508,7 @@ POST /admissions
 ```
 
 **요청**
+
 ```json
 {
   "patientId": "patient-uuid",
@@ -511,6 +525,7 @@ POST /admissions
 ```
 
 **응답 (201 Created)**
+
 ```json
 {
   "success": true,
@@ -539,14 +554,14 @@ GET /admissions
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| status | string | ACTIVE, DISCHARGED |
-| floorId | uuid | 층 필터 |
-| doctorId | uuid | 담당의 필터 |
-| nurseId | uuid | 담당 간호사 필터 |
-| fromDate | date | 입원일 시작 |
-| toDate | date | 입원일 종료 |
+| 파라미터 | 타입   | 설명               |
+| -------- | ------ | ------------------ |
+| status   | string | ACTIVE, DISCHARGED |
+| floorId  | uuid   | 층 필터            |
+| doctorId | uuid   | 담당의 필터        |
+| nurseId  | uuid   | 담당 간호사 필터   |
+| fromDate | date   | 입원일 시작        |
+| toDate   | date   | 입원일 종료        |
 
 ### 5.4 전실 처리
 
@@ -555,6 +570,7 @@ POST /admissions/{admissionId}/transfer
 ```
 
 **요청**
+
 ```json
 {
   "toBedId": "new-bed-uuid",
@@ -571,6 +587,7 @@ POST /admissions/{admissionId}/discharge
 ```
 
 **요청**
+
 ```json
 {
   "dischargeDate": "2025-12-29",
@@ -588,6 +605,7 @@ GET /admissions/by-number/{admissionNumber}
 ```
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -619,9 +637,9 @@ GET /admissions/floor/{floorId}
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| status | string | 입원 상태 필터 |
+| 파라미터 | 타입   | 설명           |
+| -------- | ------ | -------------- |
+| status   | string | 입원 상태 필터 |
 
 ### 5.9 전실 이력 조회
 
@@ -630,6 +648,7 @@ GET /admissions/{admissionId}/transfers
 ```
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -660,6 +679,7 @@ POST /admissions/{admissionId}/vitals
 ```
 
 **요청**
+
 ```json
 {
   "measuredAt": "2025-12-29T08:00:00Z",
@@ -684,13 +704,14 @@ GET /admissions/{admissionId}/vitals
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
+| 파라미터 | 타입     | 설명      |
+| -------- | -------- | --------- |
 | fromDate | datetime | 시작 일시 |
-| toDate | datetime | 종료 일시 |
-| limit | integer | 최근 N건 |
+| toDate   | datetime | 종료 일시 |
+| limit    | integer  | 최근 N건  |
 
 **응답 (200 OK)**
+
 ```json
 {
   "success": true,
@@ -720,6 +741,7 @@ POST /admissions/{admissionId}/daily-reports
 ```
 
 **요청**
+
 ```json
 {
   "reportDate": "2025-12-29",
@@ -749,6 +771,7 @@ POST /admissions/{admissionId}/intake-outputs
 ```
 
 **요청**
+
 ```json
 {
   "recordDate": "2025-12-29",
@@ -767,6 +790,7 @@ POST /admissions/{admissionId}/medications
 ```
 
 **요청**
+
 ```json
 {
   "medicationName": "Ceftriaxone",
@@ -788,6 +812,7 @@ POST /admissions/{admissionId}/nursing-notes
 ```
 
 **요청**
+
 ```json
 {
   "noteDatetime": "2025-12-29T10:30:00Z",
@@ -811,6 +836,7 @@ POST /rounds
 ```
 
 **요청**
+
 ```json
 {
   "roundDate": "2025-12-29",
@@ -828,11 +854,11 @@ GET /rounds
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| roundDate | date | 라운딩 날짜 |
-| floorId | uuid | 층 필터 |
-| status | string | PLANNED, IN_PROGRESS, COMPLETED |
+| 파라미터  | 타입   | 설명                            |
+| --------- | ------ | ------------------------------- |
+| roundDate | date   | 라운딩 날짜                     |
+| floorId   | uuid   | 층 필터                         |
+| status    | string | PLANNED, IN_PROGRESS, COMPLETED |
 
 ### 7.3 라운딩 시작
 
@@ -847,6 +873,7 @@ POST /rounds/{roundId}/records
 ```
 
 **요청**
+
 ```json
 {
   "admissionId": "admission-uuid",
@@ -882,6 +909,7 @@ POST /admin/users
 ```
 
 **요청**
+
 ```json
 {
   "employeeId": "EMP2025001",
@@ -924,13 +952,13 @@ GET /admin/audit/access-logs
 
 **쿼리 파라미터**
 
-| 파라미터 | 타입 | 설명 |
-|----------|------|------|
-| userId | uuid | 사용자 필터 |
-| resourceType | string | 리소스 유형 |
-| action | string | 행위 |
-| fromDate | datetime | 시작 일시 |
-| toDate | datetime | 종료 일시 |
+| 파라미터     | 타입     | 설명        |
+| ------------ | -------- | ----------- |
+| userId       | uuid     | 사용자 필터 |
+| resourceType | string   | 리소스 유형 |
+| action       | string   | 행위        |
+| fromDate     | datetime | 시작 일시   |
+| toDate       | datetime | 종료 일시   |
 
 ---
 
@@ -942,21 +970,21 @@ GET /admin/audit/access-logs
 // 클라이언트 연결
 const socket = io('wss://api.hospital-erp.com', {
   auth: {
-    token: 'Bearer <access_token>'
-  }
+    token: 'Bearer <access_token>',
+  },
 });
 ```
 
 ### 9.2 이벤트
 
-| 이벤트 | 방향 | 설명 |
-|--------|------|------|
-| `room:status` | Server → Client | 병실 상태 변경 |
-| `admission:created` | Server → Client | 새 입원 |
-| `admission:discharged` | Server → Client | 퇴원 처리 |
-| `vital:recorded` | Server → Client | 바이탈 기록 |
-| `round:started` | Server → Client | 라운딩 시작 |
-| `subscribe:floor` | Client → Server | 층별 구독 |
+| 이벤트                 | 방향            | 설명           |
+| ---------------------- | --------------- | -------------- |
+| `room:status`          | Server → Client | 병실 상태 변경 |
+| `admission:created`    | Server → Client | 새 입원        |
+| `admission:discharged` | Server → Client | 퇴원 처리      |
+| `vital:recorded`       | Server → Client | 바이탈 기록    |
+| `round:started`        | Server → Client | 라운딩 시작    |
+| `subscribe:floor`      | Client → Server | 층별 구독      |
 
 ### 9.3 이벤트 페이로드 예시
 
@@ -983,36 +1011,36 @@ const socket = io('wss://api.hospital-erp.com', {
 
 ### 10.1 인증 관련
 
-| 코드 | 메시지 | HTTP |
-|------|--------|------|
-| AUTH_INVALID_CREDENTIALS | 아이디 또는 비밀번호가 올바르지 않습니다 | 401 |
-| AUTH_TOKEN_EXPIRED | 토큰이 만료되었습니다 | 401 |
-| AUTH_TOKEN_INVALID | 유효하지 않은 토큰입니다 | 401 |
-| AUTH_INSUFFICIENT_PERMISSIONS | 권한이 부족합니다 | 403 |
+| 코드                          | 메시지                                   | HTTP |
+| ----------------------------- | ---------------------------------------- | ---- |
+| AUTH_INVALID_CREDENTIALS      | 아이디 또는 비밀번호가 올바르지 않습니다 | 401  |
+| AUTH_TOKEN_EXPIRED            | 토큰이 만료되었습니다                    | 401  |
+| AUTH_TOKEN_INVALID            | 유효하지 않은 토큰입니다                 | 401  |
+| AUTH_INSUFFICIENT_PERMISSIONS | 권한이 부족합니다                        | 403  |
 
 ### 10.2 환자 관련
 
-| 코드 | 메시지 | HTTP |
-|------|--------|------|
-| PATIENT_NOT_FOUND | 환자를 찾을 수 없습니다 | 404 |
-| PATIENT_ALREADY_EXISTS | 이미 등록된 환자번호입니다 | 409 |
-| PATIENT_HAS_ACTIVE_ADMISSION | 현재 입원 중인 환자입니다 | 409 |
+| 코드                         | 메시지                     | HTTP |
+| ---------------------------- | -------------------------- | ---- |
+| PATIENT_NOT_FOUND            | 환자를 찾을 수 없습니다    | 404  |
+| PATIENT_ALREADY_EXISTS       | 이미 등록된 환자번호입니다 | 409  |
+| PATIENT_HAS_ACTIVE_ADMISSION | 현재 입원 중인 환자입니다  | 409  |
 
 ### 10.3 병실 관련
 
-| 코드 | 메시지 | HTTP |
-|------|--------|------|
-| ROOM_NOT_FOUND | 병실을 찾을 수 없습니다 | 404 |
-| BED_NOT_AVAILABLE | 해당 병상은 사용할 수 없습니다 | 409 |
-| BED_ALREADY_OCCUPIED | 이미 사용 중인 병상입니다 | 409 |
+| 코드                 | 메시지                         | HTTP |
+| -------------------- | ------------------------------ | ---- |
+| ROOM_NOT_FOUND       | 병실을 찾을 수 없습니다        | 404  |
+| BED_NOT_AVAILABLE    | 해당 병상은 사용할 수 없습니다 | 409  |
+| BED_ALREADY_OCCUPIED | 이미 사용 중인 병상입니다      | 409  |
 
 ### 10.4 입퇴원 관련
 
-| 코드 | 메시지 | HTTP |
-|------|--------|------|
-| ADMISSION_NOT_FOUND | 입원 정보를 찾을 수 없습니다 | 404 |
-| ADMISSION_ALREADY_DISCHARGED | 이미 퇴원 처리된 환자입니다 | 409 |
-| TRANSFER_SAME_BED | 동일한 병상으로 전실할 수 없습니다 | 400 |
+| 코드                         | 메시지                             | HTTP |
+| ---------------------------- | ---------------------------------- | ---- |
+| ADMISSION_NOT_FOUND          | 입원 정보를 찾을 수 없습니다       | 404  |
+| ADMISSION_ALREADY_DISCHARGED | 이미 퇴원 처리된 환자입니다        | 409  |
+| TRANSFER_SAME_BED            | 동일한 병상으로 전실할 수 없습니다 | 400  |
 
 ---
 

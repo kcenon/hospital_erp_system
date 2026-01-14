@@ -21,15 +21,15 @@ hospital_erp (database)
 
 ### Schema Responsibilities
 
-| Schema | Purpose | Tables |
-|--------|---------|--------|
-| `public` | Authentication and authorization | users, roles, permissions, user_roles, role_permissions |
-| `patient` | Patient master data | patients, patient_details, patient_sequences, patient_history |
-| `room` | Hospital infrastructure | buildings, floors, rooms, beds |
-| `admission` | Patient stay management | admissions, transfers, discharges |
-| `report` | Clinical documentation | vital_signs, intake_outputs, medications, nursing_notes, daily_reports |
-| `rounding` | Ward rounds | rounds, round_records |
-| `audit` | Compliance and security | access_logs, change_logs, login_history |
+| Schema      | Purpose                          | Tables                                                                 |
+| ----------- | -------------------------------- | ---------------------------------------------------------------------- |
+| `public`    | Authentication and authorization | users, roles, permissions, user_roles, role_permissions                |
+| `patient`   | Patient master data              | patients, patient_details, patient_sequences, patient_history          |
+| `room`      | Hospital infrastructure          | buildings, floors, rooms, beds                                         |
+| `admission` | Patient stay management          | admissions, transfers, discharges                                      |
+| `report`    | Clinical documentation           | vital_signs, intake_outputs, medications, nursing_notes, daily_reports |
+| `rounding`  | Ward rounds                      | rounds, round_records                                                  |
+| `audit`     | Compliance and security          | access_logs, change_logs, login_history                                |
 
 ## Prerequisites
 
@@ -64,11 +64,11 @@ DATABASE_URL="postgresql://hospital_user:password@db.example.com:5432/hospital_e
 
 ### Connection Pool Settings
 
-| Parameter | Development | Production | Description |
-|-----------|-------------|------------|-------------|
-| `connection_limit` | 5 | 10-20 | Maximum connections per client |
-| `pool_timeout` | 10 | 30 | Seconds to wait for available connection |
-| `statement_cache_size` | 100 | 500 | Number of prepared statements to cache |
+| Parameter              | Development | Production | Description                              |
+| ---------------------- | ----------- | ---------- | ---------------------------------------- |
+| `connection_limit`     | 5           | 10-20      | Maximum connections per client           |
+| `pool_timeout`         | 10          | 30         | Seconds to wait for available connection |
+| `statement_cache_size` | 100         | 500        | Number of prepared statements to cache   |
 
 ### Recommended Production Settings
 
@@ -99,6 +99,7 @@ ENCRYPTION_KEY="32-character-encryption-key-here"
 ```
 
 **Important**:
+
 - Use a strong, randomly generated key (minimum 32 characters)
 - Store keys securely (environment variables, secrets manager)
 - Never commit encryption keys to version control
@@ -168,10 +169,10 @@ model Patient {
 Formula for pool size: `connections = (core_count * 2) + effective_spindle_count`
 
 | Server Type | CPU Cores | Recommended Pool Size |
-|-------------|-----------|----------------------|
-| Small (dev) | 2 | 5-10 |
-| Medium | 4 | 10-20 |
-| Large | 8+ | 20-40 |
+| ----------- | --------- | --------------------- |
+| Small (dev) | 2         | 5-10                  |
+| Medium      | 4         | 10-20                 |
+| Large       | 8+        | 20-40                 |
 
 ## Backup and Recovery
 

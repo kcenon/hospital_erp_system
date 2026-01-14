@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -37,12 +37,12 @@
 
 ### 1.2 연동 전략
 
-| 전략 | 설명 | 적용 상황 |
-|------|------|----------|
-| **DB 직접 연결** | 레거시 DB를 직접 조회 | API 미제공 시 |
-| **API 연동** | REST/SOAP API 호출 | API 제공 시 (권장) |
-| **ETL 배치** | 주기적 데이터 동기화 | 읽기 전용 데이터 |
-| **이벤트 기반** | 변경 시 실시간 동기화 | 양방향 동기화 |
+| 전략                       | 설명                   | 적용 상황           |
+| -------------------------- | ---------------------- | ------------------- |
+| **DB 직접 연결**           | 레거시 DB를 직접 조회  | API 미제공 시       |
+| **API 연동**               | REST/SOAP API 호출     | API 제공 시 (권장)  |
+| **ETL 배치**               | 주기적 데이터 동기화   | 읽기 전용 데이터    |
+| **이벤트 기반**            | 변경 시 실시간 동기화  | 양방향 동기화       |
 | **pacs_bridge 게이트웨이** | HL7/FHIR 프로토콜 변환 | LIS/EMR 연동 (권장) |
 
 ### 1.3 pacs_bridge 연동 계층 (권장)
@@ -88,13 +88,13 @@
 
 #### 1.3.1 연동 이점
 
-| 이점 | 설명 | 영향 |
-|------|------|------|
-| **프로토콜 재사용** | HL7 v2.x 파서/빌더 이미 구현 | 4-6주 개발 기간 단축 |
-| **보안 준비 완료** | TLS, OAuth2, 감사 로깅 구현됨 | 보안 규정 준수 가속화 |
-| **메시지 큐** | SQLite 기반 안정적 메시지 전달 | 전달 보장, 장애 복구 |
-| **FHIR 지원** | R4 게이트웨이 개발 진행 중 | 미래 지향적 아키텍처 |
-| **모니터링** | Prometheus 메트릭, 분산 트레이싱 | 운영 준비 완료된 관측성 |
+| 이점                | 설명                             | 영향                    |
+| ------------------- | -------------------------------- | ----------------------- |
+| **프로토콜 재사용** | HL7 v2.x 파서/빌더 이미 구현     | 4-6주 개발 기간 단축    |
+| **보안 준비 완료**  | TLS, OAuth2, 감사 로깅 구현됨    | 보안 규정 준수 가속화   |
+| **메시지 큐**       | SQLite 기반 안정적 메시지 전달   | 전달 보장, 장애 복구    |
+| **FHIR 지원**       | R4 게이트웨이 개발 진행 중       | 미래 지향적 아키텍처    |
+| **모니터링**        | Prometheus 메트릭, 분산 트레이싱 | 운영 준비 완료된 관측성 |
 
 #### 1.3.2 pacs_bridge REST API 엔드포인트
 
@@ -129,13 +129,13 @@ export class PacsBridgeClient {
 
 #### 1.3.3 pacs_bridge 사용 시나리오
 
-| 시나리오 | 권장 접근 방식 |
-|----------|--------------|
-| LIS 연동 | ✅ pacs_bridge HL7/FHIR 게이트웨이 |
-| EMR/OCS 환자 조회 | ✅ pacs_bridge ADT 핸들러 + 환자 캐시 |
-| PACS 영상 뷰어 링크 | ✅ pacs_system DICOMweb API |
-| 레거시 DB 직접 조회 | DB 직접 연결 (HL7 미지원 시) |
-| 단순 데이터 이관 | ETL 배치 |
+| 시나리오            | 권장 접근 방식                        |
+| ------------------- | ------------------------------------- |
+| LIS 연동            | ✅ pacs_bridge HL7/FHIR 게이트웨이    |
+| EMR/OCS 환자 조회   | ✅ pacs_bridge ADT 핸들러 + 환자 캐시 |
+| PACS 영상 뷰어 링크 | ✅ pacs_system DICOMweb API           |
+| 레거시 DB 직접 조회 | DB 직접 연결 (HL7 미지원 시)          |
+| 단순 데이터 이관    | ETL 배치                              |
 
 > **참조**: [lis-integration.md](../02-design/lis-integration.md) 상세 LIS 연동 규격
 
@@ -217,14 +217,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forRoot({
       name: 'legacy',
-      type: 'mssql',  // 또는 'oracle'
+      type: 'mssql', // 또는 'oracle'
       host: process.env.LEGACY_DB_HOST,
       port: parseInt(process.env.LEGACY_DB_PORT, 10),
       username: process.env.LEGACY_DB_USER,
       password: process.env.LEGACY_DB_PASSWORD,
       database: process.env.LEGACY_DB_NAME,
       entities: [LegacyPatient, LegacyAdmission],
-      synchronize: false,  // 레거시 DB는 동기화 하지 않음
+      synchronize: false, // 레거시 DB는 동기화 하지 않음
       extra: {
         trustServerCertificate: true,
       },
@@ -258,7 +258,7 @@ export class LegacyPatient {
   birthDate: Date;
 
   @Column({ name: 'SEX_CD' })
-  sexCode: string;  // '1': 남, '2': 여
+  sexCode: string; // '1': 남, '2': 여
 
   @Column({ name: 'BLOOD_TYPE_CD' })
   bloodTypeCode: string;
@@ -335,10 +335,14 @@ export class LegacyPatientAdapter implements PatientDataSource {
 
   private mapBloodType(code: string): string | null {
     const bloodTypeMap: Record<string, string> = {
-      '01': 'A+', '02': 'A-',
-      '03': 'B+', '04': 'B-',
-      '05': 'O+', '06': 'O-',
-      '07': 'AB+', '08': 'AB-',
+      '01': 'A+',
+      '02': 'A-',
+      '03': 'B+',
+      '04': 'B-',
+      '05': 'O+',
+      '06': 'O-',
+      '07': 'AB+',
+      '08': 'AB-',
     };
     return bloodTypeMap[code] ?? null;
   }
@@ -413,7 +417,10 @@ export class PatientSyncService {
   /**
    * 캐시된 환자 정보 조회 (캐시 미스 시 동기화)
    */
-  async getPatientWithSync(patientNumber: string, maxAge: number = 5 * 60 * 1000): Promise<Patient> {
+  async getPatientWithSync(
+    patientNumber: string,
+    maxAge: number = 5 * 60 * 1000,
+  ): Promise<Patient> {
     const patient = await this.prisma.patient.findUnique({
       where: { patientNumber },
     });
@@ -508,18 +515,20 @@ export class LegacyApiClient {
     const url = `${this.baseUrl}/patients/${patientNumber}`;
 
     const response = await firstValueFrom(
-      this.httpService.get<LegacyPatientDto>(url, {
-        headers: {
-          'X-API-Key': this.apiKey,
-          'Content-Type': 'application/json',
-        },
-      }).pipe(
-        timeout(this.timeout),
-        retry({ count: 3, delay: 1000 }),
-        catchError((error: AxiosError) => {
-          throw this.handleError(error);
-        }),
-      ),
+      this.httpService
+        .get<LegacyPatientDto>(url, {
+          headers: {
+            'X-API-Key': this.apiKey,
+            'Content-Type': 'application/json',
+          },
+        })
+        .pipe(
+          timeout(this.timeout),
+          retry({ count: 3, delay: 1000 }),
+          catchError((error: AxiosError) => {
+            throw this.handleError(error);
+          }),
+        ),
     );
 
     return response.data;
@@ -529,18 +538,20 @@ export class LegacyApiClient {
     const url = `${this.baseUrl}/patients/search`;
 
     const response = await firstValueFrom(
-      this.httpService.get<LegacyPatientDto[]>(url, {
-        params: { q: query },
-        headers: {
-          'X-API-Key': this.apiKey,
-        },
-      }).pipe(
-        timeout(this.timeout),
-        retry({ count: 2, delay: 500 }),
-        catchError((error: AxiosError) => {
-          throw this.handleError(error);
-        }),
-      ),
+      this.httpService
+        .get<LegacyPatientDto[]>(url, {
+          params: { q: query },
+          headers: {
+            'X-API-Key': this.apiKey,
+          },
+        })
+        .pipe(
+          timeout(this.timeout),
+          retry({ count: 2, delay: 500 }),
+          catchError((error: AxiosError) => {
+            throw this.handleError(error);
+          }),
+        ),
     );
 
     return response.data;
@@ -589,11 +600,7 @@ export class CircuitBreaker {
   private readonly threshold = 5;
   private readonly resetTimeout = 30000; // 30초
 
-  async execute<T>(
-    key: string,
-    fn: () => Promise<T>,
-    fallback?: () => T,
-  ): Promise<T> {
+  async execute<T>(key: string, fn: () => Promise<T>, fallback?: () => T): Promise<T> {
     const state = this.getState(key);
 
     // 회로 열림 상태 확인
@@ -692,11 +699,11 @@ export class LegacyPatientService {
 
 ### 4.1 동기화 방식 비교
 
-| 방식 | 장점 | 단점 | 적용 |
-|------|------|------|------|
-| **On-Demand** | 항상 최신, 간단 | 지연 발생 | 실시간 조회 |
-| **Scheduled** | 일관성, 부하 분산 | 지연 있음 | 일별 동기화 |
-| **Event-Based** | 실시간, 효율적 | 구현 복잡 | 양방향 동기화 |
+| 방식            | 장점              | 단점      | 적용          |
+| --------------- | ----------------- | --------- | ------------- |
+| **On-Demand**   | 항상 최신, 간단   | 지연 발생 | 실시간 조회   |
+| **Scheduled**   | 일관성, 부하 분산 | 지연 있음 | 일별 동기화   |
+| **Event-Based** | 실시간, 효율적    | 구현 복잡 | 양방향 동기화 |
 
 ### 4.2 On-Demand 동기화
 
@@ -823,9 +830,7 @@ export class FhirPatientMapper {
    * FHIR Patient를 내부 Patient로 변환
    */
   fromFhir(fhir: FhirPatient): Partial<Patient> {
-    const identifier = fhir.identifier?.find(
-      (id) => id.system === 'urn:hospital:patient-number',
-    );
+    const identifier = fhir.identifier?.find((id) => id.system === 'urn:hospital:patient-number');
 
     return {
       patientNumber: identifier?.value,
@@ -862,9 +867,7 @@ export class Hl7Parser {
 
   parse(rawMessage: string): Hl7Message {
     const lines = rawMessage.split(this.segmentSeparator);
-    const segments = lines
-      .filter((line) => line.trim())
-      .map((line) => this.parseSegment(line));
+    const segments = lines.filter((line) => line.trim()).map((line) => this.parseSegment(line));
 
     return { segments };
   }
@@ -939,11 +942,7 @@ export class Hl7Parser {
 export function Retry(options: RetryOptions = {}) {
   const { maxAttempts = 3, delay = 1000, backoff = 2 } = options;
 
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {

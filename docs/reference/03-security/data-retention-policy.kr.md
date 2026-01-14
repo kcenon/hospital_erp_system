@@ -4,21 +4,21 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 1.0.0 |
-| 작성일 | 2026-01-12 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용                                 |
+| --------- | ------------------------------------ |
+| 문서 버전 | 1.0.0                                |
+| 작성일    | 2026-01-12                           |
+| 상태      | 초안                                 |
+| 관리자    | kcenon@naver.com                     |
 | 표준 기준 | 의료법, 개인정보보호법, HIPAA (참조) |
 
 ---
 
 ## 문서 이력
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
-|------|------|--------|----------|
-| 1.0.0 | 2026-01-12 | - | 초안 작성 (갭 분석 기반 신규) |
+| 버전  | 일자       | 작성자 | 변경 내용                     |
+| ----- | ---------- | ------ | ----------------------------- |
+| 1.0.0 | 2026-01-12 | -      | 초안 작성 (갭 분석 기반 신규) |
 
 ---
 
@@ -58,11 +58,11 @@
 
 ### 1.3 추적성 참조
 
-| 관련 요구사항 | 문서 |
-|--------------|------|
-| REQ-NFR-SEC-001 | SRS.kr.md - 보안 요구사항 |
-| SEC-005 | security-requirements.kr.md - 데이터 보안 |
-| DB-004 | database-design.kr.md - 감사 스키마 |
+| 관련 요구사항   | 문서                                      |
+| --------------- | ----------------------------------------- |
+| REQ-NFR-SEC-001 | SRS.kr.md - 보안 요구사항                 |
+| SEC-005         | security-requirements.kr.md - 데이터 보안 |
+| DB-004          | database-design.kr.md - 감사 스키마       |
 
 ---
 
@@ -72,9 +72,9 @@
 
 #### 2.1.1 의료법
 
-| 조항 | 요구사항 | 보존 기간 |
-|------|---------|----------|
-| 의료법 제22조 | 진료기록부 보존 | **10년** |
+| 조항                   | 요구사항             | 보존 기간                       |
+| ---------------------- | -------------------- | ------------------------------- |
+| 의료법 제22조          | 진료기록부 보존      | **10년**                        |
 | 의료법 시행규칙 제15조 | 진료기록부 등의 보존 | **5년~10년** (문서 유형별 상이) |
 
 **세부 보존 기간**:
@@ -89,18 +89,18 @@
 
 #### 2.1.2 개인정보보호법
 
-| 조항 | 요구사항 |
-|------|---------|
+| 조항   | 요구사항                                        |
+| ------ | ----------------------------------------------- |
 | 제21조 | 개인정보 파기: 보유 목적 달성 시 지체 없이 파기 |
-| 제35조 | 열람권: 정보주체의 열람 요구 가능 |
-| 제36조 | 정정·삭제권: 정보주체의 정정·삭제 요구 가능 |
-| 제37조 | 처리정지권: 처리 정지 요구 가능 |
+| 제35조 | 열람권: 정보주체의 열람 요구 가능               |
+| 제36조 | 정정·삭제권: 정보주체의 정정·삭제 요구 가능     |
+| 제37조 | 처리정지권: 처리 정지 요구 가능                 |
 
 #### 2.1.3 전자서명법
 
-| 조항 | 요구사항 |
-|------|---------|
-| 제4조 | 전자서명의 효력 |
+| 조항   | 요구사항                        |
+| ------ | ------------------------------- |
+| 제4조  | 전자서명의 효력                 |
 | 제18조 | 전자문서의 보관: 원본 상태 유지 |
 
 ### 2.2 보존 기간 산정 원칙
@@ -144,36 +144,36 @@
 
 #### 3.2.1 환자 데이터
 
-| 데이터 항목 | 분류 | 보존 기간 | 근거 | 파기 방법 |
-|------------|------|----------|------|----------|
-| 환자 기본정보 | Level 1 | 마지막 진료일 + **10년** | 의료법 22조 | 완전 파기 |
-| 입퇴원 기록 | Level 1 | 퇴원일 + **10년** | 의료법 22조 | 완전 파기 |
-| 바이탈 사인 | Level 1 | 퇴원일 + **5년** | 의료법 시행규칙 15조 | 완전 파기 |
-| 간호 기록 | Level 1 | 퇴원일 + **5년** | 의료법 시행규칙 15조 | 완전 파기 |
-| 검사 결과 | Level 1 | 결과일 + **5년** | 의료법 시행규칙 15조 | 완전 파기 |
-| 라운딩 메모 | Level 1 | 퇴원일 + **5년** | 의료법 시행규칙 15조 | 완전 파기 |
-| 환자 연락처 | Level 2 | 마지막 진료일 + **10년** | 진료기록 연계 | 비식별화 후 파기 |
-| 보호자 정보 | Level 2 | 마지막 진료일 + **3년** | 운영 필요 | 비식별화 후 파기 |
+| 데이터 항목   | 분류    | 보존 기간                | 근거                 | 파기 방법        |
+| ------------- | ------- | ------------------------ | -------------------- | ---------------- |
+| 환자 기본정보 | Level 1 | 마지막 진료일 + **10년** | 의료법 22조          | 완전 파기        |
+| 입퇴원 기록   | Level 1 | 퇴원일 + **10년**        | 의료법 22조          | 완전 파기        |
+| 바이탈 사인   | Level 1 | 퇴원일 + **5년**         | 의료법 시행규칙 15조 | 완전 파기        |
+| 간호 기록     | Level 1 | 퇴원일 + **5년**         | 의료법 시행규칙 15조 | 완전 파기        |
+| 검사 결과     | Level 1 | 결과일 + **5년**         | 의료법 시행규칙 15조 | 완전 파기        |
+| 라운딩 메모   | Level 1 | 퇴원일 + **5년**         | 의료법 시행규칙 15조 | 완전 파기        |
+| 환자 연락처   | Level 2 | 마지막 진료일 + **10년** | 진료기록 연계        | 비식별화 후 파기 |
+| 보호자 정보   | Level 2 | 마지막 진료일 + **3년**  | 운영 필요            | 비식별화 후 파기 |
 
 #### 3.2.2 시스템 데이터
 
-| 데이터 항목 | 분류 | 보존 기간 | 근거 | 파기 방법 |
-|------------|------|----------|------|----------|
-| 사용자 계정 | Level 2 | 퇴직일 + **3년** | 내부 규정 | 비활성화 후 파기 |
-| 접근 로그 | Level 2 | 생성일 + **2년** | 개인정보보호법 | 자동 파기 |
-| 감사 로그 | Level 2 | 생성일 + **5년** | 의료법 | 아카이브 후 파기 |
-| API 호출 로그 | Level 3 | 생성일 + **90일** | 운영 필요 | 자동 파기 |
-| 세션 데이터 | Level 3 | 만료 + **7일** | 운영 필요 | 자동 파기 |
-| 임시 파일 | Level 3 | 생성일 + **24시간** | 운영 필요 | 자동 파기 |
+| 데이터 항목   | 분류    | 보존 기간           | 근거           | 파기 방법        |
+| ------------- | ------- | ------------------- | -------------- | ---------------- |
+| 사용자 계정   | Level 2 | 퇴직일 + **3년**    | 내부 규정      | 비활성화 후 파기 |
+| 접근 로그     | Level 2 | 생성일 + **2년**    | 개인정보보호법 | 자동 파기        |
+| 감사 로그     | Level 2 | 생성일 + **5년**    | 의료법         | 아카이브 후 파기 |
+| API 호출 로그 | Level 3 | 생성일 + **90일**   | 운영 필요      | 자동 파기        |
+| 세션 데이터   | Level 3 | 만료 + **7일**      | 운영 필요      | 자동 파기        |
+| 임시 파일     | Level 3 | 생성일 + **24시간** | 운영 필요      | 자동 파기        |
 
 #### 3.2.3 백업 데이터
 
-| 백업 유형 | 보존 기간 | 저장 위치 | 암호화 |
-|----------|----------|----------|--------|
-| 일일 전체 백업 | **90일** | S3 Standard | AES-256 |
-| 주간 증분 백업 | **1년** | S3 Standard-IA | AES-256 |
-| 월간 스냅샷 | **5년** | S3 Glacier | AES-256 |
-| 연간 아카이브 | **10년** | S3 Glacier Deep Archive | AES-256 |
+| 백업 유형      | 보존 기간 | 저장 위치               | 암호화  |
+| -------------- | --------- | ----------------------- | ------- |
+| 일일 전체 백업 | **90일**  | S3 Standard             | AES-256 |
+| 주간 증분 백업 | **1년**   | S3 Standard-IA          | AES-256 |
+| 월간 스냅샷    | **5년**   | S3 Glacier              | AES-256 |
+| 연간 아카이브  | **10년**  | S3 Glacier Deep Archive | AES-256 |
 
 ---
 
@@ -228,34 +228,34 @@ interface DataLifecycleRule {
 const lifecycleRules: DataLifecycleRule[] = [
   {
     dataType: 'patient_record',
-    activeToRetain: { trigger: 'discharge', afterDays: 365 },  // 퇴원 후 1년
-    retainToArchive: { afterDays: 365 * 2 },                   // 보관 후 2년
-    archiveToDestroy: { afterYears: 10 }                       // 아카이브 후 10년 (총 10년)
+    activeToRetain: { trigger: 'discharge', afterDays: 365 }, // 퇴원 후 1년
+    retainToArchive: { afterDays: 365 * 2 }, // 보관 후 2년
+    archiveToDestroy: { afterYears: 10 }, // 아카이브 후 10년 (총 10년)
   },
   {
     dataType: 'vital_signs',
     activeToRetain: { trigger: 'discharge', afterDays: 90 },
     retainToArchive: { afterDays: 365 },
-    archiveToDestroy: { afterYears: 5 }
+    archiveToDestroy: { afterYears: 5 },
   },
   {
     dataType: 'nursing_notes',
     activeToRetain: { trigger: 'discharge', afterDays: 90 },
     retainToArchive: { afterDays: 365 },
-    archiveToDestroy: { afterYears: 5 }
+    archiveToDestroy: { afterYears: 5 },
   },
   {
     dataType: 'access_logs',
     activeToRetain: { trigger: 'date_based', afterDays: 90 },
     retainToArchive: { afterDays: 365 },
-    archiveToDestroy: { afterYears: 2 }
+    archiveToDestroy: { afterYears: 2 },
   },
   {
     dataType: 'audit_logs',
     activeToRetain: { trigger: 'date_based', afterDays: 365 },
     retainToArchive: { afterDays: 365 * 2 },
-    archiveToDestroy: { afterYears: 5 }
-  }
+    archiveToDestroy: { afterYears: 5 },
+  },
 ];
 ```
 
@@ -384,8 +384,8 @@ async function secureDelete(
   options: SecureDeletionOptions = {
     method: 'NIST_800_88',
     verifyAfter: true,
-    generateCertificate: true
-  }
+    generateCertificate: true,
+  },
 ): Promise<DeletionResult> {
   // 1. 삭제 전 메타데이터 기록
   const metadata = await capturePreDeletionMetadata(dataId);
@@ -411,8 +411,8 @@ async function secureDelete(
         deletedAt: new Date(),
         method: options.method,
         deletedBy: getCurrentUserId(),
-        metadata: JSON.stringify(metadata)
-      }
+        metadata: JSON.stringify(metadata),
+      },
     });
 
     return { success: true };
@@ -441,7 +441,7 @@ async function secureDelete(
       deletedAt: new Date(),
       method: options.method,
       verifiedBy: 'system',
-      metadata
+      metadata,
     });
   }
 
@@ -449,7 +449,7 @@ async function secureDelete(
     success: true,
     dataId,
     deletedAt: new Date(),
-    certificate
+    certificate,
   };
 }
 ```
@@ -463,29 +463,29 @@ interface DeIdentificationRules {
 }
 
 type DeIdentificationMethod =
-  | 'REMOVE'           // 완전 제거
-  | 'MASK'             // 부분 마스킹 (홍*동)
-  | 'GENERALIZE'       // 일반화 (35세 → 30대)
-  | 'PSEUDONYMIZE'     // 가명화 (ID → 임의코드)
-  | 'ENCRYPT'          // 암호화
-  | 'HASH'             // 해시 (복원 불가)
-  | 'TRUNCATE'         // 절삭 (010-1234-**** )
-  | 'RANDOMIZE';       // 무작위화
+  | 'REMOVE' // 완전 제거
+  | 'MASK' // 부분 마스킹 (홍*동)
+  | 'GENERALIZE' // 일반화 (35세 → 30대)
+  | 'PSEUDONYMIZE' // 가명화 (ID → 임의코드)
+  | 'ENCRYPT' // 암호화
+  | 'HASH' // 해시 (복원 불가)
+  | 'TRUNCATE' // 절삭 (010-1234-**** )
+  | 'RANDOMIZE'; // 무작위화
 
 const patientDeIdentificationRules: DeIdentificationRules = {
-  name: 'MASK',                    // 홍*동
-  residentNumber: 'REMOVE',        // 완전 제거
-  phoneNumber: 'TRUNCATE',         // 010-****-1234
-  address: 'GENERALIZE',           // 서울시 강남구 → 서울시
-  email: 'HASH',                   // 복원 불가 해시
-  birthDate: 'GENERALIZE',         // 1985-03-15 → 1985년
-  emergencyContact: 'REMOVE',      // 완전 제거
-  medicalRecordNumber: 'PSEUDONYMIZE' // 가명 ID로 대체
+  name: 'MASK', // 홍*동
+  residentNumber: 'REMOVE', // 완전 제거
+  phoneNumber: 'TRUNCATE', // 010-****-1234
+  address: 'GENERALIZE', // 서울시 강남구 → 서울시
+  email: 'HASH', // 복원 불가 해시
+  birthDate: 'GENERALIZE', // 1985-03-15 → 1985년
+  emergencyContact: 'REMOVE', // 완전 제거
+  medicalRecordNumber: 'PSEUDONYMIZE', // 가명 ID로 대체
 };
 
 async function deIdentifyPatient(patientId: string): Promise<void> {
   const patient = await prisma.patient.findUnique({
-    where: { id: patientId }
+    where: { id: patientId },
   });
 
   if (!patient) return;
@@ -500,12 +500,12 @@ async function deIdentifyPatient(patientId: string): Promise<void> {
     emergencyContact: null,
     medicalRecordNumber: generatePseudonym(patient.medicalRecordNumber),
     isDeIdentified: true,
-    deIdentifiedAt: new Date()
+    deIdentifiedAt: new Date(),
   };
 
   await prisma.patient.update({
     where: { id: patientId },
-    data: deIdentified
+    data: deIdentified,
   });
 
   // 비식별화 로그 기록
@@ -525,7 +525,9 @@ function truncatePhone(phone: string): string {
 
 function generalizeAddress(address: string): string {
   // 시/도, 구/군까지만 남김
-  const match = address.match(/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)[시도]?\s*\S+[구군시]/);
+  const match = address.match(
+    /^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)[시도]?\s*\S+[구군시]/,
+  );
   return match ? match[0] : '주소 비공개';
 }
 
@@ -539,7 +541,10 @@ function hashEmail(email: string): string {
 
 function generatePseudonym(original: string): string {
   // 일관된 가명 생성 (동일 입력 → 동일 출력)
-  const hash = crypto.createHash('sha256').update(original + process.env.PSEUDONYM_SALT).digest('hex');
+  const hash = crypto
+    .createHash('sha256')
+    .update(original + process.env.PSEUDONYM_SALT)
+    .digest('hex');
   return 'PSEUDO-' + hash.substring(0, 12).toUpperCase();
 }
 ```
@@ -562,9 +567,7 @@ interface DeletionCertificate {
   signature: string;
 }
 
-async function generateDeletionCertificate(
-  params: DeletionParams
-): Promise<DeletionCertificate> {
+async function generateDeletionCertificate(params: DeletionParams): Promise<DeletionCertificate> {
   const certificate: DeletionCertificate = {
     certificateId: `DEL-${Date.now()}-${crypto.randomUUID().substring(0, 8)}`,
     issuedAt: new Date(),
@@ -576,7 +579,7 @@ async function generateDeletionCertificate(
     deletedBy: params.deletedBy || 'SYSTEM',
     verifiedBy: params.verifiedBy || 'SYSTEM_VERIFICATION',
     legalBasis: params.legalBasis || '개인정보보호법 제21조',
-    signature: ''
+    signature: '',
   };
 
   // 전자 서명 생성
@@ -584,7 +587,7 @@ async function generateDeletionCertificate(
 
   // 증명서 저장
   await prisma.deletionCertificate.create({
-    data: certificate
+    data: certificate,
   });
 
   return certificate;
@@ -593,7 +596,7 @@ async function generateDeletionCertificate(
 // 증명서 PDF 생성
 async function exportCertificatePDF(certificateId: string): Promise<Buffer> {
   const certificate = await prisma.deletionCertificate.findUnique({
-    where: { certificateId }
+    where: { certificateId },
   });
 
   const pdfContent = `
@@ -668,7 +671,7 @@ async function exportCertificatePDF(certificateId: string): Promise<Buffer> {
 export class ArchiveScheduler {
   constructor(
     private readonly archiveService: ArchiveService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   // 매일 새벽 3시에 실행
@@ -684,7 +687,7 @@ export class ArchiveScheduler {
       const results = {
         hotToWarm: await this.archiveService.moveToWarm(candidates.hotToWarm),
         warmToCold: await this.archiveService.moveToCold(candidates.warmToCold),
-        coldToDeep: await this.archiveService.moveToDeepArchive(candidates.coldToDeep)
+        coldToDeep: await this.archiveService.moveToDeepArchive(candidates.coldToDeep),
       };
 
       // 3. 결과 로깅
@@ -695,10 +698,9 @@ export class ArchiveScheduler {
         await this.notificationService.sendAdminReport({
           type: 'DAILY_ARCHIVE_COMPLETE',
           duration: Date.now() - startTime,
-          results
+          results,
         });
       }
-
     } catch (error) {
       await this.handleArchiveError(error);
     }
@@ -712,33 +714,33 @@ export class ArchiveScheduler {
       where: {
         status: 'DISCHARGED',
         dischargeDate: {
-          lt: subDays(now, 90)
+          lt: subDays(now, 90),
         },
-        storageClass: 'HOT'
+        storageClass: 'HOT',
       },
-      take: 1000 // 배치 크기 제한
+      take: 1000, // 배치 크기 제한
     });
 
     // Warm → Cold: 2년 지난 데이터
     const warmToCold = await this.prisma.archivedPatient.findMany({
       where: {
         archivedAt: {
-          lt: subYears(now, 2)
+          lt: subYears(now, 2),
         },
-        storageClass: 'WARM'
+        storageClass: 'WARM',
       },
-      take: 500
+      take: 500,
     });
 
     // Cold → Deep: 5년 지난 데이터
     const coldToDeep = await this.prisma.archivedPatient.findMany({
       where: {
         archivedAt: {
-          lt: subYears(now, 5)
+          lt: subYears(now, 5),
         },
-        storageClass: 'COLD'
+        storageClass: 'COLD',
       },
-      take: 200
+      take: 200,
     });
 
     return { hotToWarm, warmToCold, coldToDeep };
@@ -758,9 +760,7 @@ interface ArchiveRetrievalRequest {
   priority: 'STANDARD' | 'EXPEDITED' | 'BULK';
 }
 
-async function requestArchiveRetrieval(
-  request: ArchiveRetrievalRequest
-): Promise<RetrievalJob> {
+async function requestArchiveRetrieval(request: ArchiveRetrievalRequest): Promise<RetrievalJob> {
   // 1. 권한 확인
   const hasAccess = await checkArchiveAccess(request.requestedBy, request.dataType);
   if (!hasAccess) {
@@ -784,22 +784,24 @@ async function requestArchiveRetrieval(
       reason: request.reason,
       status: 'PENDING',
       estimatedCompletionAt: addMinutes(new Date(), estimatedTime),
-      createdAt: new Date()
-    }
+      createdAt: new Date(),
+    },
   });
 
   // 5. S3 Glacier 복원 요청
   if (location.storageClass === 'COLD' || location.storageClass === 'DEEP') {
-    await s3.restoreObject({
-      Bucket: location.bucket,
-      Key: location.key,
-      RestoreRequest: {
-        Days: 7,
-        GlacierJobParameters: {
-          Tier: request.priority === 'EXPEDITED' ? 'Expedited' : 'Standard'
-        }
-      }
-    }).promise();
+    await s3
+      .restoreObject({
+        Bucket: location.bucket,
+        Key: location.key,
+        RestoreRequest: {
+          Days: 7,
+          GlacierJobParameters: {
+            Tier: request.priority === 'EXPEDITED' ? 'Expedited' : 'Standard',
+          },
+        },
+      })
+      .promise();
   }
 
   // 6. 감사 로그
@@ -808,7 +810,7 @@ async function requestArchiveRetrieval(
     dataId: request.dataId,
     requestedBy: request.requestedBy,
     reason: request.reason,
-    jobId: job.id
+    jobId: job.id,
   });
 
   return job;
@@ -818,9 +820,9 @@ async function requestArchiveRetrieval(
 function getRetrievalEstimate(storageClass: string, priority: string): number {
   const estimates = {
     HOT: { STANDARD: 0, EXPEDITED: 0, BULK: 0 },
-    WARM: { STANDARD: 5, EXPEDITED: 1, BULK: 30 },          // 분 단위
-    COLD: { STANDARD: 180, EXPEDITED: 5, BULK: 720 },       // 분 단위 (3시간, 5분, 12시간)
-    DEEP: { STANDARD: 720, EXPEDITED: 60, BULK: 2880 }      // 분 단위 (12시간, 1시간, 48시간)
+    WARM: { STANDARD: 5, EXPEDITED: 1, BULK: 30 }, // 분 단위
+    COLD: { STANDARD: 180, EXPEDITED: 5, BULK: 720 }, // 분 단위 (3시간, 5분, 12시간)
+    DEEP: { STANDARD: 720, EXPEDITED: 60, BULK: 2880 }, // 분 단위 (12시간, 1시간, 48시간)
   };
 
   return estimates[storageClass]?.[priority] || 180;
@@ -833,21 +835,21 @@ function getRetrievalEstimate(storageClass: string, priority: string): number {
 
 ### 7.1 보존 데이터 접근 권한
 
-| 역할 | 활성 데이터 | 보관 데이터 | 아카이브 | 삭제 |
-|------|-----------|-----------|---------|------|
-| 시스템 관리자 | 읽기/쓰기 | 읽기 | 읽기 (승인 필요) | 승인 필요 |
-| 원무과장 | 읽기/쓰기 | 읽기 | 요청 가능 | 불가 |
-| 의사 | 읽기/쓰기 | 읽기 | 불가 | 불가 |
-| 간호사 | 읽기/쓰기 | 읽기 | 불가 | 불가 |
-| 감사자 | 읽기 전용 | 읽기 전용 | 읽기 전용 | 불가 |
+| 역할          | 활성 데이터 | 보관 데이터 | 아카이브         | 삭제      |
+| ------------- | ----------- | ----------- | ---------------- | --------- |
+| 시스템 관리자 | 읽기/쓰기   | 읽기        | 읽기 (승인 필요) | 승인 필요 |
+| 원무과장      | 읽기/쓰기   | 읽기        | 요청 가능        | 불가      |
+| 의사          | 읽기/쓰기   | 읽기        | 불가             | 불가      |
+| 간호사        | 읽기/쓰기   | 읽기        | 불가             | 불가      |
+| 감사자        | 읽기 전용   | 읽기 전용   | 읽기 전용        | 불가      |
 
 ### 7.2 삭제 권한 매트릭스
 
-| 데이터 유형 | 자동 삭제 | 사용자 요청 | 관리자 승인 | 이중 승인 |
-|------------|----------|-----------|-----------|----------|
-| Level 1 (핵심) | 불가 | 불가 | 필수 | **필수** |
-| Level 2 (민감) | 불가 | 가능 | 필수 | 조건부 |
-| Level 3 (일반) | **가능** | 가능 | 선택 | 불필요 |
+| 데이터 유형    | 자동 삭제 | 사용자 요청 | 관리자 승인 | 이중 승인 |
+| -------------- | --------- | ----------- | ----------- | --------- |
+| Level 1 (핵심) | 불가      | 불가        | 필수        | **필수**  |
+| Level 2 (민감) | 불가      | 가능        | 필수        | 조건부    |
+| Level 3 (일반) | **가능**  | 가능        | 선택        | 불필요    |
 
 ### 7.3 삭제 승인 워크플로우
 
@@ -877,7 +879,7 @@ interface Approval {
 async function requestDeletion(
   dataId: string,
   dataType: DataType,
-  reason: string
+  reason: string,
 ): Promise<DeletionRequest> {
   const dataLevel = await getDataLevel(dataType);
   const requiredApprovals = getRequiredApprovals(dataLevel);
@@ -891,8 +893,8 @@ async function requestDeletion(
       reason,
       status: 'PENDING',
       requiredApprovals,
-      createdAt: new Date()
-    }
+      createdAt: new Date(),
+    },
   });
 
   // 승인자들에게 알림
@@ -906,12 +908,10 @@ function getRequiredApprovals(dataLevel: number): ApprovalRequirement[] {
     case 1:
       return [
         { role: 'SYSTEM_ADMIN', required: true },
-        { role: 'COMPLIANCE_OFFICER', required: true }  // 이중 승인
+        { role: 'COMPLIANCE_OFFICER', required: true }, // 이중 승인
       ];
     case 2:
-      return [
-        { role: 'SYSTEM_ADMIN', required: true }
-      ];
+      return [{ role: 'SYSTEM_ADMIN', required: true }];
     case 3:
       return []; // 자동 또는 단일 승인
   }
@@ -920,11 +920,11 @@ function getRequiredApprovals(dataLevel: number): ApprovalRequirement[] {
 async function approveDeletion(
   requestId: string,
   decision: 'APPROVED' | 'REJECTED',
-  comment?: string
+  comment?: string,
 ): Promise<DeletionRequest> {
   const request = await prisma.deletionRequest.findUnique({
     where: { id: requestId },
-    include: { approvals: true }
+    include: { approvals: true },
   });
 
   if (!request || request.status !== 'PENDING') {
@@ -939,24 +939,24 @@ async function approveDeletion(
       approverRole: getCurrentUserRole(),
       decision,
       comment,
-      approvedAt: new Date()
-    }
+      approvedAt: new Date(),
+    },
   });
 
   // 모든 필수 승인 완료 확인
   const allApprovals = await prisma.deletionApproval.findMany({
-    where: { requestId }
+    where: { requestId },
   });
 
   if (decision === 'REJECTED') {
     await prisma.deletionRequest.update({
       where: { id: requestId },
-      data: { status: 'REJECTED' }
+      data: { status: 'REJECTED' },
     });
   } else if (areAllApprovalsComplete(request.requiredApprovals, allApprovals)) {
     await prisma.deletionRequest.update({
       where: { id: requestId },
-      data: { status: 'APPROVED' }
+      data: { status: 'APPROVED' },
     });
 
     // 삭제 실행
@@ -965,7 +965,7 @@ async function approveDeletion(
 
   return prisma.deletionRequest.findUnique({
     where: { id: requestId },
-    include: { approvals: true }
+    include: { approvals: true },
   });
 }
 ```
@@ -1001,16 +1001,16 @@ type DataLifecycleAction =
   | 'DATA_CREATED'
   | 'DATA_ACCESSED'
   | 'DATA_MODIFIED'
-  | 'STATE_TRANSITION'       // Active → Retain → Archive
-  | 'ARCHIVE_MOVED'          // 스토리지 계층 이동
-  | 'ARCHIVE_RETRIEVED'      // 아카이브 복원
-  | 'DELETION_REQUESTED'     // 삭제 요청
-  | 'DELETION_APPROVED'      // 삭제 승인
-  | 'DELETION_REJECTED'      // 삭제 거부
-  | 'DELETION_EXECUTED'      // 삭제 실행
-  | 'DE_IDENTIFICATION'      // 비식별화
-  | 'INTEGRITY_CHECK'        // 무결성 검증
-  | 'INTEGRITY_VIOLATION';   // 무결성 위반 감지
+  | 'STATE_TRANSITION' // Active → Retain → Archive
+  | 'ARCHIVE_MOVED' // 스토리지 계층 이동
+  | 'ARCHIVE_RETRIEVED' // 아카이브 복원
+  | 'DELETION_REQUESTED' // 삭제 요청
+  | 'DELETION_APPROVED' // 삭제 승인
+  | 'DELETION_REJECTED' // 삭제 거부
+  | 'DELETION_EXECUTED' // 삭제 실행
+  | 'DE_IDENTIFICATION' // 비식별화
+  | 'INTEGRITY_CHECK' // 무결성 검증
+  | 'INTEGRITY_VIOLATION'; // 무결성 위반 감지
 ```
 
 ### 8.2 보존 현황 대시보드
@@ -1050,32 +1050,32 @@ ORDER BY month DESC;
 const retentionAlerts = [
   {
     name: 'expiring_soon',
-    condition: 'retention_expires_at BETWEEN NOW() AND NOW() + INTERVAL \'30 days\'',
+    condition: "retention_expires_at BETWEEN NOW() AND NOW() + INTERVAL '30 days'",
     threshold: 100,
     recipients: ['data-steward@hospital.kr'],
-    frequency: 'WEEKLY'
+    frequency: 'WEEKLY',
   },
   {
     name: 'storage_quota_warning',
     condition: 'storage_usage_percent > 80',
     threshold: 80,
     recipients: ['infra@hospital.kr', 'data-steward@hospital.kr'],
-    frequency: 'DAILY'
+    frequency: 'DAILY',
   },
   {
     name: 'deletion_pending',
     condition: 'pending_deletion_requests > 0',
     threshold: 1,
     recipients: ['compliance@hospital.kr'],
-    frequency: 'DAILY'
+    frequency: 'DAILY',
   },
   {
     name: 'integrity_violation',
     condition: 'integrity_check_failed = true',
     threshold: 1,
     recipients: ['security@hospital.kr', 'compliance@hospital.kr'],
-    frequency: 'IMMEDIATE'
-  }
+    frequency: 'IMMEDIATE',
+  },
 ];
 ```
 
@@ -1111,16 +1111,16 @@ async function applyLegalHold(hold: LegalHold): Promise<void> {
         where: { patientId: { in: hold.affectedPatientIds } },
         data: {
           legalHoldId: hold.id,
-          isDeletable: false
-        }
+          isDeletable: false,
+        },
       });
     } else {
       // 전체 데이터 유형에 적용
       await prisma[dataType].updateMany({
         data: {
           legalHoldId: hold.id,
-          isDeletable: false
-        }
+          isDeletable: false,
+        },
       });
     }
   }
@@ -1138,7 +1138,7 @@ async function releaseLegalHold(holdId: string): Promise<void> {
   // 보류 해제
   await prisma.legalHold.update({
     where: { id: holdId },
-    data: { status: 'RELEASED', releasedAt: new Date() }
+    data: { status: 'RELEASED', releasedAt: new Date() },
   });
 
   // 데이터 플래그 해제
@@ -1147,8 +1147,8 @@ async function releaseLegalHold(holdId: string): Promise<void> {
       where: { legalHoldId: holdId },
       data: {
         legalHoldId: null,
-        isDeletable: true
-      }
+        isDeletable: true,
+      },
     });
   }
 
@@ -1162,27 +1162,25 @@ async function releaseLegalHold(holdId: string): Promise<void> {
 ```typescript
 // data-subject-request.ts
 type RequestType =
-  | 'ACCESS'        // 열람권 (제35조)
+  | 'ACCESS' // 열람권 (제35조)
   | 'RECTIFICATION' // 정정권 (제36조)
-  | 'DELETION'      // 삭제권 (제36조)
-  | 'SUSPENSION'    // 처리정지권 (제37조)
-  | 'PORTABILITY';  // 이동권
+  | 'DELETION' // 삭제권 (제36조)
+  | 'SUSPENSION' // 처리정지권 (제37조)
+  | 'PORTABILITY'; // 이동권
 
 interface DataSubjectRequest {
   id: string;
   type: RequestType;
-  requesterId: string;  // 정보주체 또는 법정대리인
+  requesterId: string; // 정보주체 또는 법정대리인
   targetPatientId: string;
   reason: string;
   supportingDocuments?: string[];
   status: 'RECEIVED' | 'PROCESSING' | 'COMPLETED' | 'REJECTED';
-  responseDeadline: Date;  // 10일 이내 (개인정보보호법)
+  responseDeadline: Date; // 10일 이내 (개인정보보호법)
   createdAt: Date;
 }
 
-async function processDataSubjectRequest(
-  request: DataSubjectRequest
-): Promise<void> {
+async function processDataSubjectRequest(request: DataSubjectRequest): Promise<void> {
   // 1. 신원 확인
   const isVerified = await verifyRequesterIdentity(request.requesterId);
   if (!isVerified) {
@@ -1192,14 +1190,12 @@ async function processDataSubjectRequest(
 
   // 2. 법적 보존 의무 확인 (삭제 요청의 경우)
   if (request.type === 'DELETION') {
-    const hasLegalObligation = await checkLegalRetentionObligation(
-      request.targetPatientId
-    );
+    const hasLegalObligation = await checkLegalRetentionObligation(request.targetPatientId);
 
     if (hasLegalObligation) {
       await partiallyRejectRequest(request.id, {
         rejectedReason: '의료법 제22조에 따른 법적 보존 의무',
-        alternativeAction: '법정 보존 기간 만료 후 자동 삭제 예정'
+        alternativeAction: '법정 보존 기간 만료 후 자동 삭제 예정',
       });
       return;
     }
@@ -1253,7 +1249,7 @@ export class RetentionPolicyEngine {
       deepArchiveAfter: { years: 5 },
       deletionMethod: 'SECURE_DELETE',
       requiresApproval: true,
-      legalBasis: '의료법 제22조'
+      legalBasis: '의료법 제22조',
     });
 
     this.policies.set('vital_signs', {
@@ -1263,7 +1259,7 @@ export class RetentionPolicyEngine {
       deepArchiveAfter: { years: 2 },
       deletionMethod: 'SECURE_DELETE',
       requiresApproval: true,
-      legalBasis: '의료법 시행규칙 제15조'
+      legalBasis: '의료법 시행규칙 제15조',
     });
 
     this.policies.set('access_log', {
@@ -1273,7 +1269,7 @@ export class RetentionPolicyEngine {
       deepArchiveAfter: { years: 1 },
       deletionMethod: 'AUTO_DELETE',
       requiresApproval: false,
-      legalBasis: '개인정보보호법 시행령 제48조의2'
+      legalBasis: '개인정보보호법 시행령 제48조의2',
     });
 
     // ... 기타 데이터 유형
@@ -1294,7 +1290,7 @@ export class RetentionPolicyEngine {
       return {
         action: 'HOLD',
         reason: 'Legal hold active',
-        legalHoldId: data.legalHoldId
+        legalHoldId: data.legalHoldId,
       };
     }
 
@@ -1309,24 +1305,24 @@ export class RetentionPolicyEngine {
         action: 'DELETE',
         scheduledDate: expirationDate,
         method: policy.deletionMethod,
-        requiresApproval: policy.requiresApproval
+        requiresApproval: policy.requiresApproval,
       };
     } else if (now > deepArchiveDate) {
       return {
         action: 'DEEP_ARCHIVE',
-        scheduledDate: deepArchiveDate
+        scheduledDate: deepArchiveDate,
       };
     } else if (now > archiveDate) {
       return {
         action: 'ARCHIVE',
-        scheduledDate: archiveDate
+        scheduledDate: archiveDate,
       };
     }
 
     return {
       action: 'RETAIN',
       expirationDate,
-      daysRemaining: differenceInDays(expirationDate, now)
+      daysRemaining: differenceInDays(expirationDate, now),
     };
   }
 }
@@ -1343,7 +1339,7 @@ export class AutoDeletionScheduler {
   constructor(
     private readonly retentionEngine: RetentionPolicyEngine,
     private readonly deletionService: DeletionService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   // 매일 새벽 2시에 실행
@@ -1351,12 +1347,7 @@ export class AutoDeletionScheduler {
   async runDailyRetentionCheck(): Promise<void> {
     this.logger.log('Starting daily retention check...');
 
-    const dataTypes: DataType[] = [
-      'access_log',
-      'session_data',
-      'api_log',
-      'temporary_files'
-    ];
+    const dataTypes: DataType[] = ['access_log', 'session_data', 'api_log', 'temporary_files'];
 
     for (const dataType of dataTypes) {
       await this.processDataType(dataType);
@@ -1370,11 +1361,7 @@ export class AutoDeletionScheduler {
   async runWeeklyRetentionCheck(): Promise<void> {
     this.logger.log('Starting weekly retention check for sensitive data...');
 
-    const sensitiveDataTypes: DataType[] = [
-      'vital_signs',
-      'nursing_notes',
-      'audit_log'
-    ];
+    const sensitiveDataTypes: DataType[] = ['vital_signs', 'nursing_notes', 'audit_log'];
 
     for (const dataType of sensitiveDataTypes) {
       await this.processDataType(dataType, { notifyBeforeDelete: true });
@@ -1383,7 +1370,7 @@ export class AutoDeletionScheduler {
 
   private async processDataType(
     dataType: DataType,
-    options: { notifyBeforeDelete?: boolean } = {}
+    options: { notifyBeforeDelete?: boolean } = {},
   ): Promise<void> {
     const expiredRecords = await this.findExpiredRecords(dataType);
 
@@ -1397,7 +1384,7 @@ export class AutoDeletionScheduler {
             dataId: record.id,
             dataType,
             reason: 'Retention period expired',
-            legalBasis: decision.legalBasis
+            legalBasis: decision.legalBasis,
           });
         } else {
           // 자동 삭제
@@ -1414,9 +1401,9 @@ export class AutoDeletionScheduler {
       where: {
         retentionExpiresAt: { lt: new Date() },
         isDeletable: true,
-        legalHoldId: null
+        legalHoldId: null,
       },
-      take: 1000
+      take: 1000,
     });
   }
 }
@@ -1426,13 +1413,14 @@ export class AutoDeletionScheduler {
 
 ## 변경 이력
 
-| 버전 | 일자 | 변경 내용 |
-|------|------|----------|
+| 버전  | 일자       | 변경 내용                          |
+| ----- | ---------- | ---------------------------------- |
 | 1.0.0 | 2026-01-12 | 초안 작성 - 갭 분석 기반 신규 문서 |
 
 ---
 
 > **관련 문서**
+>
 > - [SRS.kr.md](../../SRS.kr.md) - 요구사항 명세
 > - [security-requirements.kr.md](security-requirements.kr.md) - 보안 요구사항
 > - [database-design.kr.md](../02-design/database-design.kr.md) - 데이터베이스 설계

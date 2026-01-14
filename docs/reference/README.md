@@ -45,43 +45,43 @@ reference/
 
 ### 01. Project Overview
 
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| [project-overview.md](01-overview/project-overview.md) | Project background, objectives, scope, stakeholders, constraints | All |
-| [technology-stack.md](01-overview/technology-stack.md) | Technology stack proposal (Next.js, NestJS, PostgreSQL, etc.) | Technical team, Decision makers |
-| [schedule-plan.md](01-overview/schedule-plan.md) | 4-phase schedule plan, milestones, resources, risk management | PM, Executives |
+| Document                                               | Description                                                      | Target Audience                 |
+| ------------------------------------------------------ | ---------------------------------------------------------------- | ------------------------------- |
+| [project-overview.md](01-overview/project-overview.md) | Project background, objectives, scope, stakeholders, constraints | All                             |
+| [technology-stack.md](01-overview/technology-stack.md) | Technology stack proposal (Next.js, NestJS, PostgreSQL, etc.)    | Technical team, Decision makers |
+| [schedule-plan.md](01-overview/schedule-plan.md)       | 4-phase schedule plan, milestones, resources, risk management    | PM, Executives                  |
 
 ### 02. System Design
 
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| [system-architecture.md](02-design/system-architecture.md) | System architecture, module structure, data flow, deployment configuration | Development team |
-| [database-design.md](02-design/database-design.md) | ERD, table definitions (DDL), encryption strategy, indexes | Backend developers |
-| [api-specification.md](02-design/api-specification.md) | RESTful API endpoints, request/response formats, error codes | Full-stack developers |
-| [ui-design.md](02-design/ui-design.md) | Design system, colors/typography, screen wireframes | Frontend, Designers |
-| [lis-integration.md](02-design/lis-integration.md) | LIS integration specification, HL7/FHIR standards, data models | Backend, Integration team |
+| Document                                                   | Description                                                                | Target Audience           |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------- |
+| [system-architecture.md](02-design/system-architecture.md) | System architecture, module structure, data flow, deployment configuration | Development team          |
+| [database-design.md](02-design/database-design.md)         | ERD, table definitions (DDL), encryption strategy, indexes                 | Backend developers        |
+| [api-specification.md](02-design/api-specification.md)     | RESTful API endpoints, request/response formats, error codes               | Full-stack developers     |
+| [ui-design.md](02-design/ui-design.md)                     | Design system, colors/typography, screen wireframes                        | Frontend, Designers       |
+| [lis-integration.md](02-design/lis-integration.md)         | LIS integration specification, HL7/FHIR standards, data models             | Backend, Integration team |
 
 ### 03. Security
 
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| [security-requirements.md](03-security/security-requirements.md) | Authentication/authorization, encryption, audit logs, vulnerability management, regulatory compliance | All |
+| Document                                                         | Description                                                                                           | Target Audience |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | --------------- |
+| [security-requirements.md](03-security/security-requirements.md) | Authentication/authorization, encryption, audit logs, vulnerability management, regulatory compliance | All             |
 
 ### 04. Appendix
 
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| [glossary.md](04-appendix/glossary.md) | Medical terminology, technical terms, relevant regulations summary | All |
+| Document                               | Description                                                        | Target Audience |
+| -------------------------------------- | ------------------------------------------------------------------ | --------------- |
+| [glossary.md](04-appendix/glossary.md) | Medical terminology, technical terms, relevant regulations summary | All             |
 
 ### 05. Development Guides
 
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| [development-environment-setup.md](05-guides/development-environment-setup.md) | Development environment setup (Node.js, Docker, Prisma, etc.) | All developers |
-| [coding-conventions.md](05-guides/coding-conventions.md) | TypeScript, React, NestJS coding rules | All developers |
-| [infrastructure-setup.md](05-guides/infrastructure-setup.md) | AWS infrastructure configuration, Terraform, CI/CD pipeline | DevOps, Backend |
-| [testing-strategy.md](05-guides/testing-strategy.md) | Unit/integration/E2E test strategy and execution guide | All developers |
-| [system-integration-patterns.md](05-guides/system-integration-patterns.md) | Legacy system integration patterns, HL7/FHIR communication | Backend, Integration team |
+| Document                                                                       | Description                                                   | Target Audience           |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------- | ------------------------- |
+| [development-environment-setup.md](05-guides/development-environment-setup.md) | Development environment setup (Node.js, Docker, Prisma, etc.) | All developers            |
+| [coding-conventions.md](05-guides/coding-conventions.md)                       | TypeScript, React, NestJS coding rules                        | All developers            |
+| [infrastructure-setup.md](05-guides/infrastructure-setup.md)                   | AWS infrastructure configuration, Terraform, CI/CD pipeline   | DevOps, Backend           |
+| [testing-strategy.md](05-guides/testing-strategy.md)                           | Unit/integration/E2E test strategy and execution guide        | All developers            |
+| [system-integration-patterns.md](05-guides/system-integration-patterns.md)     | Legacy system integration patterns, HL7/FHIR communication    | Backend, Integration team |
 
 ---
 
@@ -149,23 +149,23 @@ reference/
 
 ## Document Status
 
-| Document | Status | Version | Last Modified |
-|----------|--------|---------|---------------|
-| project-overview.md | Draft | 1.0.0 | 2025-12-29 |
-| technology-stack.md | Proposal | 1.0.0 | 2025-12-29 |
-| schedule-plan.md | Proposal | 1.0.0 | 2025-12-29 |
-| system-architecture.md | Draft | 1.0.0 | 2025-12-29 |
-| database-design.md | Draft | 1.0.0 | 2025-12-29 |
-| api-specification.md | Draft | 1.0.0 | 2025-12-29 |
-| ui-design.md | Draft | 1.0.0 | 2025-12-29 |
-| lis-integration.md | Draft | 1.0.0 | 2025-12-29 |
-| security-requirements.md | Draft | 1.0.0 | 2025-12-29 |
-| glossary.md | Draft | 1.0.0 | 2025-12-29 |
-| development-environment-setup.md | Draft | 1.0.0 | 2025-12-29 |
-| coding-conventions.md | Draft | 1.0.0 | 2025-12-29 |
-| infrastructure-setup.md | Draft | 1.0.0 | 2025-12-29 |
-| testing-strategy.md | Draft | 1.0.0 | 2025-12-29 |
-| system-integration-patterns.md | Draft | 1.0.0 | 2025-12-29 |
+| Document                         | Status   | Version | Last Modified |
+| -------------------------------- | -------- | ------- | ------------- |
+| project-overview.md              | Draft    | 1.0.0   | 2025-12-29    |
+| technology-stack.md              | Proposal | 1.0.0   | 2025-12-29    |
+| schedule-plan.md                 | Proposal | 1.0.0   | 2025-12-29    |
+| system-architecture.md           | Draft    | 1.0.0   | 2025-12-29    |
+| database-design.md               | Draft    | 1.0.0   | 2025-12-29    |
+| api-specification.md             | Draft    | 1.0.0   | 2025-12-29    |
+| ui-design.md                     | Draft    | 1.0.0   | 2025-12-29    |
+| lis-integration.md               | Draft    | 1.0.0   | 2025-12-29    |
+| security-requirements.md         | Draft    | 1.0.0   | 2025-12-29    |
+| glossary.md                      | Draft    | 1.0.0   | 2025-12-29    |
+| development-environment-setup.md | Draft    | 1.0.0   | 2025-12-29    |
+| coding-conventions.md            | Draft    | 1.0.0   | 2025-12-29    |
+| infrastructure-setup.md          | Draft    | 1.0.0   | 2025-12-29    |
+| testing-strategy.md              | Draft    | 1.0.0   | 2025-12-29    |
+| system-integration-patterns.md   | Draft    | 1.0.0   | 2025-12-29    |
 
 ---
 
@@ -179,24 +179,24 @@ reference/
 
 ### Status Definitions
 
-| Status | Description |
-|--------|-------------|
-| Draft | Writing completed, pending review |
-| Under Review | Stakeholder review in progress |
-| Approved | Final approval completed |
-| Deprecated | No longer valid |
+| Status       | Description                       |
+| ------------ | --------------------------------- |
+| Draft        | Writing completed, pending review |
+| Under Review | Stakeholder review in progress    |
+| Approved     | Final approval completed          |
+| Deprecated   | No longer valid                   |
 
 ---
 
 ## Change History
 
-| Date | Version | Changes |
-|------|---------|---------|
-| 2025-12-29 | 1.4.0 | Added LIS integration specification document |
-| 2025-12-29 | 1.3.0 | Folder and file names converted to English |
-| 2025-12-29 | 1.2.0 | Folder and file names converted to Korean |
-| 2025-12-29 | 1.1.0 | Added 05-guides folder (5 development guides) |
-| 2025-12-29 | 1.0.0 | Initial document structure created |
+| Date       | Version | Changes                                       |
+| ---------- | ------- | --------------------------------------------- |
+| 2025-12-29 | 1.4.0   | Added LIS integration specification document  |
+| 2025-12-29 | 1.3.0   | Folder and file names converted to English    |
+| 2025-12-29 | 1.2.0   | Folder and file names converted to Korean     |
+| 2025-12-29 | 1.1.0   | Added 05-guides folder (5 development guides) |
+| 2025-12-29 | 1.0.0   | Initial document structure created            |
 
 ---
 

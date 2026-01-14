@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Draft |
-| Manager | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Draft            |
+| Manager          | kcenon@naver.com |
 
 ---
 
@@ -32,22 +32,22 @@
 
 ### 1.2 Test Goals
 
-| Metric | Target | Measurement Method |
-|--------|------|----------|
-| Code Coverage | >= 80% | Jest coverage |
-| Core Feature Coverage | 100% | Checklist |
-| Test Execution Time | < 5 minutes | CI pipeline |
-| Bug Escape Rate | < 5% | Post-deployment bug count |
+| Metric                | Target      | Measurement Method        |
+| --------------------- | ----------- | ------------------------- |
+| Code Coverage         | >= 80%      | Jest coverage             |
+| Core Feature Coverage | 100%        | Checklist                 |
+| Test Execution Time   | < 5 minutes | CI pipeline               |
+| Bug Escape Rate       | < 5%        | Post-deployment bug count |
 
 ### 1.3 Test Tools
 
-| Tool | Purpose | Layer |
-|------|------|--------|
-| **Jest** | Unit/Integration tests | Backend, Shared |
-| **React Testing Library** | Component tests | Frontend |
-| **Playwright** | E2E tests | Full stack |
-| **Supertest** | API tests | Backend |
-| **MSW** | API mocking | Frontend |
+| Tool                      | Purpose                | Layer           |
+| ------------------------- | ---------------------- | --------------- |
+| **Jest**                  | Unit/Integration tests | Backend, Shared |
+| **React Testing Library** | Component tests        | Frontend        |
+| **Playwright**            | E2E tests              | Full stack      |
+| **Supertest**             | API tests              | Backend         |
+| **MSW**                   | API mocking            | Frontend        |
 
 ---
 
@@ -120,9 +120,7 @@ describe('PatientService', () => {
       repository.findOne.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findOne('invalid-id')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -354,8 +352,8 @@ describe('PatientController (Integration)', () => {
     it('should return 400 error for invalid data', async () => {
       const invalidDto = {
         patientNumber: 'INVALID', // Wrong format
-        name: '',                  // Empty string
-        birthDate: 'not-a-date',   // Invalid date
+        name: '', // Empty string
+        birthDate: 'not-a-date', // Invalid date
       };
 
       const response = await request(app.getHttpServer())
@@ -441,9 +439,24 @@ describe('PatientRepository (Integration)', () => {
       // Create test data
       await prisma.patient.createMany({
         data: [
-          { patientNumber: 'REPO_TEST_001', name: 'Patient Kim', birthDate: new Date('1990-01-01'), gender: 'M' },
-          { patientNumber: 'REPO_TEST_002', name: 'Patient Lee', birthDate: new Date('1985-06-15'), gender: 'F' },
-          { patientNumber: 'REPO_TEST_003', name: 'Patient Park', birthDate: new Date('1970-12-25'), gender: 'M' },
+          {
+            patientNumber: 'REPO_TEST_001',
+            name: 'Patient Kim',
+            birthDate: new Date('1990-01-01'),
+            gender: 'M',
+          },
+          {
+            patientNumber: 'REPO_TEST_002',
+            name: 'Patient Lee',
+            birthDate: new Date('1985-06-15'),
+            gender: 'F',
+          },
+          {
+            patientNumber: 'REPO_TEST_003',
+            name: 'Patient Park',
+            birthDate: new Date('1970-12-25'),
+            gender: 'M',
+          },
         ],
       });
     });

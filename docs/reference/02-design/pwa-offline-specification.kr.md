@@ -4,21 +4,21 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 1.0.0 |
-| 작성일 | 2026-01-12 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용                             |
+| --------- | -------------------------------- |
+| 문서 버전 | 1.0.0                            |
+| 작성일    | 2026-01-12                       |
+| 상태      | 초안                             |
+| 관리자    | kcenon@naver.com                 |
 | 표준 기준 | W3C PWA Standards, IEEE 830-1998 |
 
 ---
 
 ## 문서 이력
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
-|------|------|--------|----------|
-| 1.0.0 | 2026-01-12 | - | 초안 작성 (갭 분석 기반 신규) |
+| 버전  | 일자       | 작성자 | 변경 내용                     |
+| ----- | ---------- | ------ | ----------------------------- |
+| 1.0.0 | 2026-01-12 | -      | 초안 작성 (갭 분석 기반 신규) |
 
 ---
 
@@ -57,20 +57,20 @@
 
 ### 1.3 설계 원칙
 
-| 원칙 | 설명 |
-|------|------|
-| **Offline-First** | 네트워크 없이도 기본 기능 작동 |
+| 원칙                     | 설명                               |
+| ------------------------ | ---------------------------------- |
+| **Offline-First**        | 네트워크 없이도 기본 기능 작동     |
 | **Graceful Degradation** | 제한된 연결에서도 점진적 기능 제공 |
-| **Data Integrity** | 오프라인 데이터의 무결성 보장 |
-| **Conflict Resolution** | 동기화 충돌 시 명확한 해결 정책 |
-| **User Transparency** | 현재 상태를 사용자에게 명확히 표시 |
+| **Data Integrity**       | 오프라인 데이터의 무결성 보장      |
+| **Conflict Resolution**  | 동기화 충돌 시 명확한 해결 정책    |
+| **User Transparency**    | 현재 상태를 사용자에게 명확히 표시 |
 
 ### 1.4 추적성 참조
 
-| 관련 요구사항 | 문서 |
-|--------------|------|
-| REQ-NFR-007 | SRS.kr.md - PWA 지원 |
-| REQ-FR-023 | SRS.kr.md - 모바일 라운딩 |
+| 관련 요구사항 | 문서                          |
+| ------------- | ----------------------------- |
+| REQ-NFR-007   | SRS.kr.md - PWA 지원          |
+| REQ-FR-023    | SRS.kr.md - 모바일 라운딩     |
 | UI-MOBILE-001 | ui-design.kr.md - 모바일 대응 |
 
 ---
@@ -103,52 +103,52 @@
 
 #### 2.2.1 환자 관리 모듈
 
-| 기능 | 레벨 | 오프라인 동작 |
-|------|------|--------------|
-| 환자 목록 조회 | ▣ L2 | 캐시된 담당 환자 목록 표시 |
-| 환자 상세 조회 | ▣ L2 | 캐시된 환자 정보 표시 |
-| 환자 검색 | ▣ L2 | 캐시된 데이터 내에서만 검색 |
-| 환자 정보 수정 | □ L4 | 온라인 필수 (민감 정보) |
-| 바이탈 입력 | ▤ L3 | 로컬 저장 후 동기화 큐 |
-| I/O 기록 | ▤ L3 | 로컬 저장 후 동기화 큐 |
+| 기능           | 레벨 | 오프라인 동작               |
+| -------------- | ---- | --------------------------- |
+| 환자 목록 조회 | ▣ L2 | 캐시된 담당 환자 목록 표시  |
+| 환자 상세 조회 | ▣ L2 | 캐시된 환자 정보 표시       |
+| 환자 검색      | ▣ L2 | 캐시된 데이터 내에서만 검색 |
+| 환자 정보 수정 | □ L4 | 온라인 필수 (민감 정보)     |
+| 바이탈 입력    | ▤ L3 | 로컬 저장 후 동기화 큐      |
+| I/O 기록       | ▤ L3 | 로컬 저장 후 동기화 큐      |
 
 #### 2.2.2 병실 관리 모듈
 
-| 기능 | 레벨 | 오프라인 동작 |
-|------|------|--------------|
-| 병실 현황판 | ▣ L2 | 마지막 동기화 상태 표시 |
-| 병실 상세 조회 | ▣ L2 | 캐시된 병실 정보 |
-| 입퇴원 처리 | □ L4 | 온라인 필수 |
-| 전실 처리 | □ L4 | 온라인 필수 |
+| 기능           | 레벨 | 오프라인 동작           |
+| -------------- | ---- | ----------------------- |
+| 병실 현황판    | ▣ L2 | 마지막 동기화 상태 표시 |
+| 병실 상세 조회 | ▣ L2 | 캐시된 병실 정보        |
+| 입퇴원 처리    | □ L4 | 온라인 필수             |
+| 전실 처리      | □ L4 | 온라인 필수             |
 
 #### 2.2.3 라운딩 모듈
 
-| 기능 | 레벨 | 오프라인 동작 |
-|------|------|--------------|
-| 라운딩 시작 | ▤ L3 | 로컬 시작 기록 |
+| 기능        | 레벨 | 오프라인 동작       |
+| ----------- | ---- | ------------------- |
+| 라운딩 시작 | ▤ L3 | 로컬 시작 기록      |
 | 환자별 메모 | ▤ L3 | 로컬 저장 후 동기화 |
-| 음성 메모 | ■ L1 | 로컬 녹음 및 저장 |
-| 사진 촬영 | ■ L1 | 로컬 저장 |
-| 라운딩 완료 | ▤ L3 | 로컬 완료 기록 |
+| 음성 메모   | ■ L1 | 로컬 녹음 및 저장   |
+| 사진 촬영   | ■ L1 | 로컬 저장           |
+| 라운딩 완료 | ▤ L3 | 로컬 완료 기록      |
 
 #### 2.2.4 보고서 모듈
 
-| 기능 | 레벨 | 오프라인 동작 |
-|------|------|--------------|
-| 보고서 조회 | ▣ L2 | 최근 캐시된 보고서 |
-| 보고서 작성 | ▤ L3 | 초안 저장, 동기화 대기 |
-| 보고서 승인 | □ L4 | 온라인 필수 |
-| 인쇄/내보내기 | □ L4 | 온라인 필수 |
+| 기능          | 레벨 | 오프라인 동작          |
+| ------------- | ---- | ---------------------- |
+| 보고서 조회   | ▣ L2 | 최근 캐시된 보고서     |
+| 보고서 작성   | ▤ L3 | 초안 저장, 동기화 대기 |
+| 보고서 승인   | □ L4 | 온라인 필수            |
+| 인쇄/내보내기 | □ L4 | 온라인 필수            |
 
 #### 2.2.5 시스템/인증 모듈
 
-| 기능 | 레벨 | 오프라인 동작 |
-|------|------|--------------|
-| 로그인 | □ L4 | 온라인 필수 |
+| 기능             | 레벨 | 오프라인 동작         |
+| ---------------- | ---- | --------------------- |
+| 로그인           | □ L4 | 온라인 필수           |
 | 자동 로그인 유지 | ■ L1 | 유효 토큰 있으면 유지 |
-| 로그아웃 | ■ L1 | 즉시 처리 |
-| 설정 조회 | ▣ L2 | 캐시된 설정 |
-| 알림 조회 | ▣ L2 | 캐시된 알림 목록 |
+| 로그아웃         | ■ L1 | 즉시 처리             |
+| 설정 조회        | ▣ L2 | 캐시된 설정           |
+| 알림 조회        | ▣ L2 | 캐시된 알림 목록      |
 
 ---
 
@@ -195,8 +195,8 @@ export async function registerServiceWorker(): Promise<void> {
         onClick: () => {
           wb.messageSkipWaiting();
           window.location.reload();
-        }
-      }
+        },
+      },
     });
   });
 
@@ -222,12 +222,7 @@ export async function registerServiceWorker(): Promise<void> {
 // sw.ts (Workbox 기반)
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { registerRoute, NavigationRoute } from 'workbox-routing';
-import {
-  CacheFirst,
-  NetworkFirst,
-  StaleWhileRevalidate,
-  NetworkOnly
-} from 'workbox-strategies';
+import { CacheFirst, NetworkFirst, StaleWhileRevalidate, NetworkOnly } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { BackgroundSyncPlugin } from 'workbox-background-sync';
@@ -243,14 +238,14 @@ const appShellHandler = new NetworkFirst({
   cacheName: 'app-shell',
   plugins: [
     new CacheableResponsePlugin({ statuses: [0, 200] }),
-    new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 })
-  ]
+    new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 }),
+  ],
 });
 
 registerRoute(
   new NavigationRoute(appShellHandler, {
-    allowlist: [/^\/(?!api\/).*/]
-  })
+    allowlist: [/^\/(?!api\/).*/],
+  }),
 );
 
 // 오프라인 폴백 페이지
@@ -260,7 +255,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open('offline-fallback').then((cache) => {
       return cache.add(offlineFallbackPage);
-    })
+    }),
   );
 });
 
@@ -275,7 +270,7 @@ self.addEventListener('fetch', (event) => {
           const cache = await caches.open('offline-fallback');
           return await cache.match(offlineFallbackPage);
         }
-      })()
+      })(),
     );
   }
 });
@@ -287,14 +282,14 @@ self.addEventListener('fetch', (event) => {
 
 ### 4.1 캐시 분류
 
-| 캐시명 | 전략 | TTL | 최대 항목 | 용도 |
-|--------|------|-----|----------|------|
-| `app-shell` | Network First | 7일 | 50 | HTML, 기본 UI |
-| `static-assets` | Cache First | 30일 | 200 | JS, CSS, 이미지 |
-| `api-cache` | Stale While Revalidate | 1시간 | 500 | API 응답 |
-| `patient-data` | Network First | 30분 | 1000 | 환자 데이터 |
-| `room-data` | Network First | 15분 | 100 | 병실 데이터 |
-| `offline-queue` | - | 7일 | 1000 | 오프라인 요청 큐 |
+| 캐시명          | 전략                   | TTL   | 최대 항목 | 용도             |
+| --------------- | ---------------------- | ----- | --------- | ---------------- |
+| `app-shell`     | Network First          | 7일   | 50        | HTML, 기본 UI    |
+| `static-assets` | Cache First            | 30일  | 200       | JS, CSS, 이미지  |
+| `api-cache`     | Stale While Revalidate | 1시간 | 500       | API 응답         |
+| `patient-data`  | Network First          | 30분  | 1000      | 환자 데이터      |
+| `room-data`     | Network First          | 15분  | 100       | 병실 데이터      |
+| `offline-queue` | -                      | 7일   | 1000      | 오프라인 요청 큐 |
 
 ### 4.2 리소스 타입별 캐싱
 
@@ -312,26 +307,25 @@ registerRoute(
       new CacheableResponsePlugin({ statuses: [0, 200] }),
       new ExpirationPlugin({
         maxEntries: 200,
-        maxAgeSeconds: 30 * 24 * 60 * 60 // 30일
-      })
-    ]
-  })
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30일
+      }),
+    ],
+  }),
 );
 
 // API 요청 (Stale While Revalidate)
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/') &&
-    !url.pathname.includes('/api/auth/'),
+  ({ url }) => url.pathname.startsWith('/api/') && !url.pathname.includes('/api/auth/'),
   new StaleWhileRevalidate({
     cacheName: 'api-cache',
     plugins: [
       new CacheableResponsePlugin({ statuses: [0, 200] }),
       new ExpirationPlugin({
         maxEntries: 500,
-        maxAgeSeconds: 60 * 60 // 1시간
-      })
-    ]
-  })
+        maxAgeSeconds: 60 * 60, // 1시간
+      }),
+    ],
+  }),
 );
 
 // 환자 데이터 (Network First with Fallback)
@@ -344,10 +338,10 @@ registerRoute(
       new CacheableResponsePlugin({ statuses: [0, 200] }),
       new ExpirationPlugin({
         maxEntries: 1000,
-        maxAgeSeconds: 30 * 60 // 30분
-      })
-    ]
-  })
+        maxAgeSeconds: 30 * 60, // 30분
+      }),
+    ],
+  }),
 );
 
 // 병실 데이터 (Network First)
@@ -360,17 +354,14 @@ registerRoute(
       new CacheableResponsePlugin({ statuses: [0, 200] }),
       new ExpirationPlugin({
         maxEntries: 100,
-        maxAgeSeconds: 15 * 60 // 15분
-      })
-    ]
-  })
+        maxAgeSeconds: 15 * 60, // 15분
+      }),
+    ],
+  }),
 );
 
 // 인증 관련 (Network Only - 캐시 금지)
-registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/auth/'),
-  new NetworkOnly()
-);
+registerRoute(({ url }) => url.pathname.startsWith('/api/auth/'), new NetworkOnly());
 ```
 
 ### 4.3 동적 데이터 프리패칭
@@ -387,7 +378,7 @@ async function prefetchAssignedPatients(userId: string): Promise<void> {
       const response = await fetch(`/api/patients/${patientId}`);
       const cache = await caches.open('patient-data');
       await cache.put(`/api/patients/${patientId}`, response.clone());
-    })
+    }),
   );
 
   // 병실 데이터 프리패치
@@ -396,13 +387,13 @@ async function prefetchAssignedPatients(userId: string): Promise<void> {
       const response = await fetch(`/api/rooms/${roomId}`);
       const cache = await caches.open('room-data');
       await cache.put(`/api/rooms/${roomId}`, response.clone());
-    })
+    }),
   );
 
   // 프리패치 완료 알림
   navigator.serviceWorker.controller?.postMessage({
     type: 'PREFETCH_COMPLETE',
-    data: { patientCount: patientIds.length, roomCount: roomIds.length }
+    data: { patientCount: patientIds.length, roomCount: roomIds.length },
   });
 }
 ```
@@ -461,14 +452,14 @@ interface CachedRoom {
 }
 
 interface OfflineVitalRecord {
-  localId: string;            // 로컬 UUID
+  localId: string; // 로컬 UUID
   patientId: string;
   data: VitalData;
   createdAt: Date;
   syncStatus: 'pending' | 'syncing' | 'synced' | 'failed';
   syncAttempts: number;
   lastSyncAttempt?: Date;
-  serverId?: string;          // 동기화 후 서버 ID
+  serverId?: string; // 동기화 후 서버 ID
   error?: string;
 }
 
@@ -510,7 +501,7 @@ class OfflineDatabase extends Dexie {
       offlineVitals: 'localId, patientId, syncStatus, createdAt',
       offlineRoundingNotes: 'localId, patientId, syncStatus, createdAt',
       offlineAttachments: 'localId, type, syncStatus, createdAt',
-      syncQueue: '++id, type, priority, createdAt, syncStatus'
+      syncQueue: '++id, type, priority, createdAt, syncStatus',
     });
   }
 }
@@ -546,7 +537,7 @@ export class OfflineDataManager {
           data,
           cachedAt: new Date(),
           expiresAt: new Date(Date.now() + this.maxCacheAge),
-          version: data.version
+          version: data.version,
         });
 
         return data;
@@ -577,7 +568,7 @@ export class OfflineDataManager {
       data: vital,
       createdAt: new Date(),
       syncStatus: 'pending',
-      syncAttempts: 0
+      syncAttempts: 0,
     });
 
     // 동기화 큐에 추가
@@ -586,7 +577,7 @@ export class OfflineDataManager {
       referenceId: localId,
       priority: 1, // 높은 우선순위
       createdAt: new Date(),
-      syncStatus: 'pending'
+      syncStatus: 'pending',
     });
 
     return localId;
@@ -594,25 +585,16 @@ export class OfflineDataManager {
 
   // 오프라인 저장 데이터 조회
   async getPendingVitals(): Promise<OfflineVitalRecord[]> {
-    return this.db.offlineVitals
-      .where('syncStatus')
-      .anyOf(['pending', 'failed'])
-      .toArray();
+    return this.db.offlineVitals.where('syncStatus').anyOf(['pending', 'failed']).toArray();
   }
 
   // 캐시 정리
   async cleanupExpiredCache(): Promise<void> {
     const now = new Date();
 
-    await this.db.cachedPatients
-      .where('expiresAt')
-      .below(now)
-      .delete();
+    await this.db.cachedPatients.where('expiresAt').below(now).delete();
 
-    await this.db.cachedRooms
-      .where('expiresAt')
-      .below(now)
-      .delete();
+    await this.db.cachedRooms.where('expiresAt').below(now).delete();
   }
 
   // 저장소 사용량 확인
@@ -622,7 +604,7 @@ export class OfflineDataManager {
       return {
         used: estimate.usage || 0,
         quota: estimate.quota || 0,
-        usagePercentage: ((estimate.usage || 0) / (estimate.quota || 1)) * 100
+        usagePercentage: ((estimate.usage || 0) / (estimate.quota || 1)) * 100,
       };
     }
     return { used: 0, quota: 0, usagePercentage: 0 };
@@ -659,23 +641,22 @@ const vitalSyncQueue = new BackgroundSyncPlugin('vital-sync-queue', {
         const body = await entry.request.clone().json();
         await offlineDb.offlineVitals.update(body.localId, {
           syncStatus: 'synced',
-          serverId: (await response.json()).id
+          serverId: (await response.json()).id,
         });
 
         // 사용자에게 알림
         self.registration.showNotification('동기화 완료', {
           body: '오프라인에서 저장한 바이탈 데이터가 동기화되었습니다.',
           icon: '/icons/sync-success-192.png',
-          tag: 'sync-complete'
+          tag: 'sync-complete',
         });
-
       } catch (error) {
         // 재시도 큐에 다시 추가
         await queue.unshiftRequest(entry);
         throw error;
       }
     }
-  }
+  },
 });
 
 // 라운딩 메모 동기화 큐
@@ -687,17 +668,17 @@ const roundingSyncQueue = new BackgroundSyncPlugin('rounding-sync-queue', {
 registerRoute(
   ({ url }) => url.pathname === '/api/vitals',
   new NetworkOnly({
-    plugins: [vitalSyncQueue]
+    plugins: [vitalSyncQueue],
   }),
-  'POST'
+  'POST',
 );
 
 registerRoute(
   ({ url }) => url.pathname.startsWith('/api/rounding/notes'),
   new NetworkOnly({
-    plugins: [roundingSyncQueue]
+    plugins: [roundingSyncQueue],
   }),
-  'POST'
+  'POST',
 );
 ```
 
@@ -724,17 +705,17 @@ export class SyncManager {
       const results = await Promise.allSettled([
         this.syncVitals(),
         this.syncRoundingNotes(),
-        this.syncAttachments()
+        this.syncAttachments(),
       ]);
 
-      const successful = results.filter(r => r.status === 'fulfilled').length;
-      const failed = results.filter(r => r.status === 'rejected').length;
+      const successful = results.filter((r) => r.status === 'fulfilled').length;
+      const failed = results.filter((r) => r.status === 'rejected').length;
 
       return {
         status: 'completed',
         successful,
         failed,
-        details: results
+        details: results,
       };
     } finally {
       this.syncInProgress = false;
@@ -756,7 +737,7 @@ export class SyncManager {
   private async syncSingleVital(vital: OfflineVitalRecord): Promise<void> {
     await offlineDb.offlineVitals.update(vital.localId, {
       syncStatus: 'syncing',
-      lastSyncAttempt: new Date()
+      lastSyncAttempt: new Date(),
     });
 
     try {
@@ -766,8 +747,8 @@ export class SyncManager {
         body: JSON.stringify({
           ...vital.data,
           localId: vital.localId,
-          createdAt: vital.createdAt
-        })
+          createdAt: vital.createdAt,
+        }),
       });
 
       if (!response.ok) {
@@ -778,14 +759,13 @@ export class SyncManager {
 
       await offlineDb.offlineVitals.update(vital.localId, {
         syncStatus: 'synced',
-        serverId: result.id
+        serverId: result.id,
       });
-
     } catch (error) {
       await offlineDb.offlineVitals.update(vital.localId, {
         syncStatus: 'failed',
         syncAttempts: vital.syncAttempts + 1,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -815,8 +795,8 @@ export class SyncManager {
         localId: attachment.localId,
         fileName: `${attachment.type}_${attachment.localId}`,
         fileSize: attachment.blob.size,
-        totalChunks
-      })
+        totalChunks,
+      }),
     });
 
     const { sessionId } = await sessionResponse.json();
@@ -831,22 +811,22 @@ export class SyncManager {
         method: 'POST',
         headers: {
           'Content-Type': 'application/octet-stream',
-          'X-Chunk-Index': String(i)
+          'X-Chunk-Index': String(i),
         },
-        body: chunk
+        body: chunk,
       });
     }
 
     // 업로드 완료
     const completeResponse = await fetch(`/api/uploads/session/${sessionId}/complete`, {
-      method: 'POST'
+      method: 'POST',
     });
 
     const { url } = await completeResponse.json();
 
     await offlineDb.offlineAttachments.update(attachment.localId, {
       syncStatus: 'synced',
-      serverUrl: url
+      serverUrl: url,
     });
   }
 }
@@ -854,13 +834,13 @@ export class SyncManager {
 
 ### 6.3 동기화 우선순위
 
-| 우선순위 | 데이터 유형 | 설명 |
-|----------|------------|------|
+| 우선순위 | 데이터 유형 | 설명           |
+| -------- | ----------- | -------------- |
 | 1 (최고) | 바이탈 사인 | 환자 안전 관련 |
-| 2 | 라운딩 메모 | 진료 기록 |
-| 3 | I/O 기록 | 환자 관리 |
-| 4 | 첨부파일 | 사진, 음성 |
-| 5 (최저) | 설정/기타 | 사용자 설정 |
+| 2        | 라운딩 메모 | 진료 기록      |
+| 3        | I/O 기록    | 환자 관리      |
+| 4        | 첨부파일    | 사진, 음성     |
+| 5 (최저) | 설정/기타   | 사용자 설정    |
 
 ---
 
@@ -893,31 +873,31 @@ export class SyncManager {
 ```typescript
 // conflict-resolver.ts
 type ConflictResolutionStrategy =
-  | 'SERVER_WINS'      // 서버 데이터 우선
-  | 'CLIENT_WINS'      // 클라이언트 데이터 우선
-  | 'LATEST_WINS'      // 최신 타임스탬프 우선
-  | 'MERGE'            // 병합 (필드별)
-  | 'MANUAL';          // 사용자 선택
+  | 'SERVER_WINS' // 서버 데이터 우선
+  | 'CLIENT_WINS' // 클라이언트 데이터 우선
+  | 'LATEST_WINS' // 최신 타임스탬프 우선
+  | 'MERGE' // 병합 (필드별)
+  | 'MANUAL'; // 사용자 선택
 
 const CONFLICT_POLICIES: Record<DataType, ConflictResolutionStrategy> = {
   // 바이탈: 모든 기록 보존 (APPEND_ONLY)
-  'vital': 'CLIENT_WINS',        // 오프라인 기록도 별도로 저장
+  vital: 'CLIENT_WINS', // 오프라인 기록도 별도로 저장
 
   // 환자 정보: 서버 우선 (민감 데이터)
-  'patient': 'SERVER_WINS',
+  patient: 'SERVER_WINS',
 
   // 라운딩 메모: 최신 우선
-  'rounding_note': 'LATEST_WINS',
+  rounding_note: 'LATEST_WINS',
 
   // 설정: 병합
-  'settings': 'MERGE'
+  settings: 'MERGE',
 };
 
 export class ConflictResolver {
   async resolveConflict<T>(
     local: OfflineRecord<T>,
     server: ServerRecord<T>,
-    dataType: DataType
+    dataType: DataType,
   ): Promise<ResolvedRecord<T>> {
     const strategy = CONFLICT_POLICIES[dataType];
 
@@ -926,7 +906,7 @@ export class ConflictResolver {
         return {
           data: server.data,
           version: server.version,
-          conflictResolution: 'server_applied'
+          conflictResolution: 'server_applied',
         };
 
       case 'CLIENT_WINS':
@@ -936,13 +916,13 @@ export class ConflictResolver {
             data: local.data,
             version: server.version + 1,
             conflictResolution: 'client_appended',
-            appendAsNew: true
+            appendAsNew: true,
           };
         }
         return {
           data: local.data,
           version: server.version + 1,
-          conflictResolution: 'client_applied'
+          conflictResolution: 'client_applied',
         };
 
       case 'LATEST_WINS':
@@ -953,13 +933,13 @@ export class ConflictResolver {
           return {
             data: local.data,
             version: server.version + 1,
-            conflictResolution: 'client_newer'
+            conflictResolution: 'client_newer',
           };
         }
         return {
           data: server.data,
           version: server.version,
-          conflictResolution: 'server_newer'
+          conflictResolution: 'server_newer',
         };
 
       case 'MERGE':
@@ -967,14 +947,14 @@ export class ConflictResolver {
         return {
           data: merged,
           version: server.version + 1,
-          conflictResolution: 'merged'
+          conflictResolution: 'merged',
         };
 
       case 'MANUAL':
         return {
           data: null,
           conflict: { local, server },
-          conflictResolution: 'pending_user_decision'
+          conflictResolution: 'pending_user_decision',
         };
     }
   }
@@ -1150,67 +1130,80 @@ export function OfflineDataBadge({ data }: { data: { syncStatus: string } }) {
 <!-- offline.html -->
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오프라인 - 입원환자 관리 시스템</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
-      text-align: center;
-      padding: 20px;
-    }
-    .icon { font-size: 64px; margin-bottom: 20px; }
-    h1 { color: #333; margin-bottom: 10px; }
-    p { color: #666; margin-bottom: 20px; max-width: 400px; }
-    .btn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .btn:hover { background: #1d4ed8; }
-    .status { margin-top: 20px; font-size: 14px; color: #888; }
-  </style>
-</head>
-<body>
-  <div class="icon">📶</div>
-  <h1>오프라인 상태입니다</h1>
-  <p>
-    네트워크 연결이 끊어졌습니다.
-    연결이 복원되면 자동으로 동기화됩니다.
-  </p>
-  <button class="btn" onclick="location.reload()">다시 시도</button>
-  <div class="status" id="status"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>오프라인 - 입원환자 관리 시스템</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #f5f5f5;
+        text-align: center;
+        padding: 20px;
+      }
+      .icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+      p {
+        color: #666;
+        margin-bottom: 20px;
+        max-width: 400px;
+      }
+      .btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .btn:hover {
+        background: #1d4ed8;
+      }
+      .status {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="icon">📶</div>
+    <h1>오프라인 상태입니다</h1>
+    <p>네트워크 연결이 끊어졌습니다. 연결이 복원되면 자동으로 동기화됩니다.</p>
+    <button class="btn" onclick="location.reload()">다시 시도</button>
+    <div class="status" id="status"></div>
 
-  <script>
-    // 온라인 상태 감지
-    window.addEventListener('online', () => {
-      document.getElementById('status').textContent = '연결됨! 페이지를 새로고침합니다...';
-      setTimeout(() => location.reload(), 1000);
-    });
+    <script>
+      // 온라인 상태 감지
+      window.addEventListener('online', () => {
+        document.getElementById('status').textContent = '연결됨! 페이지를 새로고침합니다...';
+        setTimeout(() => location.reload(), 1000);
+      });
 
-    // 연결 확인
-    if (navigator.onLine) {
-      document.getElementById('status').textContent = '연결 확인 중...';
-      fetch('/api/health')
-        .then(() => location.reload())
-        .catch(() => {
-          document.getElementById('status').textContent = '서버에 연결할 수 없습니다.';
-        });
-    }
-  </script>
-</body>
+      // 연결 확인
+      if (navigator.onLine) {
+        document.getElementById('status').textContent = '연결 확인 중...';
+        fetch('/api/health')
+          .then(() => location.reload())
+          .catch(() => {
+            document.getElementById('status').textContent = '서버에 연결할 수 없습니다.';
+          });
+      }
+    </script>
+  </body>
 </html>
 ```
 
@@ -1328,9 +1321,9 @@ const withPWA = require('next-pwa')({
         cacheName: 'google-fonts',
         expiration: {
           maxEntries: 10,
-          maxAgeSeconds: 365 * 24 * 60 * 60 // 1년
-        }
-      }
+          maxAgeSeconds: 365 * 24 * 60 * 60, // 1년
+        },
+      },
     },
     {
       urlPattern: /\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
@@ -1339,9 +1332,9 @@ const withPWA = require('next-pwa')({
         cacheName: 'static-font-assets',
         expiration: {
           maxEntries: 10,
-          maxAgeSeconds: 7 * 24 * 60 * 60 // 7일
-        }
-      }
+          maxAgeSeconds: 7 * 24 * 60 * 60, // 7일
+        },
+      },
     },
     {
       urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
@@ -1350,11 +1343,11 @@ const withPWA = require('next-pwa')({
         cacheName: 'static-image-assets',
         expiration: {
           maxEntries: 100,
-          maxAgeSeconds: 7 * 24 * 60 * 60
-        }
-      }
-    }
-  ]
+          maxAgeSeconds: 7 * 24 * 60 * 60,
+        },
+      },
+    },
+  ],
 });
 
 module.exports = withPWA({
@@ -1384,7 +1377,7 @@ export function useOffline() {
     pendingCount: 0,
     lastSyncTime: null,
     syncInProgress: false,
-    storageUsage: 0
+    storageUsage: 0,
   });
 
   const syncManager = new SyncManager();
@@ -1392,13 +1385,13 @@ export function useOffline() {
   // 온라인/오프라인 상태 감지
   useEffect(() => {
     const handleOnline = () => {
-      setState(s => ({ ...s, isOnline: true }));
+      setState((s) => ({ ...s, isOnline: true }));
       // 온라인 복귀 시 자동 동기화
       syncManager.triggerSync();
     };
 
     const handleOffline = () => {
-      setState(s => ({ ...s, isOnline: false }));
+      setState((s) => ({ ...s, isOnline: false }));
     };
 
     window.addEventListener('online', handleOnline);
@@ -1423,7 +1416,7 @@ export function useOffline() {
         .anyOf(['pending', 'failed'])
         .count();
 
-      setState(s => ({ ...s, pendingCount: vitals + notes }));
+      setState((s) => ({ ...s, pendingCount: vitals + notes }));
     };
 
     updatePendingCount();
@@ -1435,62 +1428,62 @@ export function useOffline() {
 
   // 수동 동기화
   const triggerSync = useCallback(async () => {
-    setState(s => ({ ...s, syncInProgress: true }));
+    setState((s) => ({ ...s, syncInProgress: true }));
 
     try {
       const result = await syncManager.triggerSync();
-      setState(s => ({
+      setState((s) => ({
         ...s,
         syncInProgress: false,
-        lastSyncTime: new Date()
+        lastSyncTime: new Date(),
       }));
       return result;
     } catch (error) {
-      setState(s => ({ ...s, syncInProgress: false }));
+      setState((s) => ({ ...s, syncInProgress: false }));
       throw error;
     }
   }, []);
 
   // 오프라인 데이터 저장
-  const saveOffline = useCallback(async <T>(
-    type: 'vital' | 'rounding_note',
-    data: T
-  ): Promise<string> => {
-    const localId = crypto.randomUUID();
+  const saveOffline = useCallback(
+    async <T>(type: 'vital' | 'rounding_note', data: T): Promise<string> => {
+      const localId = crypto.randomUUID();
 
-    if (type === 'vital') {
-      await offlineDb.offlineVitals.add({
-        localId,
-        patientId: (data as any).patientId,
-        data: data as any,
-        createdAt: new Date(),
-        syncStatus: 'pending',
-        syncAttempts: 0
-      });
-    } else if (type === 'rounding_note') {
-      await offlineDb.offlineRoundingNotes.add({
-        localId,
-        patientId: (data as any).patientId,
-        content: (data as any).content,
-        attachments: [],
-        createdAt: new Date(),
-        syncStatus: 'pending',
-        syncAttempts: 0
-      });
-    }
+      if (type === 'vital') {
+        await offlineDb.offlineVitals.add({
+          localId,
+          patientId: (data as any).patientId,
+          data: data as any,
+          createdAt: new Date(),
+          syncStatus: 'pending',
+          syncAttempts: 0,
+        });
+      } else if (type === 'rounding_note') {
+        await offlineDb.offlineRoundingNotes.add({
+          localId,
+          patientId: (data as any).patientId,
+          content: (data as any).content,
+          attachments: [],
+          createdAt: new Date(),
+          syncStatus: 'pending',
+          syncAttempts: 0,
+        });
+      }
 
-    // 온라인이면 즉시 동기화 시도
-    if (navigator.onLine) {
-      syncManager.triggerSync();
-    }
+      // 온라인이면 즉시 동기화 시도
+      if (navigator.onLine) {
+        syncManager.triggerSync();
+      }
 
-    return localId;
-  }, []);
+      return localId;
+    },
+    [],
+  );
 
   return {
     ...state,
     triggerSync,
-    saveOffline
+    saveOffline,
   };
 }
 ```
@@ -1501,14 +1494,14 @@ export function useOffline() {
 
 ### 10.1 테스트 시나리오
 
-| 시나리오 | 테스트 방법 | 예상 결과 |
-|----------|------------|----------|
-| 완전 오프라인 접속 | 네트워크 차단 후 앱 실행 | 캐시된 페이지 표시 |
-| 오프라인 바이탈 입력 | 네트워크 차단 후 바이탈 저장 | IndexedDB에 저장, 동기화 대기 표시 |
-| 온라인 복귀 자동 동기화 | 네트워크 복원 | 자동으로 대기 중인 데이터 동기화 |
-| 충돌 해결 | 오프라인에서 수정 후 서버에서도 수정 | 충돌 알림 및 해결 옵션 제공 |
-| 저장소 한계 도달 | IndexedDB 90% 이상 사용 | 경고 표시, 오래된 캐시 정리 |
-| 서비스 워커 업데이트 | 새 버전 배포 | 업데이트 알림, 새로고침 옵션 |
+| 시나리오                | 테스트 방법                          | 예상 결과                          |
+| ----------------------- | ------------------------------------ | ---------------------------------- |
+| 완전 오프라인 접속      | 네트워크 차단 후 앱 실행             | 캐시된 페이지 표시                 |
+| 오프라인 바이탈 입력    | 네트워크 차단 후 바이탈 저장         | IndexedDB에 저장, 동기화 대기 표시 |
+| 온라인 복귀 자동 동기화 | 네트워크 복원                        | 자동으로 대기 중인 데이터 동기화   |
+| 충돌 해결               | 오프라인에서 수정 후 서버에서도 수정 | 충돌 알림 및 해결 옵션 제공        |
+| 저장소 한계 도달        | IndexedDB 90% 이상 사용              | 경고 표시, 오래된 캐시 정리        |
+| 서비스 워커 업데이트    | 새 버전 배포                         | 업데이트 알림, 새로고침 옵션       |
 
 ### 10.2 E2E 테스트 코드
 
@@ -1579,25 +1572,26 @@ test.describe('PWA Offline Functionality', () => {
 
 ### 10.3 성능 요구사항
 
-| 메트릭 | 목표 | 측정 방법 |
-|--------|------|----------|
-| First Contentful Paint (오프라인) | < 1.5초 | Lighthouse |
-| 오프라인 저장 응답 시간 | < 100ms | 인앱 측정 |
-| 동기화 처리량 | 100 records/분 | 부하 테스트 |
-| IndexedDB 쿼리 시간 | < 50ms | 인앱 측정 |
-| 서비스 워커 활성화 시간 | < 500ms | Lighthouse |
+| 메트릭                            | 목표           | 측정 방법   |
+| --------------------------------- | -------------- | ----------- |
+| First Contentful Paint (오프라인) | < 1.5초        | Lighthouse  |
+| 오프라인 저장 응답 시간           | < 100ms        | 인앱 측정   |
+| 동기화 처리량                     | 100 records/분 | 부하 테스트 |
+| IndexedDB 쿼리 시간               | < 50ms         | 인앱 측정   |
+| 서비스 워커 활성화 시간           | < 500ms        | Lighthouse  |
 
 ---
 
 ## 변경 이력
 
-| 버전 | 일자 | 변경 내용 |
-|------|------|----------|
+| 버전  | 일자       | 변경 내용                          |
+| ----- | ---------- | ---------------------------------- |
 | 1.0.0 | 2026-01-12 | 초안 작성 - 갭 분석 기반 신규 문서 |
 
 ---
 
 > **관련 문서**
+>
 > - [SRS.kr.md](../../SRS.kr.md) - 요구사항 명세
 > - [notification-specification.kr.md](notification-specification.kr.md) - 알림 명세
 > - [ui-design.kr.md](ui-design.kr.md) - UI 설계

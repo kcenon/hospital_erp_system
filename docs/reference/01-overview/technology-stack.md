@@ -2,12 +2,12 @@
 
 ## Document Information
 
-| Item | Content |
-|------|---------|
-| Document Version | 0.1.0.0 |
-| Created Date | 2025-12-29 |
-| Status | Proposal |
-| Maintainer | kcenon@naver.com |
+| Item             | Content          |
+| ---------------- | ---------------- |
+| Document Version | 0.1.0.0          |
+| Created Date     | 2025-12-29       |
+| Status           | Proposal         |
+| Maintainer       | kcenon@naver.com |
 
 ---
 
@@ -30,13 +30,13 @@
 
 ### 1.2 Technology Stack Summary
 
-| Layer | Technology | Selection Rationale |
-|-------|------------|---------------------|
-| **Frontend** | Next.js 14 + TypeScript | SSR support, responsive UI, type safety |
-| **Backend** | NestJS + TypeScript | Modularization, dependency injection, enterprise patterns |
-| **Database** | PostgreSQL 16 | ACID, JSON support, medical data reliability |
-| **Cache** | Redis | Session management, real-time status board |
-| **Cloud** | AWS / Naver Cloud | Domestic regulatory compliance, scalability |
+| Layer        | Technology              | Selection Rationale                                       |
+| ------------ | ----------------------- | --------------------------------------------------------- |
+| **Frontend** | Next.js 14 + TypeScript | SSR support, responsive UI, type safety                   |
+| **Backend**  | NestJS + TypeScript     | Modularization, dependency injection, enterprise patterns |
+| **Database** | PostgreSQL 16           | ACID, JSON support, medical data reliability              |
+| **Cache**    | Redis                   | Session management, real-time status board                |
+| **Cloud**    | AWS / Naver Cloud       | Domestic regulatory compliance, scalability               |
 
 ---
 
@@ -56,24 +56,24 @@ Frontend Stack
 
 ### 2.2 Technology Selection Rationale
 
-| Technology | Selection Rationale | Alternative |
-|------------|---------------------|-------------|
-| **Next.js 14** | Server components with App Router, SEO not required but SSR optimizes initial loading | Vite + React |
-| **TypeScript** | Essential type safety for medical data, reduces runtime errors | JavaScript |
-| **shadcn/ui** | Easy customization, built-in accessibility support | MUI, Ant Design |
-| **Tailwind CSS** | Fast responsive UI development, consistent design system | Styled Components |
-| **Zustand** | Lightweight, minimal boilerplate | Redux Toolkit |
-| **TanStack Query** | Server state caching, auto-refresh, optimistic updates | SWR |
+| Technology         | Selection Rationale                                                                   | Alternative       |
+| ------------------ | ------------------------------------------------------------------------------------- | ----------------- |
+| **Next.js 14**     | Server components with App Router, SEO not required but SSR optimizes initial loading | Vite + React      |
+| **TypeScript**     | Essential type safety for medical data, reduces runtime errors                        | JavaScript        |
+| **shadcn/ui**      | Easy customization, built-in accessibility support                                    | MUI, Ant Design   |
+| **Tailwind CSS**   | Fast responsive UI development, consistent design system                              | Styled Components |
+| **Zustand**        | Lightweight, minimal boilerplate                                                      | Redux Toolkit     |
+| **TanStack Query** | Server state caching, auto-refresh, optimistic updates                                | SWR               |
 
 ### 2.3 Responsive Support Strategy
 
 ```typescript
 // Device-specific breakpoint definitions
 const breakpoints = {
-  mobile: '320px',   // Smartphones
-  tablet: '768px',   // Tablets (for rounds)
+  mobile: '320px', // Smartphones
+  tablet: '768px', // Tablets (for rounds)
   desktop: '1024px', // PC (admission/admin)
-  wide: '1440px'     // Large monitors (status board)
+  wide: '1440px', // Large monitors (status board)
 };
 ```
 
@@ -117,12 +117,12 @@ src/
 
 ### 3.3 Technology Selection Rationale
 
-| Technology | Selection Rationale | Alternative |
-|------------|---------------------|-------------|
-| **NestJS** | Angular-style DI, modularization, enterprise patterns | Express, Fastify |
-| **Prisma** | Type-safe ORM, migration management, intuitive syntax | TypeORM, Drizzle |
-| **JWT** | Stateless authentication, scalability, mobile support | Session-based |
-| **Passport.js** | Support for various authentication strategies | Custom implementation |
+| Technology      | Selection Rationale                                   | Alternative           |
+| --------------- | ----------------------------------------------------- | --------------------- |
+| **NestJS**      | Angular-style DI, modularization, enterprise patterns | Express, Fastify      |
+| **Prisma**      | Type-safe ORM, migration management, intuitive syntax | TypeORM, Drizzle      |
+| **JWT**         | Stateless authentication, scalability, mobile support | Session-based         |
+| **Passport.js** | Support for various authentication strategies         | Custom implementation |
 
 ---
 
@@ -147,13 +147,13 @@ Database Stack
 
 ### 4.2 PostgreSQL Selection Rationale
 
-| Feature | Description |
-|---------|-------------|
-| **ACID Compliance** | Ensures medical data integrity |
-| **JSON Support** | Flexible schema extension (JSONB) |
-| **Row-Level Security** | Per-patient access control support |
-| **Extensions** | pgcrypto (encryption), pg_audit (auditing) |
-| **Maturity** | Proven stability, rich tooling |
+| Feature                | Description                                |
+| ---------------------- | ------------------------------------------ |
+| **ACID Compliance**    | Ensures medical data integrity             |
+| **JSON Support**       | Flexible schema extension (JSONB)          |
+| **Row-Level Security** | Per-patient access control support         |
+| **Extensions**         | pgcrypto (encryption), pg_audit (auditing) |
+| **Maturity**           | Proven stability, rich tooling             |
 
 ### 4.3 Data Encryption Strategy
 
@@ -198,25 +198,25 @@ VALUES (
 
 ### 5.2 Naver Cloud Configuration (Alternative)
 
-| AWS | Naver Cloud Equivalent | Notes |
-|-----|------------------------|-------|
-| ECS/Fargate | Kubernetes Service | Container orchestration |
-| RDS | Cloud DB for PostgreSQL | Managed DB |
-| ElastiCache | Cloud Redis | Cache |
-| CloudFront | CDN+ | Static content |
-| S3 | Object Storage | File storage |
-| WAF | Security Monitoring | Security |
+| AWS         | Naver Cloud Equivalent  | Notes                   |
+| ----------- | ----------------------- | ----------------------- |
+| ECS/Fargate | Kubernetes Service      | Container orchestration |
+| RDS         | Cloud DB for PostgreSQL | Managed DB              |
+| ElastiCache | Cloud Redis             | Cache                   |
+| CloudFront  | CDN+                    | Static content          |
+| S3          | Object Storage          | File storage            |
+| WAF         | Security Monitoring     | Security                |
 
 ### 5.3 Cost Estimation (Monthly, AWS basis)
 
-| Service | Specifications | Estimated Cost |
-|---------|---------------|----------------|
-| ECS Fargate | 2 vCPU, 4GB × 2 | ~$80 |
-| RDS PostgreSQL | db.t3.medium | ~$60 |
-| ElastiCache | cache.t3.micro | ~$15 |
-| ALB | Basic usage | ~$20 |
-| S3 + CloudFront | 100GB | ~$10 |
-| **Total** | | **~$185/month** |
+| Service         | Specifications  | Estimated Cost  |
+| --------------- | --------------- | --------------- |
+| ECS Fargate     | 2 vCPU, 4GB × 2 | ~$80            |
+| RDS PostgreSQL  | db.t3.medium    | ~$60            |
+| ElastiCache     | cache.t3.micro  | ~$15            |
+| ALB             | Basic usage     | ~$20            |
+| S3 + CloudFront | 100GB           | ~$10            |
+| **Total**       |                 | **~$185/month** |
 
 ---
 
@@ -276,11 +276,11 @@ jobs:
 
 ### 7.1 Existing Medical Program Integration Options
 
-| Method | Advantages | Disadvantages | Recommended When |
-|--------|------------|---------------|------------------|
-| **Direct DB Connection** | Real-time, full data access | High coupling, schema change risk | API not available |
-| **API Integration** | Loose coupling, minimal change impact | Requires API development | API available (recommended) |
-| **ETL Batch** | System independence | Lack of real-time capability | Read-only data |
+| Method                   | Advantages                            | Disadvantages                     | Recommended When            |
+| ------------------------ | ------------------------------------- | --------------------------------- | --------------------------- |
+| **Direct DB Connection** | Real-time, full data access           | High coupling, schema change risk | API not available           |
+| **API Integration**      | Loose coupling, minimal change impact | Requires API development          | API available (recommended) |
+| **ETL Batch**            | System independence                   | Lack of real-time capability      | Read-only data              |
 
 ### 7.2 Integration Architecture
 
@@ -302,28 +302,28 @@ jobs:
 
 ### 8.1 Frontend Alternatives
 
-| Option | Advantages | Disadvantages | Fit |
-|--------|------------|---------------|-----|
-| **Next.js** (selected) | SSR, maturity, ecosystem | Learning curve | ★★★★★ |
-| Vue + Nuxt | Easy learning, flexibility | Smaller ecosystem than React | ★★★★ |
-| Angular | Enterprise patterns, full-stack | Heavy, complex | ★★★ |
+| Option                 | Advantages                      | Disadvantages                | Fit   |
+| ---------------------- | ------------------------------- | ---------------------------- | ----- |
+| **Next.js** (selected) | SSR, maturity, ecosystem        | Learning curve               | ★★★★★ |
+| Vue + Nuxt             | Easy learning, flexibility      | Smaller ecosystem than React | ★★★★  |
+| Angular                | Enterprise patterns, full-stack | Heavy, complex               | ★★★   |
 
 ### 8.2 Backend Alternatives
 
-| Option | Advantages | Disadvantages | Fit |
-|--------|------------|---------------|-----|
-| **NestJS** (selected) | Structured, type safety | Complex initial setup | ★★★★★ |
-| Express.js | Flexibility, simplicity | Lack of structure | ★★★ |
-| Spring Boot | Enterprise proven | Requires Java, heavy | ★★★★ |
-| Django | Rapid development, built-in Admin | Python performance | ★★★ |
+| Option                | Advantages                        | Disadvantages         | Fit   |
+| --------------------- | --------------------------------- | --------------------- | ----- |
+| **NestJS** (selected) | Structured, type safety           | Complex initial setup | ★★★★★ |
+| Express.js            | Flexibility, simplicity           | Lack of structure     | ★★★   |
+| Spring Boot           | Enterprise proven                 | Requires Java, heavy  | ★★★★  |
+| Django                | Rapid development, built-in Admin | Python performance    | ★★★   |
 
 ### 8.3 Database Alternatives
 
-| Option | Advantages | Disadvantages | Fit |
-|--------|------------|---------------|-----|
-| **PostgreSQL** (selected) | Features, extensibility, stability | Configuration complexity | ★★★★★ |
-| MySQL | Widely used, easy operations | Limited features | ★★★★ |
-| MongoDB | Flexible schema | ACID limitations, unsuitable for medical | ★★ |
+| Option                    | Advantages                         | Disadvantages                            | Fit   |
+| ------------------------- | ---------------------------------- | ---------------------------------------- | ----- |
+| **PostgreSQL** (selected) | Features, extensibility, stability | Configuration complexity                 | ★★★★★ |
+| MySQL                     | Widely used, easy operations       | Limited features                         | ★★★★  |
+| MongoDB                   | Flexible schema                    | ACID limitations, unsuitable for medical | ★★    |
 
 ---
 
@@ -356,11 +356,11 @@ jobs:
 
 ## Appendix: Version Compatibility Matrix
 
-| Component | Recommended Version | Minimum Version | LTS End |
-|-----------|---------------------|-----------------|---------|
-| Node.js | 20.x | 18.x | 2026-04 |
-| TypeScript | 5.3+ | 5.0 | - |
-| Next.js | 14.x | 13.x | - |
-| NestJS | 10.x | 9.x | - |
-| PostgreSQL | 16 | 14 | 2026-11 |
-| Redis | 7.x | 6.x | - |
+| Component  | Recommended Version | Minimum Version | LTS End |
+| ---------- | ------------------- | --------------- | ------- |
+| Node.js    | 20.x                | 18.x            | 2026-04 |
+| TypeScript | 5.3+                | 5.0             | -       |
+| Next.js    | 14.x                | 13.x            | -       |
+| NestJS     | 10.x                | 9.x             | -       |
+| PostgreSQL | 16                  | 14              | 2026-11 |
+| Redis      | 7.x                 | 6.x             | -       |

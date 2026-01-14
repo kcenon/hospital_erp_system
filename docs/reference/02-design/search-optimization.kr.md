@@ -4,21 +4,21 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 1.0.0 |
-| 작성일 | 2026-01-12 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
-| 표준 기준 | 내부 성능 기준 |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 1.0.0            |
+| 작성일    | 2026-01-12       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
+| 표준 기준 | 내부 성능 기준   |
 
 ---
 
 ## 문서 이력
 
-| 버전 | 일자 | 작성자 | 변경 내용 |
-|------|------|--------|----------|
-| 1.0.0 | 2026-01-12 | - | 초안 작성 (갭 분석 기반 신규) |
+| 버전  | 일자       | 작성자 | 변경 내용                     |
+| ----- | ---------- | ------ | ----------------------------- |
+| 1.0.0 | 2026-01-12 | -      | 초안 작성 (갭 분석 기반 신규) |
 
 ---
 
@@ -44,21 +44,21 @@
 
 ### 1.2 성능 목표
 
-| 검색 유형 | 응답 시간 목표 | 동시 사용자 |
-|----------|---------------|------------|
-| 환자 이름/ID 검색 | < 100ms | 100 |
-| 병실 현황 조회 | < 200ms | 100 |
-| 환자 기록 검색 | < 500ms | 50 |
-| 전문 검색 (진료 기록) | < 1000ms | 20 |
-| 대시보드 통계 | < 300ms | 100 |
+| 검색 유형             | 응답 시간 목표 | 동시 사용자 |
+| --------------------- | -------------- | ----------- |
+| 환자 이름/ID 검색     | < 100ms        | 100         |
+| 병실 현황 조회        | < 200ms        | 100         |
+| 환자 기록 검색        | < 500ms        | 50          |
+| 전문 검색 (진료 기록) | < 1000ms       | 20          |
+| 대시보드 통계         | < 300ms        | 100         |
 
 ### 1.3 추적성 참조
 
-| 관련 요구사항 | 문서 |
-|--------------|------|
-| REQ-NFR-003 | SRS.kr.md - 성능 요구사항 |
-| REQ-FR-002 | SRS.kr.md - 환자 검색 기능 |
-| DB-001 | database-design.kr.md - 인덱스 설계 |
+| 관련 요구사항 | 문서                                |
+| ------------- | ----------------------------------- |
+| REQ-NFR-003   | SRS.kr.md - 성능 요구사항           |
+| REQ-FR-002    | SRS.kr.md - 환자 검색 기능          |
+| DB-001        | database-design.kr.md - 인덱스 설계 |
 
 ---
 
@@ -103,15 +103,15 @@
 
 ### 2.2 주요 검색 시나리오
 
-| 시나리오 | 검색 대상 | 예상 빈도 | 중요도 |
-|----------|----------|----------|--------|
-| 환자 이름으로 검색 | 환자 테이블 | 매우 높음 | Critical |
-| 병실 번호로 환자 조회 | 입원, 병실 | 높음 | High |
-| 담당 의사별 환자 목록 | 입원, 의사 배정 | 높음 | High |
-| 특정 진단명 환자 검색 | 환자, 진단 | 중간 | Medium |
-| 바이탈 이상 환자 필터 | 바이탈 기록 | 높음 | Critical |
-| 기간별 입퇴원 환자 | 입원 기록 | 중간 | Medium |
-| 간호 기록 내용 검색 | 간호 기록 | 낮음 | Low |
+| 시나리오              | 검색 대상       | 예상 빈도 | 중요도   |
+| --------------------- | --------------- | --------- | -------- |
+| 환자 이름으로 검색    | 환자 테이블     | 매우 높음 | Critical |
+| 병실 번호로 환자 조회 | 입원, 병실      | 높음      | High     |
+| 담당 의사별 환자 목록 | 입원, 의사 배정 | 높음      | High     |
+| 특정 진단명 환자 검색 | 환자, 진단      | 중간      | Medium   |
+| 바이탈 이상 환자 필터 | 바이탈 기록     | 높음      | Critical |
+| 기간별 입퇴원 환자    | 입원 기록       | 중간      | Medium   |
+| 간호 기록 내용 검색   | 간호 기록       | 낮음      | Low      |
 
 ---
 
@@ -155,10 +155,10 @@
 
 ### 3.2 계층별 역할
 
-| 계층 | 역할 | 기술 |
-|------|------|------|
-| **L1: 캐시** | 빈번한 검색 결과 캐싱, 자동완성 | Redis |
-| **L2: RDBMS** | 정확한 검색, 트랜잭션 보장 | PostgreSQL + pg_trgm |
+| 계층              | 역할                            | 기술                     |
+| ----------------- | ------------------------------- | ------------------------ |
+| **L1: 캐시**      | 빈번한 검색 결과 캐싱, 자동완성 | Redis                    |
+| **L2: RDBMS**     | 정확한 검색, 트랜잭션 보장      | PostgreSQL + pg_trgm     |
 | **L3: 검색 엔진** | 전문 검색, 복잡한 집계 (선택적) | Elasticsearch (Phase 3+) |
 
 ---
@@ -393,18 +393,18 @@ export const CacheKeys = {
 
   // 환자 상세 캐시
   PATIENT_DETAIL: (patientId: string) => `patient:detail:${patientId}`,
-  PATIENT_VITALS: (patientId: string) => `patient:vitals:${patientId}`
+  PATIENT_VITALS: (patientId: string) => `patient:vitals:${patientId}`,
 };
 
 export const CacheTTL = {
-  SEARCH_RESULTS: 60,           // 1분
-  AUTOCOMPLETE: 300,            // 5분
-  RECENT_SEARCHES: 86400,       // 24시간
-  POPULAR_SEARCHES: 3600,       // 1시간
-  DASHBOARD_STATS: 30,          // 30초
-  ROOM_STATUS: 30,              // 30초
-  PATIENT_DETAIL: 60,           // 1분
-  PATIENT_VITALS: 30            // 30초
+  SEARCH_RESULTS: 60, // 1분
+  AUTOCOMPLETE: 300, // 5분
+  RECENT_SEARCHES: 86400, // 24시간
+  POPULAR_SEARCHES: 3600, // 1시간
+  DASHBOARD_STATS: 30, // 30초
+  ROOM_STATUS: 30, // 30초
+  PATIENT_DETAIL: 60, // 1분
+  PATIENT_VITALS: 30, // 30초
 };
 ```
 
@@ -416,14 +416,14 @@ export const CacheTTL = {
 export class AutocompleteService {
   constructor(
     private readonly redis: Redis,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
   ) {}
 
   // 자동완성 인덱스 구축
   async buildPatientAutocomplete(): Promise<void> {
     const patients = await this.prisma.patient.findMany({
       where: { status: 'ADMITTED' },
-      select: { id: true, name: true, medicalRecordNumber: true }
+      select: { id: true, name: true, medicalRecordNumber: true },
     });
 
     const pipeline = this.redis.pipeline();
@@ -444,8 +444,8 @@ export class AutocompleteService {
           JSON.stringify({
             id: patient.id,
             name: patient.name,
-            mrn: patient.medicalRecordNumber
-          })
+            mrn: patient.medicalRecordNumber,
+          }),
         );
       }
     }
@@ -454,10 +454,7 @@ export class AutocompleteService {
   }
 
   // 자동완성 검색
-  async searchAutocomplete(
-    prefix: string,
-    limit: number = 10
-  ): Promise<AutocompleteResult[]> {
+  async searchAutocomplete(prefix: string, limit: number = 10): Promise<AutocompleteResult[]> {
     const cacheKey = `${CacheKeys.AUTOCOMPLETE_PATIENTS}:${prefix.toLowerCase()}`;
 
     const results = await this.redis.zrange(cacheKey, 0, limit - 1);
@@ -467,7 +464,7 @@ export class AutocompleteService {
       return this.searchPatientsByPrefix(prefix, limit);
     }
 
-    return results.map(r => JSON.parse(r));
+    return results.map((r) => JSON.parse(r));
   }
 
   // 최근 검색어 저장
@@ -500,14 +497,14 @@ export class AutocompleteService {
       CacheKeys.POPULAR_SEARCHES,
       0,
       limit - 1,
-      'WITHSCORES'
+      'WITHSCORES',
     );
 
     const searches: PopularSearch[] = [];
     for (let i = 0; i < results.length; i += 2) {
       searches.push({
         term: results[i],
-        count: parseInt(results[i + 1])
+        count: parseInt(results[i + 1]),
       });
     }
 
@@ -528,7 +525,7 @@ export class SearchCacheService {
   async cacheSearchResult<T>(
     key: string,
     fetcher: () => Promise<T>,
-    ttl: number = CacheTTL.SEARCH_RESULTS
+    ttl: number = CacheTTL.SEARCH_RESULTS,
   ): Promise<T> {
     const cached = await this.redis.get(key);
 
@@ -548,7 +545,7 @@ export class SearchCacheService {
     const patterns = [
       CacheKeys.PATIENT_DETAIL(patientId),
       CacheKeys.PATIENT_VITALS(patientId),
-      'search:patients:*' // 검색 결과 전체 무효화
+      'search:patients:*', // 검색 결과 전체 무효화
     ];
 
     for (const pattern of patterns) {
@@ -564,7 +561,7 @@ export class SearchCacheService {
     await Promise.all([
       this.redis.del(CacheKeys.ROOM_STATUS(roomId)),
       this.redis.del(CacheKeys.WARD_STATUS(wardId)),
-      this.redis.del(CacheKeys.DASHBOARD_STATS)
+      this.redis.del(CacheKeys.DASHBOARD_STATS),
     ]);
   }
 }
@@ -703,14 +700,14 @@ $$ LANGUAGE plpgsql STABLE;
 export class SearchController {
   constructor(
     private readonly searchService: SearchService,
-    private readonly throttler: ThrottlerGuard
+    private readonly throttler: ThrottlerGuard,
   ) {}
 
   @Get('patients')
   @Throttle(10, 1) // 초당 10회 제한
   async searchPatients(
     @Query('q') query: string,
-    @Query('limit') limit: number = 20
+    @Query('limit') limit: number = 20,
   ): Promise<PatientSearchResult[]> {
     if (!query || query.length < 2) {
       return [];
@@ -723,7 +720,7 @@ export class SearchController {
   @Throttle(20, 1) // 초당 20회 제한 (타이핑 빈도 고려)
   async autocomplete(
     @Query('q') query: string,
-    @Query('type') type: 'patient' | 'room' | 'doctor' = 'patient'
+    @Query('type') type: 'patient' | 'room' | 'doctor' = 'patient',
   ): Promise<AutocompleteResult[]> {
     if (!query || query.length < 1) {
       return [];
@@ -742,17 +739,18 @@ export function useSearch(delay: number = 300) {
   const [isLoading, setIsLoading] = useState(false);
 
   const debouncedQuery = useMemo(
-    () => debounce((q: string) => {
-      if (q.length >= 2) {
-        setIsLoading(true);
-        searchPatients(q)
-          .then(setResults)
-          .finally(() => setIsLoading(false));
-      } else {
-        setResults([]);
-      }
-    }, delay),
-    [delay]
+    () =>
+      debounce((q: string) => {
+        if (q.length >= 2) {
+          setIsLoading(true);
+          searchPatients(q)
+            .then(setResults)
+            .finally(() => setIsLoading(false));
+        } else {
+          setResults([]);
+        }
+      }, delay),
+    [delay],
   );
 
   useEffect(() => {
@@ -853,7 +851,7 @@ export class SearchMetricsService {
     searchType: string,
     durationMs: number,
     resultCount: number,
-    cacheHit: boolean
+    cacheHit: boolean,
   ): void {
     const key = searchType;
     const existing = this.metrics.get(key) || {
@@ -861,7 +859,7 @@ export class SearchMetricsService {
       totalDurationMs: 0,
       cacheHits: 0,
       cacheMisses: 0,
-      avgResultCount: 0
+      avgResultCount: 0,
     };
 
     existing.totalCalls++;
@@ -886,7 +884,7 @@ export class SearchMetricsService {
         totalCalls: metric.totalCalls,
         avgDurationMs: metric.totalDurationMs / metric.totalCalls,
         cacheHitRate: metric.cacheHits / (metric.cacheHits + metric.cacheMisses),
-        avgResultCount: metric.avgResultCount
+        avgResultCount: metric.avgResultCount,
       };
     }
 
@@ -901,20 +899,25 @@ export class PrometheusSearchMetrics {
     name: 'search_duration_seconds',
     help: 'Search request duration in seconds',
     labelNames: ['search_type', 'cache_hit'],
-    buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5]
+    buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5],
   });
 
   private readonly searchResults = new Histogram({
     name: 'search_result_count',
     help: 'Number of search results returned',
     labelNames: ['search_type'],
-    buckets: [0, 1, 5, 10, 20, 50, 100]
+    buckets: [0, 1, 5, 10, 20, 50, 100],
   });
 
-  recordSearch(searchType: string, durationMs: number, resultCount: number, cacheHit: boolean): void {
+  recordSearch(
+    searchType: string,
+    durationMs: number,
+    resultCount: number,
+    cacheHit: boolean,
+  ): void {
     this.searchDuration.observe(
       { search_type: searchType, cache_hit: String(cacheHit) },
-      durationMs / 1000
+      durationMs / 1000,
     );
     this.searchResults.observe({ search_type: searchType }, resultCount);
   }
@@ -934,8 +937,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "Search queries are slow"
-          description: "P95 search latency is {{ $value }}s"
+          summary: 'Search queries are slow'
+          description: 'P95 search latency is {{ $value }}s'
 
       - alert: HighSearchErrorRate
         expr: rate(search_errors_total[5m]) / rate(search_requests_total[5m]) > 0.05
@@ -943,8 +946,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High search error rate"
-          description: "Search error rate is {{ $value | humanizePercentage }}"
+          summary: 'High search error rate'
+          description: 'Search error rate is {{ $value | humanizePercentage }}'
 
       - alert: LowCacheHitRate
         expr: search_cache_hit_ratio < 0.7
@@ -952,8 +955,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "Low search cache hit rate"
-          description: "Cache hit rate is {{ $value | humanizePercentage }}"
+          summary: 'Low search cache hit rate'
+          description: 'Cache hit rate is {{ $value | humanizePercentage }}'
 ```
 
 ---
@@ -973,8 +976,8 @@ export class ElasticsearchService {
       node: process.env.ELASTICSEARCH_URL,
       auth: {
         username: process.env.ES_USERNAME,
-        password: process.env.ES_PASSWORD
-      }
+        password: process.env.ES_PASSWORD,
+      },
     });
   }
 
@@ -989,10 +992,10 @@ export class ElasticsearchService {
               korean: {
                 type: 'custom',
                 tokenizer: 'nori_tokenizer',
-                filter: ['nori_part_of_speech']
-              }
-            }
-          }
+                filter: ['nori_part_of_speech'],
+              },
+            },
+          },
         },
         mappings: {
           properties: {
@@ -1003,22 +1006,22 @@ export class ElasticsearchService {
                 keyword: { type: 'keyword' },
                 suggest: {
                   type: 'completion',
-                  analyzer: 'korean'
-                }
-              }
+                  analyzer: 'korean',
+                },
+              },
             },
             medicalRecordNumber: { type: 'keyword' },
             diagnosis: {
               type: 'text',
-              analyzer: 'korean'
+              analyzer: 'korean',
             },
             admissionDate: { type: 'date' },
             roomNumber: { type: 'keyword' },
             wardId: { type: 'keyword' },
-            status: { type: 'keyword' }
-          }
-        }
-      }
+            status: { type: 'keyword' },
+          },
+        },
+      },
     });
   }
 
@@ -1034,32 +1037,32 @@ export class ElasticsearchService {
                 multi_match: {
                   query: query.term,
                   fields: ['name^3', 'diagnosis', 'medicalRecordNumber'],
-                  fuzziness: 'AUTO'
-                }
-              }
+                  fuzziness: 'AUTO',
+                },
+              },
             ],
             filter: [
               { term: { status: 'ADMITTED' } },
-              ...(query.wardId ? [{ term: { wardId: query.wardId } }] : [])
-            ]
-          }
+              ...(query.wardId ? [{ term: { wardId: query.wardId } }] : []),
+            ],
+          },
         },
         highlight: {
           fields: {
             name: {},
-            diagnosis: {}
-          }
+            diagnosis: {},
+          },
         },
         suggest: {
           patient_suggest: {
             prefix: query.term,
             completion: {
               field: 'name.suggest',
-              size: 5
-            }
-          }
-        }
-      }
+              size: 5,
+            },
+          },
+        },
+      },
     });
 
     return this.mapSearchResponse(response);
@@ -1094,23 +1097,17 @@ export class SearchRepository {
     private readonly readDataSource: DataSource,
 
     @InjectDataSource('write')
-    private readonly writeDataSource: DataSource
+    private readonly writeDataSource: DataSource,
   ) {}
 
   async searchPatients(query: string): Promise<Patient[]> {
     // 읽기 전용 복제본 사용
-    return this.readDataSource.query(
-      'SELECT * FROM search_patients($1)',
-      [query]
-    );
+    return this.readDataSource.query('SELECT * FROM search_patients($1)', [query]);
   }
 
   async updatePatient(id: string, data: UpdatePatientDto): Promise<void> {
     // 쓰기는 Primary 사용
-    await this.writeDataSource.query(
-      'UPDATE patient.patients SET ... WHERE id = $1',
-      [id]
-    );
+    await this.writeDataSource.query('UPDATE patient.patients SET ... WHERE id = $1', [id]);
   }
 }
 ```
@@ -1119,13 +1116,14 @@ export class SearchRepository {
 
 ## 변경 이력
 
-| 버전 | 일자 | 변경 내용 |
-|------|------|----------|
+| 버전  | 일자       | 변경 내용                          |
+| ----- | ---------- | ---------------------------------- |
 | 1.0.0 | 2026-01-12 | 초안 작성 - 갭 분석 기반 신규 문서 |
 
 ---
 
 > **관련 문서**
+>
 > - [SRS.kr.md](../../SRS.kr.md) - 요구사항 명세
 > - [database-design.kr.md](database-design.kr.md) - 데이터베이스 설계
 > - [api-specification.kr.md](api-specification.kr.md) - API 명세

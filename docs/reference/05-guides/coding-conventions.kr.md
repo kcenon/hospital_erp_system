@@ -2,12 +2,12 @@
 
 ## 문서 정보
 
-| 항목 | 내용 |
-|------|------|
-| 문서 버전 | 0.1.0.0 |
-| 작성일 | 2025-12-29 |
-| 상태 | 초안 |
-| 관리자 | kcenon@naver.com |
+| 항목      | 내용             |
+| --------- | ---------------- |
+| 문서 버전 | 0.1.0.0          |
+| 작성일    | 2025-12-29       |
+| 상태      | 초안             |
+| 관리자    | kcenon@naver.com |
 
 ---
 
@@ -15,12 +15,12 @@
 
 ### 1.1 핵심 원칙
 
-| 원칙 | 설명 |
-|------|------|
-| **명확성** | 코드는 자기 문서화되어야 함 |
-| **일관성** | 프로젝트 전체에서 동일한 스타일 유지 |
-| **단순성** | 불필요한 복잡성 제거 |
-| **테스트 가능성** | 테스트하기 쉬운 구조로 작성 |
+| 원칙              | 설명                                 |
+| ----------------- | ------------------------------------ |
+| **명확성**        | 코드는 자기 문서화되어야 함          |
+| **일관성**        | 프로젝트 전체에서 동일한 스타일 유지 |
+| **단순성**        | 불필요한 복잡성 제거                 |
+| **테스트 가능성** | 테스트하기 쉬운 구조로 작성          |
 
 ### 1.2 자동화 도구
 
@@ -93,7 +93,7 @@ interface ApiResponse<TData> {
 }
 
 // ❌ 단일 문자 제네릭 (복잡한 경우)
-interface Response<T, E> {}  // T, E가 무엇인지 불명확
+interface Response<T, E> {} // T, E가 무엇인지 불명확
 
 // ✅ 명시적인 제네릭
 interface Response<TData, TError = Error> {}
@@ -134,7 +134,7 @@ function createPatient(
   gender: string,
   phone: string,
   address: string,
-  emergencyContact: string
+  emergencyContact: string,
 ) {}
 ```
 
@@ -143,12 +143,7 @@ function createPatient(
 ```typescript
 // ✅ 타입 가드 함수
 function isPatient(value: unknown): value is Patient {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'name' in value
-  );
+  return typeof value === 'object' && value !== null && 'id' in value && 'name' in value;
 }
 
 // ✅ 사용
@@ -162,7 +157,7 @@ const STATUS = {
   INACTIVE: 'inactive',
 } as const;
 
-type Status = typeof STATUS[keyof typeof STATUS];
+type Status = (typeof STATUS)[keyof typeof STATUS];
 
 // ❌ 남용하면 안 되는 패턴
 const data = response as Patient; // 런타임 오류 가능
@@ -428,9 +423,7 @@ export class PatientController {
   @Get()
   @ApiOperation({ summary: '환자 목록 조회' })
   @ApiResponse({ status: 200, type: PatientListResponseDto })
-  async findAll(
-    @Query() query: FindPatientsQueryDto,
-  ): Promise<PatientListResponseDto> {
+  async findAll(@Query() query: FindPatientsQueryDto): Promise<PatientListResponseDto> {
     return this.patientService.findAll(query);
   }
 
@@ -689,7 +682,7 @@ GET /patients?page=1&limit=20&status=admitted&search=홍
 
 ### 6.1 JSDoc
 
-```typescript
+````typescript
 /**
  * 환자 정보를 조회합니다.
  *
@@ -706,7 +699,7 @@ GET /patients?page=1&limit=20&status=admitted&search=홍
 async findOne(patientId: string): Promise<Patient | null> {
   // ...
 }
-```
+````
 
 ### 6.2 TODO 주석
 
@@ -745,14 +738,7 @@ module.exports = {
     'import/order': [
       'error',
       {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'always',
         alphabetize: { order: 'asc' },
       },
