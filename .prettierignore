@@ -28,3 +28,7 @@ pnpm-lock.yaml
 # Misc
 *.min.js
 *.min.css
+
+# PWA generated files
+apps/frontend/public/sw.js
+apps/frontend/public/workbox-*.js
