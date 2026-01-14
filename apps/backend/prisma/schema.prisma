@@ -159,6 +159,7 @@ model Floor {
   // Relations
   building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   rooms    Room[]
+  rounds   Round[]
 
   @@unique([buildingId, floorNumber])
   @@index([buildingId])
@@ -767,4 +768,113 @@ model ChangeLog {
   @@index([createdAt(sort: Desc)])
   @@map("change_logs")
   @@schema("audit")
+}
+
+// =============================================================================
+// Rounding Management Schema (rounding schema)
+// Related Requirements: REQ-FR-050~054
+// SDS Reference: Section 4.6 (Rounding Module), Section 4.6.2 (State Machine)
+// =============================================================================
+
+/// Round type enumeration
+enum RoundType {
+  MORNING
+  AFTERNOON
+  EVENING
+  NIGHT
+
+  @@schema("rounding")
+}
+
+/// Round status enumeration (state machine states)
+enum RoundStatus {
+  PLANNED
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+
+  @@schema("rounding")
+}
+
+/// Patient status enumeration for round records
+enum RoundPatientStatus {
+  STABLE
+  IMPROVING
+  DECLINING
+  CRITICAL
+
+  @@schema("rounding")
+}
+
+/// Sequence for round number generation
+model RoundSequence {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique @db.Date
+  lastValue Int      @default(0) @map("last_value")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("round_sequences")
+  @@schema("rounding")
+}
+
+/// Round entity for doctor rounding management
+model Round {
+  id            String      @id @default(uuid()) @db.Uuid
+  roundNumber   String      @unique @map("round_number") @db.VarChar(20)
+  floorId       String      @map("floor_id") @db.Uuid
+  roundType     RoundType   @map("round_type")
+  scheduledDate DateTime    @map("scheduled_date") @db.Date
+  scheduledTime DateTime?   @map("scheduled_time") @db.Time
+  startedAt     DateTime?   @map("started_at") @db.Timestamptz
+  completedAt   DateTime?   @map("completed_at") @db.Timestamptz
+  pausedAt      DateTime?   @map("paused_at") @db.Timestamptz
+  status        RoundStatus @default(PLANNED)
+  leadDoctorId  String      @map("lead_doctor_id") @db.Uuid
+  notes         String?     @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  createdBy     String      @map("created_by") @db.Uuid
+
+  // Relations
+  floor   Floor         @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  records RoundRecord[]
+
+  @@index([floorId, scheduledDate])
+  @@index([status])
+  @@index([leadDoctorId])
+  @@index([scheduledDate])
+  @@index([roundType])
+  @@map("rounds")
+  @@schema("rounding")
+}
+
+/// RoundRecord entity for individual patient visits during a round
+model RoundRecord {
+  id             String              @id @default(uuid()) @db.Uuid
+  roundId        String              @map("round_id") @db.Uuid
+  admissionId    String              @map("admission_id") @db.Uuid
+  visitOrder     Int                 @map("visit_order")
+  patientStatus  RoundPatientStatus? @map("patient_status")
+  chiefComplaint String?             @map("chief_complaint") @db.Text
+  observation    String?             @db.Text
+  assessment     String?             @db.Text
+  plan           String?             @db.Text
+  orders         String?             @db.Text
+  visitedAt      DateTime?           @map("visited_at") @db.Timestamptz
+  visitDuration  Int?                @map("visit_duration")
+  recordedBy     String              @map("recorded_by") @db.Uuid
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  round Round @relation(fields: [roundId], references: [id], onDelete: Cascade)
+
+  @@unique([roundId, admissionId])
+  @@index([roundId])
+  @@index([admissionId])
+  @@index([recordedBy])
+  @@index([roundId, visitOrder])
+  @@map("round_records")
+  @@schema("rounding")
 }
