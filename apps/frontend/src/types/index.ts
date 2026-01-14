@@ -18,3 +18,6 @@ export interface ApiError {
   statusCode: number;
   error?: string;
 }
+
+export * from './patient';
+export * from './admission';
