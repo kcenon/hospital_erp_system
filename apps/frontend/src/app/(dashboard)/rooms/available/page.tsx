@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
   Select,
-  Button,
   Badge,
   Table,
   TableHeader,
@@ -19,7 +18,7 @@ import {
   Skeleton,
 } from '@/components/ui';
 import { Bed } from 'lucide-react';
-import type { RoomType, AvailableBedFilters, AvailableBed } from '@/types';
+import type { RoomType, AvailableBedFilters } from '@/types';
 
 const roomTypeOptions = [
   { value: '', label: 'All Room Types' },
@@ -38,11 +37,7 @@ const roomTypeLabels: Record<RoomType, string> = {
   EMERGENCY: 'Emergency',
 };
 
-interface AvailableBedsPageProps {
-  onSelect?: (bed: AvailableBed) => void;
-}
-
-export default function AvailableBedsPage({ onSelect }: AvailableBedsPageProps) {
+export default function AvailableBedsPage() {
   const [filters, setFilters] = useState<AvailableBedFilters>({});
 
   const { data: floors } = useFloors();
@@ -62,12 +57,6 @@ export default function AvailableBedsPage({ onSelect }: AvailableBedsPageProps) 
 
   const handleRoomTypeChange = (roomType: string) => {
     setFilters({ ...filters, roomType: (roomType as RoomType) || undefined });
-  };
-
-  const handleSelectBed = (bed: AvailableBed) => {
-    if (onSelect) {
-      onSelect(bed);
-    }
   };
 
   return (
@@ -132,7 +121,6 @@ export default function AvailableBedsPage({ onSelect }: AvailableBedsPageProps) 
                   <TableHead>Room</TableHead>
                   <TableHead>Bed</TableHead>
                   <TableHead>Room Type</TableHead>
-                  {onSelect && <TableHead className="w-24">Action</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -146,16 +134,6 @@ export default function AvailableBedsPage({ onSelect }: AvailableBedsPageProps) 
                         {roomTypeLabels[bed.room.roomType]}
                       </Badge>
                     </TableCell>
-                    {onSelect && (
-                      <TableCell>
-                        <Button
-                          size="sm"
-                          onClick={() => handleSelectBed(bed)}
-                        >
-                          Select
-                        </Button>
-                      </TableCell>
-                    )}
                   </TableRow>
                 ))}
               </TableBody>
