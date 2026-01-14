@@ -36,6 +36,8 @@ export interface FindPatientsParams {
   gender?: 'MALE' | 'FEMALE' | 'OTHER';
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface PaginatedResult<T> {
@@ -109,7 +111,16 @@ export class PatientRepository {
   }
 
   async findAll(params: FindPatientsParams): Promise<PaginatedResult<PatientWithDetail>> {
-    const { search, name, patientNumber, gender, page = 1, limit = 20 } = params;
+    const {
+      search,
+      name,
+      patientNumber,
+      gender,
+      page = 1,
+      limit = 20,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = params;
 
     const where: Prisma.PatientWhereInput = {
       deletedAt: null,
@@ -135,13 +146,16 @@ export class PatientRepository {
       where.gender = gender;
     }
 
+    const allowedSortFields = ['createdAt', 'updatedAt', 'name', 'patientNumber', 'birthDate'];
+    const orderField = allowedSortFields.includes(sortBy) ? sortBy : 'createdAt';
+
     const [data, total] = await Promise.all([
       this.prisma.patient.findMany({
         where,
         include: { detail: true },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { [orderField]: sortOrder },
       }),
       this.prisma.patient.count({ where }),
     ]);
