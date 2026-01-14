@@ -88,8 +88,8 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): Promise<{ success: boolean; floorId?: string; error?: string }> {
     try {
       // Leave previous floor rooms
-      const rooms = Array.from(client.rooms);
-      rooms.forEach((room) => {
+      const rooms = Array.from(client.rooms) as string[];
+      rooms.forEach((room: string) => {
         if (room.startsWith('floor:')) {
           client.leave(room);
         }
