@@ -618,32 +618,59 @@ CREATE INDEX idx_nursing_notes_priority ON report.nursing_notes(priority);
 
 ### 3.6 라운딩 (rounding schema)
 
+관련 요구사항: REQ-FR-050~054
+SDS 참조: Section 4.6 (Rounding Module), Section 4.6.2 (State Machine)
+
+#### Enum 타입
+
+```sql
+-- 라운딩 유형 열거형
+CREATE TYPE rounding.RoundType AS ENUM ('MORNING', 'AFTERNOON', 'EVENING', 'NIGHT');
+
+-- 라운딩 상태 열거형 (상태 머신 상태)
+CREATE TYPE rounding.RoundStatus AS ENUM ('PLANNED', 'IN_PROGRESS', 'PAUSED', 'COMPLETED', 'CANCELLED');
+
+-- 환자 상태 열거형
+CREATE TYPE rounding.PatientStatus AS ENUM ('STABLE', 'IMPROVING', 'DECLINING', 'CRITICAL');
+```
+
+#### round_sequences (라운딩 번호 시퀀스)
+
+```sql
+CREATE TABLE rounding.round_sequences (
+    id              SERIAL PRIMARY KEY,
+    date            DATE NOT NULL UNIQUE,
+    last_value      INTEGER NOT NULL DEFAULT 0,
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 #### rounds (라운딩 세션)
 
 ```sql
 CREATE TABLE rounding.rounds (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    round_date      DATE NOT NULL,
-    round_type      VARCHAR(50) NOT NULL,       -- MORNING, AFTERNOON, NIGHT, EMERGENCY
-    floor_id        UUID REFERENCES room.floors(id),
-
-    -- 담당자
-    lead_doctor_id  UUID REFERENCES public.users(id),
-
-    -- 상태
-    status          VARCHAR(20) DEFAULT 'PLANNED', -- PLANNED, IN_PROGRESS, COMPLETED
+    round_number    VARCHAR(20) NOT NULL UNIQUE, -- R2025011501 (R + YYYYMMDD + 순번)
+    floor_id        UUID NOT NULL REFERENCES room.floors(id),
+    round_type      rounding.RoundType NOT NULL,
+    scheduled_date  DATE NOT NULL,
+    scheduled_time  TIME,
     started_at      TIMESTAMPTZ,
     completed_at    TIMESTAMPTZ,
-
+    paused_at       TIMESTAMPTZ,
+    status          rounding.RoundStatus NOT NULL DEFAULT 'PLANNED',
+    lead_doctor_id  UUID NOT NULL,              -- public.users 참조
     notes           TEXT,
-
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by      UUID NOT NULL               -- public.users 참조
 );
 
-CREATE INDEX idx_rounds_date ON rounding.rounds(round_date);
-CREATE INDEX idx_rounds_floor ON rounding.rounds(floor_id);
+CREATE INDEX idx_rounds_floor_date ON rounding.rounds(floor_id, scheduled_date);
 CREATE INDEX idx_rounds_status ON rounding.rounds(status);
+CREATE INDEX idx_rounds_lead_doctor ON rounding.rounds(lead_doctor_id);
+CREATE INDEX idx_rounds_scheduled_date ON rounding.rounds(scheduled_date);
+CREATE INDEX idx_rounds_round_type ON rounding.rounds(round_type);
 ```
 
 #### round_records (라운딩 기록)
@@ -651,31 +678,159 @@ CREATE INDEX idx_rounds_status ON rounding.rounds(status);
 ```sql
 CREATE TABLE rounding.round_records (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    round_id        UUID NOT NULL REFERENCES rounding.rounds(id),
-    admission_id    UUID NOT NULL REFERENCES admission.admissions(id),
-
-    -- 순서
-    visit_order     INTEGER,
-    visited_at      TIMESTAMPTZ,
-
-    -- 관찰 내용
-    patient_status  VARCHAR(50),                -- STABLE, IMPROVING, DECLINING, CRITICAL
+    round_id        UUID NOT NULL REFERENCES rounding.rounds(id) ON DELETE CASCADE,
+    admission_id    UUID NOT NULL,              -- admission.admissions 참조
+    visit_order     INTEGER NOT NULL,           -- 방문 순서
+    patient_status  rounding.PatientStatus,
     chief_complaint TEXT,                       -- 주호소
-    observation     TEXT,                       -- 관찰 사항
-    plan            TEXT,                       -- 향후 계획
-    orders          TEXT,                       -- 지시 사항
-
-    -- 기록자
-    recorded_by     UUID REFERENCES public.users(id),
-
-    created_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-
+    observation     TEXT,                       -- 의사 관찰 소견
+    assessment      TEXT,                       -- 임상 평가
+    plan            TEXT,                       -- 치료 계획
+    orders          TEXT,                       -- 처방/지시사항
+    visited_at      TIMESTAMPTZ,
+    visit_duration  INTEGER,                    -- 방문 시간(초)
+    recorded_by     UUID NOT NULL,              -- public.users 참조
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(round_id, admission_id)
 );
 
 CREATE INDEX idx_round_records_round ON rounding.round_records(round_id);
 CREATE INDEX idx_round_records_admission ON rounding.round_records(admission_id);
+CREATE INDEX idx_round_records_recorded_by ON rounding.round_records(recorded_by);
+CREATE INDEX idx_round_records_visit_order ON rounding.round_records(round_id, visit_order);
+```
+
+#### 라운딩 번호 생성 함수
+
+```sql
+CREATE OR REPLACE FUNCTION rounding.generate_round_number(p_date DATE DEFAULT CURRENT_DATE)
+RETURNS VARCHAR AS $$
+DECLARE
+    v_seq INTEGER;
+    v_round_number VARCHAR(20);
+BEGIN
+    INSERT INTO rounding.round_sequences (date, last_value)
+    VALUES (p_date, 1)
+    ON CONFLICT (date) DO UPDATE
+    SET last_value = rounding.round_sequences.last_value + 1,
+        updated_at = CURRENT_TIMESTAMP
+    RETURNING last_value INTO v_seq;
+
+    v_round_number := 'R' || TO_CHAR(p_date, 'YYYYMMDD') || LPAD(v_seq::TEXT, 2, '0');
+    RETURN v_round_number;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### 상태 전환 함수
+
+```sql
+CREATE OR REPLACE FUNCTION rounding.transition_round_status(
+    p_round_id UUID,
+    p_new_status VARCHAR,
+    p_user_id UUID
+)
+RETURNS rounding.rounds AS $$
+DECLARE
+    v_round rounding.rounds;
+    v_current_status VARCHAR;
+    v_valid_next_statuses TEXT;
+BEGIN
+    SELECT * INTO v_round FROM rounding.rounds WHERE id = p_round_id;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION '라운딩을 찾을 수 없음: %', p_round_id;
+    END IF;
+
+    v_current_status := v_round.status::TEXT;
+
+    -- 유효한 전환 정의
+    CASE v_current_status
+        WHEN 'PLANNED' THEN v_valid_next_statuses := 'IN_PROGRESS,CANCELLED';
+        WHEN 'IN_PROGRESS' THEN v_valid_next_statuses := 'PAUSED,COMPLETED';
+        WHEN 'PAUSED' THEN v_valid_next_statuses := 'IN_PROGRESS,COMPLETED,CANCELLED';
+        WHEN 'COMPLETED' THEN v_valid_next_statuses := '';
+        WHEN 'CANCELLED' THEN v_valid_next_statuses := '';
+        ELSE RAISE EXCEPTION '알 수 없는 상태: %', v_current_status;
+    END CASE;
+
+    -- 전환 유효성 검증
+    IF v_valid_next_statuses = '' OR
+       NOT (p_new_status = ANY(string_to_array(v_valid_next_statuses, ','))) THEN
+        RAISE EXCEPTION '%에서 %로의 상태 전환 불가', v_current_status, p_new_status;
+    END IF;
+
+    -- 새 상태에 따른 타임스탬프 업데이트
+    UPDATE rounding.rounds SET
+        status = p_new_status::rounding.RoundStatus,
+        started_at = CASE WHEN p_new_status = 'IN_PROGRESS' AND started_at IS NULL THEN NOW() ELSE started_at END,
+        paused_at = CASE WHEN p_new_status = 'PAUSED' THEN NOW() ELSE NULL END,
+        completed_at = CASE WHEN p_new_status = 'COMPLETED' THEN NOW() ELSE completed_at END,
+        updated_at = NOW()
+    WHERE id = p_round_id
+    RETURNING * INTO v_round;
+
+    RETURN v_round;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### 라운딩 환자 목록 뷰
+
+```sql
+CREATE VIEW rounding.round_patient_list AS
+SELECT
+    r.id AS round_id,
+    r.round_number,
+    r.status AS round_status,
+    r.round_type,
+    r.scheduled_date,
+    r.lead_doctor_id,
+    a.id AS admission_id,
+    a.patient_id,
+    a.diagnosis,
+    a.admission_date,
+    b.id AS bed_id,
+    rm.room_number,
+    b.bed_number,
+    f.id AS floor_id,
+    f.name AS floor_name,
+    rr.id AS record_id,
+    rr.visit_order,
+    rr.patient_status,
+    rr.visited_at
+FROM rounding.rounds r
+CROSS JOIN admission.admissions a
+JOIN room.beds b ON a.bed_id = b.id
+JOIN room.rooms rm ON b.room_id = rm.id
+JOIN room.floors f ON rm.floor_id = f.id
+LEFT JOIN rounding.round_records rr ON rr.round_id = r.id AND rr.admission_id = a.id
+WHERE f.id = r.floor_id AND a.status = 'ACTIVE';
+```
+
+#### 상태 머신 다이어그램
+
+```
+상태 머신: PLANNED → IN_PROGRESS → (PAUSED ↔ IN_PROGRESS) → COMPLETED/CANCELLED
+
+┌─────────┐     시작       ┌─────────────┐
+│ PLANNED │───────────────▶│ IN_PROGRESS │
+└────┬────┘                └─────┬───┬───┘
+     │                           │   │
+     │ 취소                      │   │ 일시정지
+     │                           │   │
+     ▼                           │   ▼
+┌───────────┐                    │ ┌────────┐
+│ CANCELLED │◀───────────────────┤ │ PAUSED │
+└───────────┘      취소          │ └───┬────┘
+                                 │     │
+                                 │     │ 재개
+                                 │     │
+                   완료          │     │
+                                 ▼     ▼
+                           ┌───────────┐
+                           │ COMPLETED │
+                           └───────────┘
 ```
 
 ---
