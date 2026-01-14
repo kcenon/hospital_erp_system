@@ -2,11 +2,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  TokenPayload,
-  RefreshTokenPayload,
-  TokenPair,
-} from '../interfaces';
+import { TokenPayload, RefreshTokenPayload, TokenPair } from '../interfaces';
 
 @Injectable()
 export class JwtTokenService {
@@ -38,9 +34,7 @@ export class JwtTokenService {
   /**
    * Generate refresh token with minimal payload
    */
-  generateRefreshToken(
-    payload: Omit<RefreshTokenPayload, 'jti' | 'iat' | 'exp'>,
-  ): string {
+  generateRefreshToken(payload: Omit<RefreshTokenPayload, 'jti' | 'iat' | 'exp'>): string {
     const tokenPayload: Omit<RefreshTokenPayload, 'iat' | 'exp'> = {
       sub: payload.sub,
       sessionId: payload.sessionId,

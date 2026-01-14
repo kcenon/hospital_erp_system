@@ -86,10 +86,7 @@ export function createTestUserWithRoles(
   };
 }
 
-export function createTestRolePermission(
-  roleId: string,
-  permissionId: string,
-): RolePermission {
+export function createTestRolePermission(roleId: string, permissionId: string): RolePermission {
   return {
     roleId,
     permissionId,

@@ -114,9 +114,7 @@ describe('AdmissionService', () => {
     it('should throw when patient not found', async () => {
       prismaService.patient.findFirst.mockResolvedValue(null);
 
-      await expect(service.admitPatient(dto, userId)).rejects.toThrow(
-        PatientNotFoundException,
-      );
+      await expect(service.admitPatient(dto, userId)).rejects.toThrow(PatientNotFoundException);
     });
 
     it('should throw when patient already admitted', async () => {
@@ -144,9 +142,7 @@ describe('AdmissionService', () => {
       mockRepository.findActiveByPatient.mockResolvedValue(null);
       mockBedService.findById.mockResolvedValue(occupiedBed);
 
-      await expect(service.admitPatient(dto, userId)).rejects.toThrow(
-        BedNotAvailableException,
-      );
+      await expect(service.admitPatient(dto, userId)).rejects.toThrow(BedNotAvailableException);
     });
   });
 
@@ -197,9 +193,9 @@ describe('AdmissionService', () => {
     it('should throw when admission not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        service.transferPatient(admissionId, dto, userId),
-      ).rejects.toThrow(AdmissionNotFoundException);
+      await expect(service.transferPatient(admissionId, dto, userId)).rejects.toThrow(
+        AdmissionNotFoundException,
+      );
     });
 
     it('should throw when admission not active', async () => {
@@ -213,9 +209,9 @@ describe('AdmissionService', () => {
       };
       mockRepository.findById.mockResolvedValue(dischargedAdmission);
 
-      await expect(
-        service.transferPatient(admissionId, dto, userId),
-      ).rejects.toThrow(AdmissionNotActiveException);
+      await expect(service.transferPatient(admissionId, dto, userId)).rejects.toThrow(
+        AdmissionNotActiveException,
+      );
     });
 
     it('should throw when new bed not available', async () => {
@@ -234,9 +230,9 @@ describe('AdmissionService', () => {
       mockRepository.findById.mockResolvedValue(admission);
       mockBedService.findById.mockResolvedValue(occupiedBed);
 
-      await expect(
-        service.transferPatient(admissionId, dto, userId),
-      ).rejects.toThrow(BedNotAvailableException);
+      await expect(service.transferPatient(admissionId, dto, userId)).rejects.toThrow(
+        BedNotAvailableException,
+      );
     });
   });
 
@@ -282,9 +278,9 @@ describe('AdmissionService', () => {
     it('should throw when admission not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        service.dischargePatient(admissionId, dto, userId),
-      ).rejects.toThrow(AdmissionNotFoundException);
+      await expect(service.dischargePatient(admissionId, dto, userId)).rejects.toThrow(
+        AdmissionNotFoundException,
+      );
     });
 
     it('should throw when admission not active', async () => {
@@ -298,9 +294,9 @@ describe('AdmissionService', () => {
       };
       mockRepository.findById.mockResolvedValue(dischargedAdmission);
 
-      await expect(
-        service.dischargePatient(admissionId, dto, userId),
-      ).rejects.toThrow(AdmissionNotActiveException);
+      await expect(service.dischargePatient(admissionId, dto, userId)).rejects.toThrow(
+        AdmissionNotActiveException,
+      );
     });
 
     it('should throw when already discharged', async () => {
@@ -314,9 +310,9 @@ describe('AdmissionService', () => {
       };
       mockRepository.findById.mockResolvedValue(admission);
 
-      await expect(
-        service.dischargePatient(admissionId, dto, userId),
-      ).rejects.toThrow(AdmissionAlreadyDischargedException);
+      await expect(service.dischargePatient(admissionId, dto, userId)).rejects.toThrow(
+        AdmissionAlreadyDischargedException,
+      );
     });
   });
 
@@ -337,9 +333,7 @@ describe('AdmissionService', () => {
     it('should throw when not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
-      await expect(service.findById('nonexistent')).rejects.toThrow(
-        AdmissionNotFoundException,
-      );
+      await expect(service.findById('nonexistent')).rejects.toThrow(AdmissionNotFoundException);
     });
   });
 

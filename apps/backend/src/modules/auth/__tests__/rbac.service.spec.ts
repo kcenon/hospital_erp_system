@@ -2,10 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RbacService } from '../services/rbac.service';
 import { PrismaService } from '../../../prisma';
 import { Permissions } from '../constants';
-import {
-  createTestRole,
-  createTestPermission,
-} from '../../../../test/factories';
+import { createTestRole, createTestPermission } from '../../../../test/factories';
 import { createMockPrismaService } from '../../../../test/utils';
 
 const REDIS_TOKEN = 'default_IORedisModuleConnectionToken';
@@ -111,10 +108,7 @@ describe('RbacService', () => {
       const permission = createTestPermission({ code: 'patient:read' });
       mockRedis.get.mockResolvedValue(JSON.stringify(['patient:read']));
 
-      const result = await service.hasAnyPermission(userId, [
-        'patient:read',
-        'patient:delete',
-      ]);
+      const result = await service.hasAnyPermission(userId, ['patient:read', 'patient:delete']);
 
       expect(result).toBe(true);
     });
@@ -122,10 +116,7 @@ describe('RbacService', () => {
     it('should return false when user has none of the permissions', async () => {
       mockRedis.get.mockResolvedValue(JSON.stringify(['room:read']));
 
-      const result = await service.hasAnyPermission(userId, [
-        'patient:read',
-        'patient:delete',
-      ]);
+      const result = await service.hasAnyPermission(userId, ['patient:read', 'patient:delete']);
 
       expect(result).toBe(false);
     });
@@ -135,14 +126,9 @@ describe('RbacService', () => {
     const userId = 'test-user-id';
 
     it('should return true when user has all permissions', async () => {
-      mockRedis.get.mockResolvedValue(
-        JSON.stringify(['patient:read', 'patient:update']),
-      );
+      mockRedis.get.mockResolvedValue(JSON.stringify(['patient:read', 'patient:update']));
 
-      const result = await service.hasAllPermissions(userId, [
-        'patient:read',
-        'patient:update',
-      ]);
+      const result = await service.hasAllPermissions(userId, ['patient:read', 'patient:update']);
 
       expect(result).toBe(true);
     });
@@ -150,10 +136,7 @@ describe('RbacService', () => {
     it('should return false when user lacks some permissions', async () => {
       mockRedis.get.mockResolvedValue(JSON.stringify(['patient:read']));
 
-      const result = await service.hasAllPermissions(userId, [
-        'patient:read',
-        'patient:update',
-      ]);
+      const result = await service.hasAllPermissions(userId, ['patient:read', 'patient:update']);
 
       expect(result).toBe(false);
     });
@@ -230,12 +213,7 @@ describe('RbacService', () => {
     it('should return true for admin with full access', async () => {
       mockRedis.get.mockResolvedValue(JSON.stringify([Permissions.ALL]));
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'read',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'read');
 
       expect(result).toBe(true);
     });
@@ -243,12 +221,7 @@ describe('RbacService', () => {
     it('should return true when user has full permission', async () => {
       mockRedis.get.mockResolvedValue(JSON.stringify(['patient:read']));
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'read',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'read');
 
       expect(result).toBe(true);
     });
@@ -262,12 +235,7 @@ describe('RbacService', () => {
         status: 'ACTIVE',
       });
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'update',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'update');
 
       expect(result).toBe(true);
       expect(prismaService.admission.findFirst).toHaveBeenCalledWith({
@@ -288,12 +256,7 @@ describe('RbacService', () => {
         status: 'ACTIVE',
       });
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'read',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'read');
 
       expect(result).toBe(true);
     });
@@ -302,12 +265,7 @@ describe('RbacService', () => {
       mockRedis.get.mockResolvedValue(JSON.stringify(['patient:update:own']));
       prismaService.admission.findFirst.mockResolvedValue(null);
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'update',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'update');
 
       expect(result).toBe(false);
     });
@@ -315,12 +273,7 @@ describe('RbacService', () => {
     it('should return false when no matching permission', async () => {
       mockRedis.get.mockResolvedValue(JSON.stringify(['room:read']));
 
-      const result = await service.canAccessResource(
-        userId,
-        'patient',
-        patientId,
-        'update',
-      );
+      const result = await service.canAccessResource(userId, 'patient', patientId, 'update');
 
       expect(result).toBe(false);
     });

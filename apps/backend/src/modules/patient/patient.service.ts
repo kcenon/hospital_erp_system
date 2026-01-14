@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { Patient, PatientDetail } from '@prisma/client';
-import { PatientRepository, PatientWithDetail, PaginatedResult } from './patient.repository';
+import { PatientRepository, PatientWithDetail } from './patient.repository';
 import { PatientNumberGenerator } from './patient-number.generator';
 import { DataMaskingService, UserRole } from './data-masking.service';
 import {
@@ -181,10 +177,7 @@ export class PatientService {
     return this.toDetailResponseDto(detail);
   }
 
-  private toResponseDto(
-    patient: Patient | PatientWithDetail,
-    role?: UserRole,
-  ): PatientResponseDto {
+  private toResponseDto(patient: Patient | PatientWithDetail, role?: UserRole): PatientResponseDto {
     const dto: PatientResponseDto = {
       id: patient.id,
       patientNumber: patient.patientNumber,
@@ -209,10 +202,7 @@ export class PatientService {
     return dto;
   }
 
-  private toDetailResponseDto(
-    detail: PatientDetail,
-    role?: UserRole,
-  ): PatientDetailResponseDto {
+  private toDetailResponseDto(detail: PatientDetail, role?: UserRole): PatientDetailResponseDto {
     return {
       id: detail.id,
       ssn: detail.ssnEncrypted

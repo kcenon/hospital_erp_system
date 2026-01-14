@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
@@ -21,10 +15,7 @@ export class AuditInterceptor implements NestInterceptor {
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    const auditConfig = this.reflector.get<AuditLogConfig>(
-      AUDIT_LOG_KEY,
-      context.getHandler(),
-    );
+    const auditConfig = this.reflector.get<AuditLogConfig>(AUDIT_LOG_KEY, context.getHandler());
 
     if (!auditConfig) {
       return next.handle();
@@ -148,7 +139,7 @@ export class AuditInterceptor implements NestInterceptor {
     } = {};
 
     if (config.captureRequest && request.body) {
-      const { changeReason, ...bodyWithoutReason } = request.body;
+      const { changeReason: _changeReason, ...bodyWithoutReason } = request.body;
       changes.new = bodyWithoutReason;
     }
 

@@ -62,70 +62,31 @@ export class VitalSigns {
    * @throws InvalidVitalValueException if any value is out of range
    */
   private validate(): void {
-    if (
-      this.temperature !== null &&
-      (this.temperature < 30 || this.temperature > 45)
-    ) {
-      throw new InvalidVitalValueException(
-        'temperature',
-        this.temperature,
-        '30-45°C',
-      );
+    if (this.temperature !== null && (this.temperature < 30 || this.temperature > 45)) {
+      throw new InvalidVitalValueException('temperature', this.temperature, '30-45°C');
     }
 
-    if (
-      this.systolicBp !== null &&
-      (this.systolicBp < 50 || this.systolicBp > 250)
-    ) {
-      throw new InvalidVitalValueException(
-        'systolicBp',
-        this.systolicBp,
-        '50-250 mmHg',
-      );
+    if (this.systolicBp !== null && (this.systolicBp < 50 || this.systolicBp > 250)) {
+      throw new InvalidVitalValueException('systolicBp', this.systolicBp, '50-250 mmHg');
     }
 
-    if (
-      this.diastolicBp !== null &&
-      (this.diastolicBp < 30 || this.diastolicBp > 150)
-    ) {
-      throw new InvalidVitalValueException(
-        'diastolicBp',
-        this.diastolicBp,
-        '30-150 mmHg',
-      );
+    if (this.diastolicBp !== null && (this.diastolicBp < 30 || this.diastolicBp > 150)) {
+      throw new InvalidVitalValueException('diastolicBp', this.diastolicBp, '30-150 mmHg');
     }
 
-    if (
-      this.pulseRate !== null &&
-      (this.pulseRate < 30 || this.pulseRate > 200)
-    ) {
-      throw new InvalidVitalValueException(
-        'pulseRate',
-        this.pulseRate,
-        '30-200 bpm',
-      );
+    if (this.pulseRate !== null && (this.pulseRate < 30 || this.pulseRate > 200)) {
+      throw new InvalidVitalValueException('pulseRate', this.pulseRate, '30-200 bpm');
     }
 
-    if (
-      this.respiratoryRate !== null &&
-      (this.respiratoryRate < 5 || this.respiratoryRate > 60)
-    ) {
-      throw new InvalidVitalValueException(
-        'respiratoryRate',
-        this.respiratoryRate,
-        '5-60 /min',
-      );
+    if (this.respiratoryRate !== null && (this.respiratoryRate < 5 || this.respiratoryRate > 60)) {
+      throw new InvalidVitalValueException('respiratoryRate', this.respiratoryRate, '5-60 /min');
     }
 
     if (
       this.oxygenSaturation !== null &&
       (this.oxygenSaturation < 50 || this.oxygenSaturation > 100)
     ) {
-      throw new InvalidVitalValueException(
-        'oxygenSaturation',
-        this.oxygenSaturation,
-        '50-100%',
-      );
+      throw new InvalidVitalValueException('oxygenSaturation', this.oxygenSaturation, '50-100%');
     }
 
     if (this.painScore !== null && (this.painScore < 0 || this.painScore > 10)) {
@@ -133,10 +94,7 @@ export class VitalSigns {
     }
 
     const validConsciousness = ['ALERT', 'VERBAL', 'PAIN', 'UNRESPONSIVE'];
-    if (
-      this.consciousness !== null &&
-      !validConsciousness.includes(this.consciousness)
-    ) {
+    if (this.consciousness !== null && !validConsciousness.includes(this.consciousness)) {
       throw new InvalidVitalValueException(
         'consciousness',
         this.consciousness,

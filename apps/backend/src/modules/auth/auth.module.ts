@@ -2,12 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  SessionService,
-  JwtTokenService,
-  AuthService,
-  RbacService,
-} from './services';
+import { SessionService, JwtTokenService, AuthService, RbacService } from './services';
 import { SessionActivityInterceptor } from './interceptors';
 import { JwtStrategy, LocalStrategy } from './strategies';
 import { LocalAuthGuard, PermissionGuard, ResourceAccessGuard } from './guards';

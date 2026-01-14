@@ -23,10 +23,7 @@ export function createTestBuilding(overrides?: Partial<Building>): Building {
   };
 }
 
-export function createTestFloor(
-  buildingId: string,
-  overrides?: Partial<Floor>,
-): Floor {
+export function createTestFloor(buildingId: string, overrides?: Partial<Floor>): Floor {
   const now = new Date();
   return {
     id: faker.string.uuid(),
@@ -47,10 +44,7 @@ export function createTestFloor(
   };
 }
 
-export function createTestRoom(
-  floorId: string,
-  overrides?: Partial<Room>,
-): Room {
+export function createTestRoom(floorId: string, overrides?: Partial<Room>): Room {
   const now = new Date();
   return {
     id: faker.string.uuid(),
@@ -73,10 +67,7 @@ export function createTestRoom(
   };
 }
 
-export function createTestBed(
-  roomId: string,
-  overrides?: Partial<Bed>,
-): Bed {
+export function createTestBed(roomId: string, overrides?: Partial<Bed>): Bed {
   const now = new Date();
   return {
     id: faker.string.uuid(),

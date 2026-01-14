@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
 import { Bed, BedStatus, Prisma } from '@prisma/client';
 import { FindAvailableBedsDto, UpdateBedStatusDto } from './dto';
@@ -42,9 +38,7 @@ export class BedService {
     return bed;
   }
 
-  async findAvailable(
-    params: FindAvailableBedsDto,
-  ): Promise<PaginatedResult<Bed>> {
+  async findAvailable(params: FindAvailableBedsDto): Promise<PaginatedResult<Bed>> {
     const {
       buildingId,
       floorId,
@@ -131,9 +125,7 @@ export class BedService {
     const bed = await this.findById(bedId);
 
     if (bed.status !== BedStatus.EMPTY && bed.status !== BedStatus.RESERVED) {
-      throw new BadRequestException(
-        `Bed cannot be occupied. Current status: ${bed.status}`,
-      );
+      throw new BadRequestException(`Bed cannot be occupied. Current status: ${bed.status}`);
     }
 
     return this.prisma.bed.update({
@@ -149,9 +141,7 @@ export class BedService {
     const bed = await this.findById(bedId);
 
     if (bed.status !== BedStatus.OCCUPIED) {
-      throw new BadRequestException(
-        `Bed is not occupied. Current status: ${bed.status}`,
-      );
+      throw new BadRequestException(`Bed is not occupied. Current status: ${bed.status}`);
     }
 
     return this.prisma.bed.update({
@@ -167,9 +157,7 @@ export class BedService {
     const bed = await this.findById(bedId);
 
     if (bed.status !== BedStatus.EMPTY) {
-      throw new BadRequestException(
-        `Bed cannot be reserved. Current status: ${bed.status}`,
-      );
+      throw new BadRequestException(`Bed cannot be reserved. Current status: ${bed.status}`);
     }
 
     return this.prisma.bed.update({
@@ -196,22 +184,11 @@ export class BedService {
     });
   }
 
-  private validateStatusTransition(
-    currentStatus: BedStatus,
-    newStatus: BedStatus,
-  ): void {
+  private validateStatusTransition(currentStatus: BedStatus, newStatus: BedStatus): void {
     const allowedTransitions: Record<BedStatus, BedStatus[]> = {
-      [BedStatus.EMPTY]: [
-        BedStatus.OCCUPIED,
-        BedStatus.RESERVED,
-        BedStatus.MAINTENANCE,
-      ],
+      [BedStatus.EMPTY]: [BedStatus.OCCUPIED, BedStatus.RESERVED, BedStatus.MAINTENANCE],
       [BedStatus.OCCUPIED]: [BedStatus.EMPTY],
-      [BedStatus.RESERVED]: [
-        BedStatus.OCCUPIED,
-        BedStatus.EMPTY,
-        BedStatus.MAINTENANCE,
-      ],
+      [BedStatus.RESERVED]: [BedStatus.OCCUPIED, BedStatus.EMPTY, BedStatus.MAINTENANCE],
       [BedStatus.MAINTENANCE]: [BedStatus.EMPTY],
     };
 

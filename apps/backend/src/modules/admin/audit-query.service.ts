@@ -6,7 +6,6 @@ import {
   QueryAccessLogsParams,
   QueryChangeLogsParams,
   DateRange,
-  PaginatedResult,
 } from './audit.repository';
 
 export interface PatientAccessReport {
@@ -82,10 +81,7 @@ export class AuditQueryService {
     patientId: string,
     dateRange: DateRange,
   ): Promise<PatientAccessReport> {
-    const logs = await this.auditRepository.findAccessLogsByPatient(
-      patientId,
-      dateRange,
-    );
+    const logs = await this.auditRepository.findAccessLogsByPatient(patientId, dateRange);
 
     return {
       patientId,
@@ -106,10 +102,7 @@ export class AuditQueryService {
   /**
    * Get user activity report
    */
-  async getUserActivityReport(
-    userId: string,
-    dateRange: DateRange,
-  ): Promise<UserActivityReport> {
+  async getUserActivityReport(userId: string, dateRange: DateRange): Promise<UserActivityReport> {
     const [loginHistory, accessLogs, changeLogs] = await Promise.all([
       this.auditRepository.findLoginHistory({
         userId,
@@ -131,7 +124,8 @@ export class AuditQueryService {
       }),
     ]);
 
-    const username = loginHistory.data[0]?.username ||
+    const username =
+      loginHistory.data[0]?.username ||
       accessLogs.data[0]?.username ||
       changeLogs.data[0]?.username ||
       'Unknown';
@@ -157,11 +151,7 @@ export class AuditQueryService {
   /**
    * Get failed login attempts for security monitoring
    */
-  async getFailedLoginAttempts(
-    startDate: Date,
-    endDate: Date,
-    limit: number = 100,
-  ) {
+  async getFailedLoginAttempts(startDate: Date, endDate: Date, limit: number = 100) {
     return this.auditRepository.findLoginHistory({
       success: false,
       startDate,
@@ -191,10 +181,7 @@ export class AuditQueryService {
       limit: 10000,
     });
 
-    const ipMap = new Map<
-      string,
-      { count: number; usernames: Set<string> }
-    >();
+    const ipMap = new Map<string, { count: number; usernames: Set<string> }>();
 
     for (const login of failedLogins.data) {
       const existing = ipMap.get(login.ipAddress);
@@ -242,9 +229,7 @@ export class AuditQueryService {
       .sort((a, b) => b.accessCount - a.accessCount);
   }
 
-  private groupAccessByType(
-    logs: AccessLog[],
-  ): Array<{ action: string; count: number }> {
+  private groupAccessByType(logs: AccessLog[]): Array<{ action: string; count: number }> {
     const actionMap = new Map<string, number>();
 
     for (const log of logs) {
@@ -314,8 +299,6 @@ export class AuditQueryService {
       });
     }
 
-    return activities.sort(
-      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
-    );
+    return activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 }

@@ -305,10 +305,9 @@ describe('AuditService', () => {
 
       await service.logLogout(sessionId);
 
-      expect(auditRepository.updateLoginHistory).toHaveBeenCalledWith(
-        sessionId,
-        { logoutAt: expect.any(Date) },
-      );
+      expect(auditRepository.updateLoginHistory).toHaveBeenCalledWith(sessionId, {
+        logoutAt: expect.any(Date),
+      });
     });
   });
 
@@ -328,7 +327,8 @@ describe('AuditService', () => {
         ],
       }).compile();
 
-      const serviceWithForwardedIp = await moduleWithForwardedIp.resolve<AuditService>(AuditService);
+      const serviceWithForwardedIp =
+        await moduleWithForwardedIp.resolve<AuditService>(AuditService);
 
       await serviceWithForwardedIp.log({
         action: 'CREATE' as AuditAction,

@@ -1,12 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
 import { BedStatus } from '@prisma/client';
-import {
-  FloorDashboard,
-  BuildingDashboard,
-  DashboardSummary,
-  DashboardRoom,
-} from './dto';
+import { FloorDashboard, BuildingDashboard, DashboardSummary, DashboardRoom } from './dto';
 
 @Injectable()
 export class RoomDashboardService {
@@ -169,14 +164,10 @@ export class RoomDashboardService {
 
     return {
       totalBeds: allBeds.length,
-      occupiedBeds: allBeds.filter((bed) => bed.status === BedStatus.OCCUPIED)
-        .length,
+      occupiedBeds: allBeds.filter((bed) => bed.status === BedStatus.OCCUPIED).length,
       emptyBeds: allBeds.filter((bed) => bed.status === BedStatus.EMPTY).length,
-      reservedBeds: allBeds.filter((bed) => bed.status === BedStatus.RESERVED)
-        .length,
-      maintenanceBeds: allBeds.filter(
-        (bed) => bed.status === BedStatus.MAINTENANCE,
-      ).length,
+      reservedBeds: allBeds.filter((bed) => bed.status === BedStatus.RESERVED).length,
+      maintenanceBeds: allBeds.filter((bed) => bed.status === BedStatus.MAINTENANCE).length,
     };
   }
 }

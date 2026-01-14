@@ -7,10 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RbacService } from '../services';
-import {
-  CHECK_RESOURCE_ACCESS_KEY,
-  ResourceAccessConfig,
-} from '../decorators';
+import { CHECK_RESOURCE_ACCESS_KEY, ResourceAccessConfig } from '../decorators';
 
 /**
  * ResourceAccessGuard for resource-level access control
@@ -49,9 +46,7 @@ export class ResourceAccessGuard implements CanActivate {
     const resourceId = request.params[resourceIdParam];
 
     if (!resourceId) {
-      this.logger.warn(
-        `Resource access check failed: No ${resourceIdParam} in request params`,
-      );
+      this.logger.warn(`Resource access check failed: No ${resourceIdParam} in request params`);
       throw new ForbiddenException('Resource ID required');
     }
 
@@ -69,9 +64,7 @@ export class ResourceAccessGuard implements CanActivate {
         config.resourceType,
         resourceId,
       );
-      throw new ForbiddenException(
-        'You do not have access to this resource',
-      );
+      throw new ForbiddenException('You do not have access to this resource');
     }
 
     return true;

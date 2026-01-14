@@ -21,10 +21,7 @@ describe('AuditQueryService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuditQueryService,
-        { provide: AuditRepository, useValue: mockAuditRepository },
-      ],
+      providers: [AuditQueryService, { provide: AuditRepository, useValue: mockAuditRepository }],
     }).compile();
 
     service = module.get<AuditQueryService>(AuditQueryService);
@@ -35,10 +32,7 @@ describe('AuditQueryService', () => {
 
   describe('queryLoginHistory', () => {
     it('should return paginated login history', async () => {
-      const mockData = [
-        createMockLoginHistory(),
-        createMockLoginHistory(),
-      ];
+      const mockData = [createMockLoginHistory(), createMockLoginHistory()];
       mockAuditRepository.findLoginHistory.mockResolvedValue({
         data: mockData,
         total: 2,
@@ -78,10 +72,7 @@ describe('AuditQueryService', () => {
 
   describe('queryAccessLogs', () => {
     it('should return paginated access logs', async () => {
-      const mockData = [
-        createMockAccessLog(),
-        createMockAccessLog(),
-      ];
+      const mockData = [createMockAccessLog(), createMockAccessLog()];
       mockAuditRepository.findAccessLogs.mockResolvedValue({
         data: mockData,
         total: 2,
@@ -117,10 +108,7 @@ describe('AuditQueryService', () => {
 
   describe('queryChangeLogs', () => {
     it('should return paginated change logs', async () => {
-      const mockData = [
-        createMockChangeLog(),
-        createMockChangeLog(),
-      ];
+      const mockData = [createMockChangeLog(), createMockChangeLog()];
       mockAuditRepository.findChangeLogs.mockResolvedValue({
         data: mockData,
         total: 2,
@@ -323,12 +311,14 @@ describe('AuditQueryService', () => {
 });
 
 // Helper functions to create mock data
-function createMockLoginHistory(overrides?: Partial<{
-  userId: string;
-  username: string;
-  ipAddress: string;
-  success: boolean;
-}>) {
+function createMockLoginHistory(
+  overrides?: Partial<{
+    userId: string;
+    username: string;
+    ipAddress: string;
+    success: boolean;
+  }>,
+) {
   const now = new Date();
   return {
     id: faker.string.uuid(),
@@ -348,11 +338,13 @@ function createMockLoginHistory(overrides?: Partial<{
   };
 }
 
-function createMockAccessLog(overrides?: Partial<{
-  userId: string;
-  username: string;
-  action: string;
-}>) {
+function createMockAccessLog(
+  overrides?: Partial<{
+    userId: string;
+    username: string;
+    action: string;
+  }>,
+) {
   const now = new Date();
   return {
     id: faker.string.uuid(),

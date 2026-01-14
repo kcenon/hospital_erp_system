@@ -2,15 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  SessionData,
-  SessionInfo,
-  CreateSessionInput,
-} from '../interfaces';
-import {
-  SessionExpiredException,
-  SessionNotFoundException,
-} from '../exceptions';
+import { SessionData, SessionInfo, CreateSessionInput } from '../interfaces';
+import { SessionExpiredException, SessionNotFoundException } from '../exceptions';
 
 @Injectable()
 export class SessionService {
@@ -119,10 +112,7 @@ export class SessionService {
     this.logger.log(`All sessions destroyed for user: ${userId}`);
   }
 
-  async getUserSessions(
-    userId: string,
-    currentSessionId?: string,
-  ): Promise<SessionInfo[]> {
+  async getUserSessions(userId: string, currentSessionId?: string): Promise<SessionInfo[]> {
     const userSessionsKey = `${this.USER_SESSIONS_PREFIX}${userId}`;
     const sessionIds = await this.redis.smembers(userSessionsKey);
 
@@ -144,9 +134,7 @@ export class SessionService {
       }
     }
 
-    return sessions.sort(
-      (a, b) => b.lastActivity.getTime() - a.lastActivity.getTime(),
-    );
+    return sessions.sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime());
   }
 
   async checkConcurrentLimit(userId: string): Promise<boolean> {
@@ -167,9 +155,7 @@ export class SessionService {
       const oldestSession = await this.findOldestSession(validSessions);
       if (oldestSession) {
         await this.destroy(oldestSession);
-        this.logger.log(
-          `Oldest session removed for user ${userId}: ${oldestSession}`,
-        );
+        this.logger.log(`Oldest session removed for user ${userId}: ${oldestSession}`);
       }
     }
 
@@ -193,9 +179,7 @@ export class SessionService {
     return oldestSessionId;
   }
 
-  private serializeSessionData(
-    data: SessionData,
-  ): Record<string, string> {
+  private serializeSessionData(data: SessionData): Record<string, string> {
     return {
       userId: data.userId,
       username: data.username,
@@ -207,9 +191,7 @@ export class SessionService {
     };
   }
 
-  private deserializeSessionData(
-    data: Record<string, string>,
-  ): SessionData {
+  private deserializeSessionData(data: Record<string, string>): SessionData {
     return {
       userId: data.userId,
       username: data.username,

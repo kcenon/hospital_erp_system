@@ -8,11 +8,7 @@ import { RoomModule } from '../room';
 @Module({
   imports: [RoomModule],
   controllers: [AdmissionController],
-  providers: [
-    AdmissionService,
-    AdmissionRepository,
-    AdmissionNumberGenerator,
-  ],
+  providers: [AdmissionService, AdmissionRepository, AdmissionNumberGenerator],
   exports: [AdmissionService, AdmissionRepository],
 })
 export class AdmissionModule {}

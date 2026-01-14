@@ -10,13 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [AuthModule],
   controllers: [RoomController],
-  providers: [
-    RoomService,
-    BedService,
-    RoomDashboardService,
-    RoomGateway,
-    RoomEventHandler,
-  ],
+  providers: [RoomService, BedService, RoomDashboardService, RoomGateway, RoomEventHandler],
   exports: [RoomService, BedService, RoomDashboardService, RoomGateway],
 })
 export class RoomModule {}

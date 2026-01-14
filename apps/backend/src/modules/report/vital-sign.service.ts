@@ -12,10 +12,7 @@ import {
   PaginatedVitalSignsResponseDto,
   VitalTrendResponseDto,
 } from './dto';
-import {
-  AdmissionNotFoundException,
-  AdmissionNotActiveException,
-} from './exceptions';
+import { AdmissionNotFoundException, AdmissionNotActiveException } from './exceptions';
 import { RoomGateway } from '../room/room.gateway';
 import { BedService } from '../room/bed.service';
 import { BedWithRoom } from '../room/interfaces';
@@ -176,10 +173,7 @@ export class VitalSignService {
   /**
    * Get vital signs for trend graph (REQ-FR-032)
    */
-  async getTrendData(
-    admissionId: string,
-    dto: GetTrendDto,
-  ): Promise<VitalTrendResponseDto> {
+  async getTrendData(admissionId: string, dto: GetTrendDto): Promise<VitalTrendResponseDto> {
     // Verify admission exists
     const admission = await this.prisma.admission.findUnique({
       where: { id: admissionId },
@@ -191,17 +185,11 @@ export class VitalSignService {
 
     const startDate = new Date(dto.startDate);
     const endDate = new Date(dto.endDate);
-    const vitals = await this.vitalRepo.findByDateRange(
-      admissionId,
-      startDate,
-      endDate,
-    );
+    const vitals = await this.vitalRepo.findByDateRange(admissionId, startDate, endDate);
 
     return {
       labels: vitals.map((v) => v.measuredAt),
-      temperature: vitals.map((v) =>
-        v.temperature ? Number(v.temperature) : null,
-      ),
+      temperature: vitals.map((v) => (v.temperature ? Number(v.temperature) : null)),
       systolicBp: vitals.map((v) => v.systolicBp),
       diastolicBp: vitals.map((v) => v.diastolicBp),
       pulseRate: vitals.map((v) => v.pulseRate),
@@ -254,9 +242,7 @@ export class VitalSignService {
         timestamp: new Date(),
       });
 
-      this.logger.log(
-        `Vital alert emitted for admission ${admission.id}: ${alerts.length} alerts`,
-      );
+      this.logger.log(`Vital alert emitted for admission ${admission.id}: ${alerts.length} alerts`);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error(`Failed to handle vital alerts: ${message}`);
@@ -266,9 +252,7 @@ export class VitalSignService {
   /**
    * Get highest severity from alerts
    */
-  private getHighestSeverity(
-    alerts: VitalAlert[],
-  ): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
+  private getHighestSeverity(alerts: VitalAlert[]): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
     const severityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const;
     for (const severity of severityOrder) {
       if (alerts.some((a) => a.severity === severity)) {
@@ -281,10 +265,7 @@ export class VitalSignService {
   /**
    * Convert VitalSign entity to response DTO
    */
-  private toResponseDto(
-    vitalSign: VitalSign,
-    alerts?: VitalAlert[],
-  ): VitalSignResponseDto {
+  private toResponseDto(vitalSign: VitalSign, alerts?: VitalAlert[]): VitalSignResponseDto {
     // If alerts not provided and hasAlert is true, compute them
     let computedAlerts = alerts;
     if (!computedAlerts && vitalSign.hasAlert) {
@@ -305,9 +286,7 @@ export class VitalSignService {
     return {
       id: vitalSign.id,
       admissionId: vitalSign.admissionId,
-      temperature: vitalSign.temperature
-        ? Number(vitalSign.temperature)
-        : null,
+      temperature: vitalSign.temperature ? Number(vitalSign.temperature) : null,
       systolicBp: vitalSign.systolicBp,
       diastolicBp: vitalSign.diastolicBp,
       pulseRate: vitalSign.pulseRate,

@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SessionService } from '../services';
 
@@ -19,10 +13,7 @@ export class SessionActivityInterceptor implements NestInterceptor {
 
   constructor(private readonly sessionService: SessionService) {}
 
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<unknown>> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<unknown>> {
     const request = context.switchToHttp().getRequest();
     const user = request.user as RequestUser | undefined;
     const sessionId = user?.sessionId;
@@ -30,7 +21,7 @@ export class SessionActivityInterceptor implements NestInterceptor {
     if (sessionId) {
       try {
         await this.sessionService.refresh(sessionId);
-      } catch (error) {
+      } catch (_error) {
         this.logger.warn(`Failed to refresh session: ${sessionId}`);
       }
     }

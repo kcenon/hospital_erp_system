@@ -22,10 +22,7 @@ describe('RoomDashboardService', () => {
     prismaService = createMockPrismaService();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RoomDashboardService,
-        { provide: PrismaService, useValue: prismaService },
-      ],
+      providers: [RoomDashboardService, { provide: PrismaService, useValue: prismaService }],
     }).compile();
 
     service = module.get<RoomDashboardService>(RoomDashboardService);
@@ -76,9 +73,7 @@ describe('RoomDashboardService', () => {
     it('should throw NotFoundException when floor not found', async () => {
       prismaService.floor.findUnique.mockResolvedValue(null);
 
-      await expect(service.getFloorDashboard('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getFloorDashboard('nonexistent')).rejects.toThrow(NotFoundException);
     });
 
     it('should return zero counts when floor has no rooms', async () => {
@@ -162,10 +157,7 @@ describe('RoomDashboardService', () => {
             rooms: [
               {
                 ...room1,
-                beds: [
-                  createEmptyBed(room1.id),
-                  createOccupiedBed(room1.id, 'admission-1'),
-                ],
+                beds: [createEmptyBed(room1.id), createOccupiedBed(room1.id, 'admission-1')],
               },
             ],
           },
@@ -203,9 +195,7 @@ describe('RoomDashboardService', () => {
     it('should throw NotFoundException when building not found', async () => {
       prismaService.building.findUnique.mockResolvedValue(null);
 
-      await expect(service.getBuildingDashboard('nonexistent')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getBuildingDashboard('nonexistent')).rejects.toThrow(NotFoundException);
     });
 
     it('should handle building with no floors', async () => {
@@ -242,10 +232,7 @@ describe('RoomDashboardService', () => {
               rooms: [
                 {
                   ...room1,
-                  beds: [
-                    createEmptyBed(room1.id),
-                    createOccupiedBed(room1.id, 'admission-1'),
-                  ],
+                  beds: [createEmptyBed(room1.id), createOccupiedBed(room1.id, 'admission-1')],
                 },
               ],
             },
