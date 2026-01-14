@@ -29,7 +29,8 @@ export const admissionApi = {
     return apiGet<Admission>(`/admissions/${id}`);
   },
 
-  findByPatientId: (patientId: string): Promise<Admission[]> => {
-    return apiGet<Admission[]>(`/admissions?patientId=${patientId}`);
+  findByPatientId: async (patientId: string): Promise<Admission[]> => {
+    const response = await apiGet<PaginatedAdmissions>(`/admissions?patientId=${patientId}&limit=100`);
+    return response.data;
   },
 };
