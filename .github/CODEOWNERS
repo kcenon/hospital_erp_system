@@ -1,0 +1,21 @@
+# Default owners for everything in the repo
+* @kcenon
+
+# Backend code owners
+/apps/backend/ @kcenon
+
+# Frontend code owners
+/apps/frontend/ @kcenon
+
+# CI/CD configuration
+/.github/ @kcenon
+
+# Documentation
+/docs/ @kcenon
+*.md @kcenon
+
+# Database schemas
+/apps/backend/prisma/ @kcenon
+
+# Shared packages
+/packages/ @kcenon
