@@ -22,3 +22,4 @@ export interface ApiError {
 export * from './patient';
 export * from './admission';
 export * from './auth';
+export * from './room';
