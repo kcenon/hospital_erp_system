@@ -236,6 +236,24 @@ See [Development Environment Setup](docs/reference/05-guides/development-environ
 - [Infrastructure Setup](docs/reference/05-guides/infrastructure-setup.md)
 - [System Integration Patterns](docs/reference/05-guides/system-integration-patterns.md)
 
+### CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+| Workflow          | Trigger          | Purpose                                        |
+| ----------------- | ---------------- | ---------------------------------------------- |
+| **CI**            | PR, Push         | Lint, typecheck, test, and build verification  |
+| **Security**      | PR, Push, Weekly | Dependency audit, CodeQL analysis, secret scan |
+| **Build**         | Push to main     | Build and push Docker images to GHCR           |
+| **PR Automation** | PR events        | Auto-labeling, size labeling, stale PR marking |
+
+#### Required Checks for PRs
+
+- ESLint and Prettier formatting
+- TypeScript compilation
+- Unit tests passing
+- Build verification
+
 ### Branch Strategy
 
 | Branch      | Purpose                 |
@@ -289,4 +307,4 @@ Proprietary - All rights reserved.
 
 ---
 
-_Last Updated: 2026-01-13_
+_Last Updated: 2026-01-15_

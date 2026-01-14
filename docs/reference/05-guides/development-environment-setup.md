@@ -18,7 +18,7 @@
 | Software           | Version  | Purpose                    | Installation                            |
 | ------------------ | -------- | -------------------------- | --------------------------------------- |
 | **Node.js**        | 20.x LTS | JavaScript runtime         | [nodejs.org](https://nodejs.org) or nvm |
-| **pnpm**           | 8.x+     | Package manager            | `npm install -g pnpm`                   |
+| **pnpm**           | 9.x+     | Package manager            | `npm install -g pnpm@9`                 |
 | **Docker**         | 24.x+    | Container environment      | [docker.com](https://docker.com)        |
 | **Docker Compose** | 2.x+     | Multi-container management | Included in Docker Desktop              |
 
@@ -74,14 +74,14 @@ nvm use 20
 ### 2.3 pnpm Installation
 
 ```bash
-# Install via npm
-npm install -g pnpm
+# Install via npm (specific version for project compatibility)
+npm install -g pnpm@9
 
 # Or standalone installation (recommended)
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Verify
-pnpm --version  # 8.x.x
+pnpm --version  # 9.x.x
 ```
 
 ---

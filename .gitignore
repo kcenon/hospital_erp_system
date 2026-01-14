@@ -76,6 +76,7 @@ logs/
 .npm-cache/
 .eslintcache
 .cache/
+.turbo/
 
 # -----------------------------------------------------------------------------
 # Flutter / Dart (Mobile Frontend)
@@ -213,3 +214,9 @@ site/
 # Backup files
 *.bak
 *.backup
+
+# -----------------------------------------------------------------------------
+# PWA Generated Files
+# -----------------------------------------------------------------------------
+apps/frontend/public/sw.js
+apps/frontend/public/workbox-*.js

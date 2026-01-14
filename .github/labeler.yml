@@ -1,0 +1,76 @@
+# Backend labels
+backend:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/**/*'
+
+# Frontend labels
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/frontend/**/*'
+
+# Documentation labels
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**/*'
+          - '**/*.md'
+          - README*
+
+# CI/CD labels
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**/*'
+          - 'docker-compose*.yml'
+          - '**/Dockerfile*'
+
+# Configuration labels
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.json'
+          - '*.js'
+          - '*.mjs'
+          - '.env*'
+          - 'turbo.json'
+
+# Database labels
+database:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'apps/backend/prisma/**/*'
+          - '**/migrations/**/*'
+
+# Test labels
+test:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.spec.ts'
+          - '**/*.test.ts'
+          - '**/test/**/*'
+          - '**/__tests__/**/*'
+
+# Module-specific labels
+module:auth:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/auth/**/*'
+
+module:patient:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/patient/**/*'
+
+module:room:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/room/**/*'
+
+module:admission:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/admission/**/*'
+
+module:report:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/report/**/*'
+
+module:admin:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/backend/src/modules/admin/**/*'

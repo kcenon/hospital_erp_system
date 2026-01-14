@@ -202,6 +202,24 @@ npm run dev  # 포트 3001에서 시작
 - [인프라 설정](docs/reference/05-guides/infrastructure-setup.kr.md)
 - [시스템 연동 패턴](docs/reference/05-guides/system-integration-patterns.kr.md)
 
+### CI/CD 파이프라인
+
+이 프로젝트는 지속적 통합 및 배포를 위해 GitHub Actions를 사용합니다:
+
+| 워크플로우        | 트리거           | 목적                                     |
+| ----------------- | ---------------- | ---------------------------------------- |
+| **CI**            | PR, Push         | 린트, 타입 체크, 테스트, 빌드 검증       |
+| **Security**      | PR, Push, 주간   | 의존성 감사, CodeQL 분석, 시크릿 스캔    |
+| **Build**         | main 브랜치 Push | Docker 이미지 빌드 및 GHCR 푸시          |
+| **PR Automation** | PR 이벤트        | 자동 라벨링, 크기 라벨링, 오래된 PR 표시 |
+
+#### PR 필수 체크 항목
+
+- ESLint 및 Prettier 포맷팅
+- TypeScript 컴파일
+- 단위 테스트 통과
+- 빌드 검증
+
 ### 브랜치 전략
 
 | 브랜치      | 용도               |
