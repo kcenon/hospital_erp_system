@@ -1,4 +1,5 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Gender } from '@prisma/client';
 import { PatientRepository } from '../../../patient/patient.repository';
 import { PatientNumberGenerator } from '../../../patient/patient-number.generator';
 import { PatientResponseDto } from '../../../patient/dto';
@@ -99,14 +100,20 @@ export class PatientSyncService {
       name: patient.name,
       birthDate: patient.birthDate,
       gender: patient.gender,
-      ssn: patient.ssn ? this.dataMaskingService.maskSsn(patient.ssn) : undefined,
-      phone: patient.phone ? this.dataMaskingService.maskPhone(patient.phone) : undefined,
-      address: patient.address ? this.dataMaskingService.maskAddress(patient.address) : undefined,
+      ssn: this.nullToUndefined(patient.ssn ? this.dataMaskingService.maskSsn(patient.ssn) : null),
+      phone: this.nullToUndefined(
+        patient.phone ? this.dataMaskingService.maskPhone(patient.phone) : null,
+      ),
+      address: this.nullToUndefined(
+        patient.address ? this.dataMaskingService.maskAddress(patient.address) : null,
+      ),
       bloodType: patient.bloodType,
       insuranceType: patient.insuranceType,
-      insuranceNumber: patient.insuranceNumber
-        ? this.dataMaskingService.maskInsuranceNumber(patient.insuranceNumber)
-        : undefined,
+      insuranceNumber: this.nullToUndefined(
+        patient.insuranceNumber
+          ? this.dataMaskingService.maskInsuranceNumber(patient.insuranceNumber)
+          : null,
+      ),
     };
   }
 
@@ -142,7 +149,7 @@ export class PatientSyncService {
     patientNumber: string;
     name: string;
     birthDate: Date;
-    gender: string;
+    gender: Gender;
     bloodType: string | null;
     phone: string | null;
     address: string | null;
@@ -185,5 +192,9 @@ export class PatientSyncService {
 
   private encryptData(data: string): Buffer {
     return Buffer.from(data, 'utf-8');
+  }
+
+  private nullToUndefined<T>(value: T | null): T | undefined {
+    return value === null ? undefined : value;
   }
 }

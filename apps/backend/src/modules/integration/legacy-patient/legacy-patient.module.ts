@@ -1,4 +1,4 @@
-import { Module, DynamicModule, Provider } from '@nestjs/common';
+import { Module, DynamicModule, Provider, InjectionToken } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PatientModule } from '../../patient/patient.module';
@@ -44,8 +44,14 @@ export class LegacyPatientModule {
     useFactory: (
       ...args: unknown[]
     ) => Promise<LegacyPatientModuleOptions> | LegacyPatientModuleOptions;
-    inject?: unknown[];
+    inject?: InjectionToken[];
   }): DynamicModule {
+    const injectTokens: InjectionToken[] = [
+      ...(options.inject || []),
+      ConfigService,
+      LegacyCacheService,
+    ];
+
     return {
       module: LegacyPatientModule,
       imports: [
@@ -79,7 +85,7 @@ export class LegacyPatientModule {
 
             return null;
           },
-          inject: [...(options.inject || []), ConfigService, LegacyCacheService],
+          inject: injectTokens,
         },
       ],
       exports: [PatientSyncService, LEGACY_PATIENT_ADAPTER],

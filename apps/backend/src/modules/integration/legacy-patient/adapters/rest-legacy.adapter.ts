@@ -135,17 +135,13 @@ export class RestLegacyAdapter implements LegacyPatientAdapter {
             retry({ count: this.maxRetries, delay: 1000 }),
             catchError((error: AxiosError) => {
               if (error.response?.status === 404) {
-                return [];
+                throw new LegacyPatientNotFoundException(legacyId);
               }
               this.logger.error(`Failed to find patient ${legacyId}: ${error.message}`);
               throw new LegacySystemConnectionException('Failed to connect to legacy API');
             }),
           ),
       );
-
-      if (!response.data) {
-        return null;
-      }
 
       const patient = this.mapToLegacyPatient(response.data);
       await this.cacheService.setPatient(legacyId, patient);
@@ -209,16 +205,11 @@ export class RestLegacyAdapter implements LegacyPatientAdapter {
   async isConnected(): Promise<boolean> {
     try {
       const response = await firstValueFrom(
-        this.httpService
-          .get(`${this.baseUrl}/health`, {
-            headers: this.getHeaders(),
-          })
-          .pipe(
-            timeout(5000),
-            catchError(() => []),
-          ),
+        this.httpService.get<{ status: string }>(`${this.baseUrl}/health`, {
+          headers: this.getHeaders(),
+        }),
       );
-      return response?.status === 200;
+      return response.status === 200;
     } catch {
       return false;
     }
