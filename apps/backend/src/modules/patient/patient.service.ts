@@ -78,6 +78,8 @@ export class PatientService {
       gender: dto.gender,
       page: dto.page,
       limit: dto.limit,
+      sortBy: dto.sortBy,
+      sortOrder: dto.sortOrder,
     });
 
     return {

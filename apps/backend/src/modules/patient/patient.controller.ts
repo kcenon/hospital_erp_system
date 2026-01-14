@@ -2,16 +2,22 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Body,
   Param,
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { PatientService } from './patient.service';
-import { ParseUUIDPipe } from '../../common';
+import { ParseUUIDPipe, CurrentUser } from '../../common';
+import { JwtAuthGuard } from '../../common/guards';
+import { PermissionGuard } from '../auth/guards';
+import { RequirePermission, RequireRole } from '../auth/decorators';
+import { Permissions } from '../auth/constants';
+import { UserRole } from './data-masking.service';
 import {
   CreatePatientDto,
   UpdatePatientDto,
@@ -23,68 +29,106 @@ import {
   PaginatedPatientsResponseDto,
 } from './dto';
 
+interface AuthenticatedUser {
+  id: string;
+  role: UserRole;
+}
+
 @Controller('patients')
+@UseGuards(JwtAuthGuard, PermissionGuard)
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
   @Post()
-  async create(@Body() dto: CreatePatientDto): Promise<PatientResponseDto> {
+  @RequirePermission(Permissions.PATIENT_CREATE)
+  async create(
+    @Body() dto: CreatePatientDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<PatientResponseDto> {
     return this.patientService.create(dto);
   }
 
   @Get()
-  async findAll(@Query() dto: FindPatientsDto): Promise<PaginatedPatientsResponseDto> {
-    return this.patientService.findAll(dto);
+  @RequirePermission(Permissions.PATIENT_READ)
+  async findAll(
+    @Query() dto: FindPatientsDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<PaginatedPatientsResponseDto> {
+    return this.patientService.findAll(dto, user.role);
   }
 
   @Get('search')
-  async search(@Query('q') query: string): Promise<PatientResponseDto[]> {
-    return this.patientService.search(query || '');
+  @RequirePermission(Permissions.PATIENT_READ)
+  async search(
+    @Query('q') query: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<PatientResponseDto[]> {
+    return this.patientService.search(query || '', user.role);
   }
 
   @Get('by-number/:patientNumber')
+  @RequirePermission(Permissions.PATIENT_READ)
   async findByPatientNumber(
     @Param('patientNumber') patientNumber: string,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<PatientResponseDto> {
-    return this.patientService.findByPatientNumber(patientNumber);
+    return this.patientService.findByPatientNumber(patientNumber, user.role);
   }
 
   @Get('by-legacy-id/:legacyId')
-  async findByLegacyId(@Param('legacyId') legacyId: string): Promise<PatientResponseDto> {
-    return this.patientService.findByLegacyId(legacyId);
+  @RequirePermission(Permissions.PATIENT_READ)
+  async findByLegacyId(
+    @Param('legacyId') legacyId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<PatientResponseDto> {
+    return this.patientService.findByLegacyId(legacyId, user.role);
   }
 
   @Get(':id')
-  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<PatientResponseDto> {
-    return this.patientService.findById(id);
+  @RequirePermission(Permissions.PATIENT_READ)
+  async findById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<PatientResponseDto> {
+    return this.patientService.findById(id, user.role);
   }
 
-  @Put(':id')
+  @Patch(':id')
+  @RequirePermission(Permissions.PATIENT_UPDATE)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePatientDto,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<PatientResponseDto> {
     return this.patientService.update(id, dto);
   }
 
   @Delete(':id')
+  @RequireRole('ADMIN')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async softDelete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  async softDelete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
     return this.patientService.softDelete(id);
   }
 
   @Post(':id/detail')
+  @RequirePermission(Permissions.PATIENT_UPDATE)
   async createDetail(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreatePatientDetailDto,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<PatientDetailResponseDto> {
     return this.patientService.createDetail(id, dto);
   }
 
-  @Put(':id/detail')
+  @Patch(':id/detail')
+  @RequirePermission(Permissions.PATIENT_UPDATE)
   async updateDetail(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePatientDetailDto,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<PatientDetailResponseDto> {
     return this.patientService.updateDetail(id, dto);
   }
