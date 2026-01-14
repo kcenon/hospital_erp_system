@@ -7,6 +7,8 @@ A Next.js frontend application for the Hospital Inpatient Management ERP System.
 - **Authentication**: Login page with form validation and automatic token refresh
 - **Protected Routes**: Route middleware and client-side auth guards
 - **Patient Management**: Patient list and detail views
+- **Room Dashboard**: Real-time bed status monitoring with WebSocket updates
+- **Available Beds**: Filterable list of available beds by floor and room type
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 
 ## Tech Stack
@@ -19,6 +21,7 @@ A Next.js frontend application for the Hospital Inpatient Management ERP System.
 - [React Hook Form](https://react-hook-form.com/) - Form handling
 - [Zod](https://zod.dev/) - Schema validation
 - [Radix UI](https://www.radix-ui.com/) - Accessible UI primitives
+- [Socket.io Client](https://socket.io/) - Real-time WebSocket communication
 
 ## Getting Started
 
@@ -57,6 +60,7 @@ Create a `.env.local` file based on `env.example`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_WS_URL=http://localhost:3000
 ```
 
 ## Project Structure
@@ -70,6 +74,7 @@ src/
 │   ├── auth/              # Auth components (AuthGuard, ChangePasswordModal)
 │   ├── features/          # Feature-specific components
 │   ├── layouts/           # Layout components
+│   ├── room/              # Room dashboard components (RoomCard, BedCell, SummaryCard)
 │   └── ui/                # Reusable UI components
 ├── hooks/                 # Custom React hooks
 ├── lib/                   # Utilities and configurations
