@@ -13,6 +13,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards';
 import { CurrentUser } from '../../common/decorators';
 import { PermissionGuard } from '../auth/guards';
@@ -36,6 +37,8 @@ import {
  * Reference: Issue #28 (User and Role Management Service)
  * Requirements: REQ-FR-060~061
  */
+@ApiTags('admin')
+@ApiBearerAuth()
 @Controller('admin/users')
 @UseGuards(JwtAuthGuard, PermissionGuard)
 @RequireRole('ADMIN')
@@ -48,6 +51,10 @@ export class UserAdminController {
    * List all users with pagination and filters
    * GET /admin/users
    */
+  @ApiOperation({ summary: 'List all users with pagination and filters' })
+  @ApiResponse({ status: 200, description: 'Paginated list of users', type: PaginatedResultDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
   @Get()
   async list(@Query() query: ListUsersDto): Promise<PaginatedResultDto<UserResponseDto>> {
     this.logger.log('Listing users');
@@ -58,6 +65,12 @@ export class UserAdminController {
    * Get user by ID
    * GET /admin/users/:id
    */
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiResponse({ status: 200, description: 'User details', type: UserResponseDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<UserResponseDto> {
     this.logger.log(`Getting user ${id}`);
@@ -68,6 +81,16 @@ export class UserAdminController {
    * Create a new user
    * POST /admin/users
    */
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: CreateUserResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 409, description: 'Username or employee ID already exists' })
   @Post()
   async create(
     @Body() dto: CreateUserDto,
@@ -81,6 +104,13 @@ export class UserAdminController {
    * Update user
    * PATCH /admin/users/:id
    */
+  @ApiOperation({ summary: 'Update user information' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiResponse({ status: 200, description: 'User updated successfully', type: UserResponseDto })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -95,6 +125,12 @@ export class UserAdminController {
    * Deactivate user
    * DELETE /admin/users/:id
    */
+  @ApiOperation({ summary: 'Deactivate user account' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiResponse({ status: 204, description: 'User deactivated successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deactivate(
@@ -109,6 +145,16 @@ export class UserAdminController {
    * Reset user password
    * POST /admin/users/:id/reset-password
    */
+  @ApiOperation({ summary: 'Reset user password' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully',
+    type: ResetPasswordResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   @Post(':id/reset-password')
   async resetPassword(
     @Param('id', ParseUUIDPipe) id: string,
@@ -122,6 +168,14 @@ export class UserAdminController {
    * Assign role to user
    * POST /admin/users/:id/roles
    */
+  @ApiOperation({ summary: 'Assign role to user' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiResponse({ status: 201, description: 'Role assigned successfully', type: MessageResponseDto })
+  @ApiResponse({ status: 400, description: 'Invalid role ID' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User or role not found' })
+  @ApiResponse({ status: 409, description: 'Role already assigned to user' })
   @Post(':id/roles')
   @HttpCode(HttpStatus.CREATED)
   async assignRole(
@@ -138,6 +192,13 @@ export class UserAdminController {
    * Remove role from user
    * DELETE /admin/users/:id/roles/:roleId
    */
+  @ApiOperation({ summary: 'Remove role from user' })
+  @ApiParam({ name: 'id', description: 'User ID', format: 'uuid' })
+  @ApiParam({ name: 'roleId', description: 'Role ID to remove', format: 'uuid' })
+  @ApiResponse({ status: 204, description: 'Role removed successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - requires ADMIN role' })
+  @ApiResponse({ status: 404, description: 'User or role assignment not found' })
   @Delete(':id/roles/:roleId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeRole(

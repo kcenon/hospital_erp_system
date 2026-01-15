@@ -10,6 +10,7 @@ import {
   Delete,
   Param,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Request } from 'express';
 import { User } from '@prisma/client';
 import { AuthService, SessionService } from './services';
@@ -28,6 +29,7 @@ import {
 import { DeviceInfo, AuthenticatedUser } from './interfaces';
 import { Public, CurrentUser } from '../../common/decorators';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -35,9 +37,10 @@ export class AuthController {
     private readonly sessionService: SessionService,
   ) {}
 
-  /**
-   * Login with username and password
-   */
+  @ApiOperation({ summary: 'Login with username and password' })
+  @ApiResponse({ status: 200, description: 'Login successful', type: LoginResponseDto })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @ApiResponse({ status: 423, description: 'Account locked' })
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -50,9 +53,9 @@ export class AuthController {
     return this.authService.login(user, deviceInfo, ipAddress);
   }
 
-  /**
-   * Refresh access token
-   */
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: 200, description: 'Tokens refreshed', type: TokenResponseDto })
+  @ApiResponse({ status: 401, description: 'Invalid refresh token' })
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -67,9 +70,10 @@ export class AuthController {
     });
   }
 
-  /**
-   * Logout current session
-   */
+  @ApiOperation({ summary: 'Logout current session' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Logout successful', type: LogoutResponseDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
@@ -78,9 +82,14 @@ export class AuthController {
     return new LogoutResponseDto();
   }
 
-  /**
-   * Logout from all sessions
-   */
+  @ApiOperation({ summary: 'Logout from all sessions' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Logged out from all sessions',
+    type: LogoutResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Post('logout-all')
   @HttpCode(HttpStatus.OK)
@@ -89,18 +98,20 @@ export class AuthController {
     return new LogoutResponseDto('Logged out from all sessions');
   }
 
-  /**
-   * Get current user info
-   */
+  @ApiOperation({ summary: 'Get current user info' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Current user information' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getCurrentUser(@CurrentUser() user: AuthenticatedUser): Promise<AuthenticatedUser> {
     return user;
   }
 
-  /**
-   * Get all sessions for current user
-   */
+  @ApiOperation({ summary: 'Get all sessions for current user' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'List of user sessions', type: SessionListResponseDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Get('sessions')
   async getSessions(@CurrentUser() user: AuthenticatedUser): Promise<SessionListResponseDto> {
@@ -119,9 +130,11 @@ export class AuthController {
     };
   }
 
-  /**
-   * Destroy specific session
-   */
+  @ApiOperation({ summary: 'Destroy specific session' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'sessionId', description: 'Session ID to destroy' })
+  @ApiResponse({ status: 200, description: 'Session destroyed', type: LogoutResponseDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Delete('sessions/:sessionId')
   @HttpCode(HttpStatus.OK)
@@ -139,9 +152,14 @@ export class AuthController {
     return new LogoutResponseDto('Session destroyed');
   }
 
-  /**
-   * Change password
-   */
+  @ApiOperation({ summary: 'Change password' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Password changed', type: ChangePasswordResponseDto })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid current password or password requirements not met',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
   @HttpCode(HttpStatus.OK)
