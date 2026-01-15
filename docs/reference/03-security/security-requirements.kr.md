@@ -140,6 +140,21 @@ function validatePassword(password: string, user: User): ValidationResult {
 
   return { isValid: errors.length === 0, errors };
 }
+
+// 안전한 임시 비밀번호 생성
+// 중요: 균일한 분포를 위해 crypto.randomInt() 사용
+// randomBytes에 모듈로 연산을 사용하면 편향된 결과가 발생함
+import { randomInt } from 'crypto';
+
+function generateSecurePassword(length: number = 12): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    // randomInt()는 암호학적으로 안전한 균일 분포를 제공
+    password += chars[randomInt(chars.length)];
+  }
+  return password;
+}
 ```
 
 ### 2.3 JWT 토큰 관리
