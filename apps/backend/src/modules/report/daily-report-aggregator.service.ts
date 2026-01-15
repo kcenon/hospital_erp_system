@@ -22,7 +22,7 @@ import {
   MedicationComplianceDto,
   SignificantNoteDto,
   DailyAlertDto,
-  StatsSummary,
+  StatsSummaryDto,
   ListDailyReportsDto,
 } from './dto/daily-report.dto';
 import { AdmissionNotFoundException } from './exceptions';
@@ -272,7 +272,7 @@ export class DailyReportAggregatorService {
   /**
    * Calculate statistics for an array of numbers
    */
-  private calculateStats(values: number[]): StatsSummary | null {
+  private calculateStats(values: number[]): StatsSummaryDto | null {
     if (values.length === 0) {
       return null;
     }
