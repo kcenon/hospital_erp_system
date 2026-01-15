@@ -24,3 +24,4 @@ export * from './admission';
 export * from './auth';
 export * from './room';
 export * from './vital-sign';
+export * from './rounding';
