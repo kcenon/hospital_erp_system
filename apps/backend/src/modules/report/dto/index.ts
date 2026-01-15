@@ -7,3 +7,4 @@ export * from './io-response.dto';
 export * from './get-io-history.dto';
 export * from './medication.dto';
 export * from './nursing-note.dto';
+export * from './daily-report.dto';
