@@ -140,6 +140,21 @@ function validatePassword(password: string, user: User): ValidationResult {
 
   return { isValid: errors.length === 0, errors };
 }
+
+// Secure temporary password generation
+// IMPORTANT: Use crypto.randomInt() for unbiased uniform distribution
+// Do NOT use modulo on randomBytes as it creates biased results
+import { randomInt } from 'crypto';
+
+function generateSecurePassword(length: number = 12): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    // randomInt() provides cryptographically secure uniform distribution
+    password += chars[randomInt(chars.length)];
+  }
+  return password;
+}
 ```
 
 ### 2.3 JWT Token Management

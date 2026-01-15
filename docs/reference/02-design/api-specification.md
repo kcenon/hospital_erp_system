@@ -1585,13 +1585,65 @@ IN_PROGRESS <────────────┼─────────>
 
 ## 8. Admin API
 
-### 8.1 List Users
+### 8.1 User Management
+
+#### 8.1.1 List Users
 
 ```http
 GET /admin/users
 ```
 
-### 8.2 Create User
+**Query Parameters**
+
+| Parameter  | Type    | Required | Description                            |
+| ---------- | ------- | -------- | -------------------------------------- |
+| search     | string  | No       | Search by name, username, employee ID  |
+| department | string  | No       | Filter by department                   |
+| isActive   | boolean | No       | Filter by active status                |
+| roleId     | uuid    | No       | Filter by role ID                      |
+| page       | number  | No       | Page number (default: 1)               |
+| limit      | number  | No       | Items per page (default: 20, max: 100) |
+| sortBy     | string  | No       | Sort field (name, username, createdAt) |
+| sortOrder  | string  | No       | Sort order (asc, desc)                 |
+
+**Response**
+
+```json
+{
+  "data": [
+    {
+      "id": "user-uuid",
+      "employeeId": "EMP2025001",
+      "username": "nurse002",
+      "name": "Park Nurse",
+      "email": "nurse002@hospital.com",
+      "phone": "010-1234-5678",
+      "department": "Internal Medicine Ward",
+      "position": "Nurse",
+      "isActive": true,
+      "lastLoginAt": "2025-01-15T10:30:00Z",
+      "createdAt": "2025-01-01T09:00:00Z",
+      "roles": [{ "id": "role-uuid", "code": "NURSE", "name": "Nurse" }]
+    }
+  ],
+  "meta": {
+    "total": 150,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 8,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  }
+}
+```
+
+#### 8.1.2 Get User
+
+```http
+GET /admin/users/{userId}
+```
+
+#### 8.1.3 Create User
 
 ```http
 POST /admin/users
@@ -1603,37 +1655,160 @@ POST /admin/users
 {
   "employeeId": "EMP2025001",
   "username": "nurse002",
-  "password": "InitialP@ss123",
   "name": "Park Nurse",
   "email": "nurse002@hospital.com",
   "phone": "010-1234-5678",
   "department": "Internal Medicine Ward",
   "position": "Nurse",
-  "roles": ["NURSE"]
+  "roleIds": ["role-uuid-1", "role-uuid-2"]
 }
 ```
 
-### 8.3 Update User
+**Response** (includes temporary password)
+
+```json
+{
+  "id": "user-uuid",
+  "employeeId": "EMP2025001",
+  "username": "nurse002",
+  "name": "Park Nurse",
+  "temporaryPassword": "T3mpP@ss123!",
+  "roles": [{ "id": "role-uuid-1", "code": "NURSE", "name": "Nurse" }]
+}
+```
+
+#### 8.1.4 Update User
 
 ```http
 PATCH /admin/users/{userId}
 ```
 
-### 8.4 Deactivate User
+**Request**
+
+```json
+{
+  "name": "Updated Name",
+  "email": "updated@hospital.com",
+  "department": "New Department",
+  "isActive": true
+}
+```
+
+#### 8.1.5 Deactivate User
 
 ```http
 DELETE /admin/users/{userId}
 ```
 
-### 8.5 Role Management
+**Note**: This deactivates the user and destroys all their sessions.
+
+#### 8.1.6 Reset User Password
+
+```http
+POST /admin/users/{userId}/reset-password
+```
+
+**Response**
+
+```json
+{
+  "temporaryPassword": "N3wT3mpP@ss!",
+  "message": "Password has been reset. User must change password on next login."
+}
+```
+
+#### 8.1.7 Assign Role to User
+
+```http
+POST /admin/users/{userId}/roles
+```
+
+**Request**
+
+```json
+{
+  "roleId": "role-uuid"
+}
+```
+
+#### 8.1.8 Remove Role from User
+
+```http
+DELETE /admin/users/{userId}/roles/{roleId}
+```
+
+### 8.2 Role Management
+
+#### 8.2.1 List Roles
 
 ```http
 GET /admin/roles
-POST /admin/roles
-PATCH /admin/roles/{roleId}
 ```
 
-### 8.6 Get Access Logs
+**Response**
+
+```json
+[
+  {
+    "id": "role-uuid",
+    "code": "ADMIN",
+    "name": "Administrator",
+    "description": "Full system access",
+    "level": 1,
+    "isActive": true
+  },
+  {
+    "id": "role-uuid-2",
+    "code": "DOCTOR",
+    "name": "Doctor",
+    "description": "Medical staff with patient access",
+    "level": 3,
+    "isActive": true
+  }
+]
+```
+
+#### 8.2.2 Get Role
+
+```http
+GET /admin/roles/{roleId}
+```
+
+#### 8.2.3 Get Role with Permissions
+
+```http
+GET /admin/roles/{roleId}/permissions
+```
+
+**Response**
+
+```json
+{
+  "id": "role-uuid",
+  "code": "DOCTOR",
+  "name": "Doctor",
+  "permissions": [
+    {
+      "id": "perm-uuid",
+      "code": "patient:read",
+      "resource": "patient",
+      "action": "read",
+      "description": "Read patient records"
+    },
+    {
+      "id": "perm-uuid-2",
+      "code": "patient:update",
+      "resource": "patient",
+      "action": "update",
+      "description": "Update patient records"
+    }
+  ]
+}
+```
+
+### 8.3 Audit Logs
+
+#### 8.3.1 Get Access Logs
 
 ```http
 GET /admin/audit/access-logs
@@ -1646,8 +1821,8 @@ GET /admin/audit/access-logs
 | userId       | uuid     | User filter    |
 | resourceType | string   | Resource type  |
 | action       | string   | Action         |
-| fromDate     | datetime | Start datetime |
-| toDate       | datetime | End datetime   |
+| startDate    | datetime | Start datetime |
+| endDate      | datetime | End datetime   |
 
 ---
 
