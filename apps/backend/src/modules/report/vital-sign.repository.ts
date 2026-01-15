@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma';
 import { VitalSign, Consciousness, Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+import { PaginatedResult } from './interfaces';
 
 export interface CreateVitalSignData {
   admissionId: string;
@@ -27,14 +28,6 @@ export interface FindVitalSignsParams {
   hasAlert?: boolean;
   page?: number;
   limit?: number;
-}
-
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
 }
 
 @Injectable()
