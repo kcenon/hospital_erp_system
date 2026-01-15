@@ -7,7 +7,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Select,
+  LegacySelect,
   Badge,
   Table,
   TableHeader,
@@ -80,14 +80,14 @@ export default function AvailableBedsPage() {
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="w-full md:w-48">
-              <Select
+              <LegacySelect
                 options={floorOptions}
                 value={filters.floorId || ''}
                 onChange={(e) => handleFloorChange(e.target.value)}
               />
             </div>
             <div className="w-full md:w-48">
-              <Select
+              <LegacySelect
                 options={roomTypeOptions}
                 value={filters.roomType || ''}
                 onChange={(e) => handleRoomTypeChange(e.target.value)}
