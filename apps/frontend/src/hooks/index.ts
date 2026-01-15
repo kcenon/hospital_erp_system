@@ -4,3 +4,9 @@ export { usePatientAdmissions, useAdmission } from './use-admissions';
 export { useDebounce } from './use-debounce';
 export { useFloors, useFloorDashboard, useAvailableBeds } from './use-rooms';
 export { useRoomWebSocket } from './use-room-websocket';
+export {
+  useVitalHistory,
+  useLatestVitalSign,
+  useVitalTrend,
+  useRecordVitalSign,
+} from './use-vital-signs';
