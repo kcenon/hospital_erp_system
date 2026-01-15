@@ -901,10 +901,12 @@ POST /admissions/{admissionId}/daily-reports
 GET /admissions/{admissionId}/daily-reports
 ```
 
-### 6.5 Record I/O (Intake/Output)
+### 6.5 Intake/Output API
+
+#### 6.5.1 Record I/O
 
 ```http
-POST /admissions/{admissionId}/intake-outputs
+POST /admissions/{admissionId}/io
 ```
 
 **Request**
@@ -912,15 +914,108 @@ POST /admissions/{admissionId}/intake-outputs
 ```json
 {
   "recordDate": "2025-12-29",
-  "recordTime": "08:00",
+  "recordTime": "2025-12-29T08:00:00Z",
   "oralIntake": 200,
   "ivIntake": 500,
+  "tubeFeeding": 0,
+  "otherIntake": 0,
   "urineOutput": 300,
-  "notes": ""
+  "stoolOutput": 0,
+  "vomitOutput": 0,
+  "drainageOutput": 0,
+  "otherOutput": 0,
+  "notes": "Morning intake"
 }
 ```
 
-### 6.6 Record Medication
+**Response**
+
+```json
+{
+  "id": "io-uuid",
+  "admissionId": "admission-uuid",
+  "recordDate": "2025-12-29",
+  "recordTime": "2025-12-29T08:00:00Z",
+  "oralIntake": 200,
+  "ivIntake": 500,
+  "tubeFeeding": 0,
+  "otherIntake": 0,
+  "totalIntake": 700,
+  "urineOutput": 300,
+  "stoolOutput": 0,
+  "vomitOutput": 0,
+  "drainageOutput": 0,
+  "otherOutput": 0,
+  "totalOutput": 300,
+  "balance": 400,
+  "recordedBy": "user-uuid",
+  "notes": "Morning intake",
+  "createdAt": "2025-12-29T08:05:00Z"
+}
+```
+
+#### 6.5.2 Get I/O History
+
+```http
+GET /admissions/{admissionId}/io
+```
+
+**Query Parameters**
+
+| Parameter | Type   | Description       |
+| --------- | ------ | ----------------- |
+| startDate | date   | Start date filter |
+| endDate   | date   | End date filter   |
+| page      | number | Page number       |
+| limit     | number | Items per page    |
+
+#### 6.5.3 Get Daily I/O Summary
+
+```http
+GET /admissions/{admissionId}/io/daily/{date}
+```
+
+**Response**
+
+```json
+{
+  "date": "2025-12-29",
+  "intake": {
+    "oral": 800,
+    "iv": 1500,
+    "tubeFeeding": 0,
+    "other": 0,
+    "total": 2300
+  },
+  "output": {
+    "urine": 1800,
+    "stool": 100,
+    "vomit": 0,
+    "drainage": 0,
+    "other": 0,
+    "total": 1900
+  },
+  "balance": 400,
+  "status": "NORMAL"
+}
+```
+
+#### 6.5.4 Get I/O Balance History
+
+```http
+GET /admissions/{admissionId}/io/balance
+```
+
+**Query Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| startDate | date | Start date  |
+| endDate   | date | End date    |
+
+### 6.6 Medication API
+
+#### 6.6.1 Schedule Medication
 
 ```http
 POST /admissions/{admissionId}/medications
@@ -935,31 +1030,145 @@ POST /admissions/{admissionId}/medications
   "route": "IV",
   "frequency": "BID",
   "scheduledTime": "2025-12-29T08:00:00Z",
-  "administeredAt": "2025-12-29T08:05:00Z",
-  "status": "ADMINISTERED",
-  "orderedBy": "doctor-uuid",
-  "notes": ""
+  "notes": "Antibiotic therapy"
 }
 ```
 
-### 6.7 Create Nursing Note
+**Medication Routes**
+
+| Route | Description   |
+| ----- | ------------- |
+| PO    | Oral          |
+| IV    | Intravenous   |
+| IM    | Intramuscular |
+| SC    | Subcutaneous  |
+| SL    | Sublingual    |
+| TOP   | Topical       |
+| INH   | Inhalation    |
+| PR    | Per rectum    |
+| OTHER | Other         |
+
+#### 6.6.2 Administer Medication
 
 ```http
-POST /admissions/{admissionId}/nursing-notes
+POST /admissions/{admissionId}/medications/{medicationId}/administer
 ```
 
 **Request**
 
 ```json
 {
-  "noteDatetime": "2025-12-29T10:30:00Z",
-  "category": "ASSESSMENT",
-  "priority": "NORMAL",
-  "subjective": "Complains of headache",
-  "objective": "V/S stable, conscious and alert",
-  "assessment": "Mild headache, vital signs within normal range",
-  "plan": "Observe, consider PRN analgesic"
+  "administeredAt": "2025-12-29T08:05:00Z",
+  "notes": "Administered without issues"
 }
+```
+
+#### 6.6.3 Hold Medication
+
+```http
+POST /admissions/{admissionId}/medications/{medicationId}/hold
+```
+
+**Request**
+
+```json
+{
+  "reason": "Patient NPO for procedure"
+}
+```
+
+#### 6.6.4 Refuse Medication
+
+```http
+POST /admissions/{admissionId}/medications/{medicationId}/refuse
+```
+
+**Request**
+
+```json
+{
+  "reason": "Patient refused due to nausea"
+}
+```
+
+#### 6.6.5 Get Scheduled Medications
+
+```http
+GET /admissions/{admissionId}/medications/scheduled/{date}
+```
+
+#### 6.6.6 Get Medication History
+
+```http
+GET /admissions/{admissionId}/medications
+```
+
+**Query Parameters**
+
+| Parameter | Type   | Description                                    |
+| --------- | ------ | ---------------------------------------------- |
+| startDate | date   | Start date filter                              |
+| endDate   | date   | End date filter                                |
+| status    | string | SCHEDULED, ADMINISTERED, HELD, REFUSED, MISSED |
+| page      | number | Page number                                    |
+| limit     | number | Items per page                                 |
+
+### 6.7 Nursing Note API
+
+#### 6.7.1 Create Nursing Note
+
+```http
+POST /admissions/{admissionId}/notes
+```
+
+**Request**
+
+```json
+{
+  "noteType": "ASSESSMENT",
+  "subjective": "Patient complains of mild headache",
+  "objective": "V/S stable, conscious and alert, no focal neurological deficit",
+  "assessment": "Mild tension headache, possibly stress-related",
+  "plan": "Continue observation, PRN analgesic if needed",
+  "isSignificant": false
+}
+```
+
+**Note Types**
+
+| Type       | Description                |
+| ---------- | -------------------------- |
+| ASSESSMENT | Initial/ongoing assessment |
+| PROGRESS   | Progress note              |
+| PROCEDURE  | Procedure documentation    |
+| INCIDENT   | Incident report            |
+| HANDOFF    | Shift handoff note         |
+
+#### 6.7.2 List Nursing Notes
+
+```http
+GET /admissions/{admissionId}/notes
+```
+
+**Query Parameters**
+
+| Parameter     | Type    | Description             |
+| ------------- | ------- | ----------------------- |
+| noteType      | string  | Filter by note type     |
+| isSignificant | boolean | Filter significant only |
+| page          | number  | Page number             |
+| limit         | number  | Items per page          |
+
+#### 6.7.3 Get Significant Notes
+
+```http
+GET /admissions/{admissionId}/notes/significant
+```
+
+#### 6.7.4 Get Latest Note
+
+```http
+GET /admissions/{admissionId}/notes/latest
 ```
 
 ---
