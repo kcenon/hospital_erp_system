@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AuditAction } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { randomBytes } from 'crypto';
+import { randomInt } from 'crypto';
 import { SessionService, RbacService } from '../auth/services';
 import { AuditService } from './audit.service';
 import { UserAdminRepository, UserWithRoles } from './user-admin.repository';
@@ -300,13 +300,13 @@ export class UserAdminService {
 
   /**
    * Generate a secure temporary password
+   * Uses crypto.randomInt() for unbiased uniform distribution
    */
   private generateTempPassword(): string {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
-    const bytes = randomBytes(this.TEMP_PASSWORD_LENGTH);
     let password = '';
     for (let i = 0; i < this.TEMP_PASSWORD_LENGTH; i++) {
-      password += chars[bytes[i] % chars.length];
+      password += chars[randomInt(chars.length)];
     }
     return password;
   }
