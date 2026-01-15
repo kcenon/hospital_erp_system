@@ -7,10 +7,16 @@ import { AuditService } from './audit.service';
 import { AuditQueryService } from './audit-query.service';
 import { AuditController } from './audit.controller';
 import { AuditInterceptor } from './interceptors';
+import { UserAdminRepository } from './user-admin.repository';
+import { UserAdminService } from './user-admin.service';
+import { UserAdminController } from './user-admin.controller';
+import { RoleRepository } from './role.repository';
+import { RoleService } from './role.service';
+import { RoleController } from './role.controller';
 
 @Module({
   imports: [PrismaModule, AuthModule],
-  controllers: [AuditController],
+  controllers: [AuditController, UserAdminController, RoleController],
   providers: [
     AuditRepository,
     AuditService,
@@ -19,7 +25,11 @@ import { AuditInterceptor } from './interceptors';
       provide: APP_INTERCEPTOR,
       useClass: AuditInterceptor,
     },
+    UserAdminRepository,
+    UserAdminService,
+    RoleRepository,
+    RoleService,
   ],
-  exports: [AuditService, AuditQueryService, AuditRepository],
+  exports: [AuditService, AuditQueryService, AuditRepository, UserAdminService, RoleService],
 })
 export class AdminModule {}
