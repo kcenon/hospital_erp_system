@@ -871,34 +871,194 @@ GET /admissions/{admissionId}/vitals
 }
 ```
 
-### 6.3 Create Daily Report
+### 6.3 Daily Report API (Aggregated Reports)
+
+#### 6.3.1 Get Daily Report
 
 ```http
-POST /admissions/{admissionId}/daily-reports
+GET /admissions/{admissionId}/daily-reports/{date}
 ```
 
-**Request**
+**Path Parameters**
+
+| Parameter   | Type   | Description              |
+| ----------- | ------ | ------------------------ |
+| admissionId | uuid   | Admission ID             |
+| date        | string | Report date (YYYY-MM-DD) |
+
+**Response (200 OK)**
 
 ```json
 {
-  "reportDate": "2025-12-29",
-  "generalCondition": "GOOD",
-  "consciousnessLevel": "ALERT",
-  "painLevel": 2,
-  "sleepQuality": "GOOD",
-  "mobilityStatus": "ASSISTED",
-  "mealIntakeRate": 80,
-  "dietType": "REGULAR",
-  "bowelMovement": true,
-  "urinationStatus": "NORMAL",
-  "notes": "Overall condition good"
+  "success": true,
+  "data": {
+    "id": "report-uuid",
+    "admissionId": "admission-uuid",
+    "reportDate": "2025-12-29",
+    "vitalsSummary": {
+      "measurementCount": 6,
+      "temperature": { "min": 36.2, "max": 37.0, "avg": 36.5, "count": 6 },
+      "bloodPressure": {
+        "systolic": { "min": 110, "max": 130, "avg": 120, "count": 6 },
+        "diastolic": { "min": 70, "max": 85, "avg": 78, "count": 6 }
+      },
+      "pulseRate": { "min": 68, "max": 82, "avg": 74, "count": 6 },
+      "respiratoryRate": { "min": 14, "max": 18, "avg": 16, "count": 6 },
+      "oxygenSaturation": { "min": 96, "max": 99, "avg": 98, "count": 6 },
+      "alertCount": 0
+    },
+    "totalIntake": 2300,
+    "totalOutput": 1900,
+    "ioBalance": 400,
+    "medicationsGiven": 8,
+    "medicationsHeld": 1,
+    "patientStatus": "STABLE",
+    "summary": null,
+    "alerts": [],
+    "generatedAt": "2025-12-30T00:01:00Z",
+    "generatedBy": null
+  }
 }
 ```
 
-### 6.4 Get Daily Reports
+#### 6.3.2 Generate Daily Report
+
+```http
+POST /admissions/{admissionId}/daily-reports/{date}/generate
+```
+
+Generates or regenerates the daily report for the specified date by aggregating all available data.
+
+**Response (201 Created)**
+
+Same as Get Daily Report response.
+
+#### 6.3.3 Get Live Daily Summary (Without Saving)
+
+```http
+GET /admissions/{admissionId}/daily-reports/{date}/summary
+```
+
+Returns a real-time aggregated summary without persisting to database.
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "admissionId": "admission-uuid",
+    "date": "2025-12-29",
+    "vitalsSummary": { ... },
+    "ioBalance": {
+      "intake": {
+        "oral": 800,
+        "iv": 1500,
+        "tubeFeeding": 0,
+        "other": 0,
+        "total": 2300
+      },
+      "output": {
+        "urine": 1800,
+        "stool": 100,
+        "vomit": 0,
+        "drainage": 0,
+        "other": 0,
+        "total": 1900
+      },
+      "balance": 400,
+      "status": "NORMAL"
+    },
+    "medicationCompliance": {
+      "scheduled": 10,
+      "administered": 8,
+      "held": 1,
+      "refused": 0,
+      "missed": 1,
+      "complianceRate": 80
+    },
+    "significantNotes": [
+      {
+        "id": "note-uuid",
+        "noteType": "ASSESSMENT",
+        "summary": "Patient condition stable",
+        "recordedAt": "2025-12-29T08:00:00Z"
+      }
+    ],
+    "alerts": [],
+    "patientStatus": "STABLE"
+  }
+}
+```
+
+**Patient Status Values**
+
+| Status    | Description              |
+| --------- | ------------------------ |
+| STABLE    | Condition stable         |
+| IMPROVING | Condition improving      |
+| DECLINING | Condition declining      |
+| CRITICAL  | Critical alerts detected |
+
+**I/O Balance Status Values**
+
+| Status   | Description                     |
+| -------- | ------------------------------- |
+| NORMAL   | Balance within ±500ml threshold |
+| POSITIVE | Intake exceeds output by >500ml |
+| NEGATIVE | Output exceeds intake by >500ml |
+
+### 6.4 List Daily Reports
 
 ```http
 GET /admissions/{admissionId}/daily-reports
+```
+
+**Query Parameters**
+
+| Parameter | Type   | Description       | Default |
+| --------- | ------ | ----------------- | ------- |
+| startDate | date   | Start date filter | -       |
+| endDate   | date   | End date filter   | -       |
+| page      | number | Page number       | 1       |
+| limit     | number | Items per page    | 20      |
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "report-uuid-1",
+      "admissionId": "admission-uuid",
+      "reportDate": "2025-12-29",
+      "vitalsSummary": { ... },
+      "totalIntake": 2300,
+      "totalOutput": 1900,
+      "ioBalance": 400,
+      "medicationsGiven": 8,
+      "medicationsHeld": 1,
+      "patientStatus": "STABLE",
+      "alerts": [],
+      "generatedAt": "2025-12-30T00:01:00Z"
+    },
+    {
+      "id": "report-uuid-2",
+      "admissionId": "admission-uuid",
+      "reportDate": "2025-12-28",
+      ...
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 5,
+      "totalPages": 1
+    }
+  }
+}
 ```
 
 ### 6.5 Intake/Output API
