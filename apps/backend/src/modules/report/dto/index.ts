@@ -2,3 +2,8 @@ export * from './record-vital-signs.dto';
 export * from './get-vital-history.dto';
 export * from './get-trend.dto';
 export * from './vital-sign-response.dto';
+export * from './record-io.dto';
+export * from './io-response.dto';
+export * from './get-io-history.dto';
+export * from './medication.dto';
+export * from './nursing-note.dto';
