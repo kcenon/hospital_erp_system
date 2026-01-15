@@ -1345,10 +1345,31 @@ POST /rounds
 
 ```json
 {
-  "roundDate": "2025-12-29",
-  "roundType": "MORNING",
   "floorId": "floor-uuid",
-  "leadDoctorId": "doctor-uuid"
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00",
+  "leadDoctorId": "doctor-uuid",
+  "notes": "Optional notes"
+}
+```
+
+**Response (201 Created)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "round-uuid",
+    "roundNumber": "R2025122901",
+    "floorId": "floor-uuid",
+    "roundType": "MORNING",
+    "scheduledDate": "2025-12-29",
+    "scheduledTime": "09:00:00",
+    "status": "PLANNED",
+    "leadDoctorId": "doctor-uuid",
+    "validTransitions": ["IN_PROGRESS", "CANCELLED"]
+  }
 }
 ```
 
@@ -1360,19 +1381,143 @@ GET /rounds
 
 **Query Parameters**
 
-| Parameter | Type   | Description                     |
-| --------- | ------ | ------------------------------- |
-| roundDate | date   | Rounding date                   |
-| floorId   | uuid   | Floor filter                    |
-| status    | string | PLANNED, IN_PROGRESS, COMPLETED |
+| Parameter         | Type   | Description                                        |
+| ----------------- | ------ | -------------------------------------------------- |
+| floorId           | uuid   | Filter by floor                                    |
+| leadDoctorId      | uuid   | Filter by lead doctor                              |
+| status            | string | PLANNED, IN_PROGRESS, PAUSED, COMPLETED, CANCELLED |
+| roundType         | string | MORNING, AFTERNOON, EVENING, NIGHT                 |
+| scheduledDateFrom | date   | Start date filter                                  |
+| scheduledDateTo   | date   | End date filter                                    |
+| page              | number | Page number (default: 1)                           |
+| limit             | number | Items per page (default: 20, max: 100)             |
 
-### 7.3 Start Rounding
+### 7.3 Get Round Detail
+
+```http
+GET /rounds/{roundId}
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "round-uuid",
+    "roundNumber": "R2025122901",
+    "floorId": "floor-uuid",
+    "roundType": "MORNING",
+    "scheduledDate": "2025-12-29",
+    "scheduledTime": "09:00:00",
+    "startedAt": "2025-12-29T09:05:00Z",
+    "completedAt": null,
+    "pausedAt": null,
+    "status": "IN_PROGRESS",
+    "leadDoctorId": "doctor-uuid",
+    "records": [],
+    "validTransitions": ["PAUSED", "COMPLETED"]
+  }
+}
+```
+
+### 7.4 Start Rounding
 
 ```http
 POST /rounds/{roundId}/start
 ```
 
-### 7.4 Add Rounding Record
+**State Transition**: PLANNED → IN_PROGRESS
+
+### 7.5 Pause Rounding
+
+```http
+POST /rounds/{roundId}/pause
+```
+
+**State Transition**: IN_PROGRESS → PAUSED
+
+### 7.6 Resume Rounding
+
+```http
+POST /rounds/{roundId}/resume
+```
+
+**State Transition**: PAUSED → IN_PROGRESS
+
+### 7.7 Complete Rounding
+
+```http
+POST /rounds/{roundId}/complete
+```
+
+**State Transition**: IN_PROGRESS/PAUSED → COMPLETED
+
+### 7.8 Cancel Rounding
+
+```http
+POST /rounds/{roundId}/cancel
+```
+
+**State Transition**: PLANNED/PAUSED → CANCELLED
+
+### 7.9 Get Rounding Patient List (Tablet-Optimized)
+
+```http
+GET /rounds/{roundId}/patients
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "roundId": "round-uuid",
+    "roundNumber": "R2025122901",
+    "patients": [
+      {
+        "admissionId": "admission-uuid",
+        "patient": {
+          "id": "patient-uuid",
+          "patientNumber": "P2025000001",
+          "name": "Hong Gildong",
+          "age": 65,
+          "gender": "MALE",
+          "birthDate": "1960-05-15"
+        },
+        "bed": {
+          "id": "bed-uuid",
+          "roomNumber": "301",
+          "bedNumber": "A",
+          "roomName": "Internal Medicine 301"
+        },
+        "admission": {
+          "diagnosis": "Pneumonia",
+          "admissionDate": "2025-12-25",
+          "admissionDays": 4
+        },
+        "latestVitals": {
+          "temperature": 36.8,
+          "bloodPressure": "120/80",
+          "pulseRate": 72,
+          "oxygenSaturation": 98,
+          "hasAlert": false,
+          "measuredAt": "2025-12-29T08:00:00Z"
+        },
+        "previousRoundNote": "Patient improving",
+        "existingRecordId": null,
+        "isVisited": false
+      }
+    ],
+    "totalPatients": 12,
+    "visitedCount": 5,
+    "progress": 42
+  }
+}
+```
+
+### 7.10 Add Rounding Record
 
 ```http
 POST /rounds/{roundId}/records
@@ -1383,19 +1528,57 @@ POST /rounds/{roundId}/records
 ```json
 {
   "admissionId": "admission-uuid",
-  "visitOrder": 1,
   "patientStatus": "STABLE",
   "chiefComplaint": "No specific complaints",
   "observation": "V/S stable, meal intake good",
+  "assessment": "Improving",
   "plan": "Continue current treatment",
   "orders": "Vital check QID"
 }
 ```
 
-### 7.5 Complete Rounding
+**Response (201 Created)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "record-uuid",
+    "roundId": "round-uuid",
+    "admissionId": "admission-uuid",
+    "visitOrder": 1,
+    "patientStatus": "STABLE",
+    "observation": "V/S stable, meal intake good",
+    "visitedAt": "2025-12-29T09:15:00Z",
+    "recordedBy": "doctor-uuid"
+  }
+}
+```
+
+### 7.11 Update Rounding Record
 
 ```http
-POST /rounds/{roundId}/complete
+PATCH /rounds/{roundId}/records/{recordId}
+```
+
+**Request**
+
+```json
+{
+  "patientStatus": "IMPROVING",
+  "plan": "Updated treatment plan"
+}
+```
+
+### State Machine
+
+```
+PLANNED ─────────────────┬──────────────────> CANCELLED
+    │                    │
+    v                    │
+IN_PROGRESS <────────────┼─────────> PAUSED
+    │                    │              │
+    └────────────────────┴──────────────┴──────> COMPLETED
 ```
 
 ---
