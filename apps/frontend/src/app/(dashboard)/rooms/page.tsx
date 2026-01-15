@@ -2,7 +2,15 @@
 
 import { useState } from 'react';
 import { useFloors, useFloorDashboard, useRoomWebSocket } from '@/hooks';
-import { Card, CardContent, CardHeader, CardTitle, Select, Badge, Skeleton } from '@/components/ui';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  LegacySelect,
+  Badge,
+  Skeleton,
+} from '@/components/ui';
 import { SummaryCard, RoomCard } from '@/components/room';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
 
@@ -74,7 +82,7 @@ export default function RoomDashboardPage() {
               {floorsLoading ? (
                 <Skeleton className="h-9 w-full" />
               ) : (
-                <Select
+                <LegacySelect
                   options={floorOptions}
                   value={selectedFloorId}
                   onChange={(e) => setSelectedFloorId(e.target.value)}
@@ -83,7 +91,7 @@ export default function RoomDashboardPage() {
               )}
             </div>
             <div className="w-full md:w-48">
-              <Select
+              <LegacySelect
                 options={roomTypeOptions}
                 value={roomTypeFilter}
                 onChange={(e) => setRoomTypeFilter(e.target.value)}

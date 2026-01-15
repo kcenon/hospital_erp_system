@@ -17,7 +17,7 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Select,
+  LegacySelect,
   Skeleton,
 } from '@/components/ui';
 import { Search, ChevronLeft, ChevronRight, User } from 'lucide-react';
@@ -103,7 +103,7 @@ export default function PatientsPage() {
               />
             </div>
             <div className="w-full md:w-40">
-              <Select
+              <LegacySelect
                 options={genderOptions}
                 value={gender}
                 onChange={(e) => {
@@ -113,7 +113,7 @@ export default function PatientsPage() {
               />
             </div>
             <div className="w-full md:w-48">
-              <Select
+              <LegacySelect
                 options={sortOptions}
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}

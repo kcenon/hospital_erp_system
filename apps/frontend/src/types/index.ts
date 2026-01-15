@@ -23,3 +23,4 @@ export * from './patient';
 export * from './admission';
 export * from './auth';
 export * from './room';
+export * from './vital-sign';

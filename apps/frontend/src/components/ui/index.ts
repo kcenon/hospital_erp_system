@@ -23,7 +23,17 @@ export {
   TableCell,
   TableCaption,
 } from './table';
-export { Select } from './select';
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  LegacySelect,
+} from './select';
 export { Skeleton } from './skeleton';
 export {
   Dialog,

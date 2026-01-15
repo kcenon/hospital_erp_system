@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { usePatient, usePatientAdmissions } from '@/hooks';
 import {
@@ -28,7 +28,10 @@ import {
   AlertCircle,
   FileText,
   Activity,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
+import { VitalSignsForm, VitalTrendChart, VitalAlerts } from '@/components/vital-signs';
 import type { Gender, AdmissionStatus } from '@/types';
 
 function formatDate(dateString: string): string {
@@ -73,6 +76,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
   const { id } = use(params);
   const { data: patient, isLoading: isLoadingPatient, error: patientError } = usePatient(id);
   const { data: admissions, isLoading: isLoadingAdmissions } = usePatientAdmissions(id);
+  const [showVitalForm, setShowVitalForm] = useState(false);
 
   if (isLoadingPatient) {
     return (
@@ -199,13 +203,51 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               <FileText className="h-4 w-4 mr-2" />
               New Admission
             </Button>
-            <Button className="w-full" variant="outline">
-              <Activity className="h-4 w-4 mr-2" />
-              View Vitals
-            </Button>
+            {currentAdmission && (
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => setShowVitalForm((prev) => !prev)}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                {showVitalForm ? 'Hide Vital Form' : 'Record Vitals'}
+                {showVitalForm ? (
+                  <ChevronUp className="h-4 w-4 ml-auto" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 ml-auto" />
+                )}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>
+
+      {currentAdmission && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            <h2 className="text-xl font-semibold">Vital Signs</h2>
+            <Badge variant="outline" className="ml-2">
+              Admission: {currentAdmission.admissionNumber}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              {showVitalForm && (
+                <VitalSignsForm
+                  admissionId={currentAdmission.id}
+                  onSuccess={() => setShowVitalForm(false)}
+                />
+              )}
+              <VitalTrendChart admissionId={currentAdmission.id} />
+            </div>
+            <div>
+              <VitalAlerts admissionId={currentAdmission.id} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {patient.detail && (
         <Card>

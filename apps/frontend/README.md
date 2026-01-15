@@ -7,6 +7,10 @@ A Next.js frontend application for the Hospital Inpatient Management ERP System.
 - **Authentication**: Login page with form validation and automatic token refresh
 - **Protected Routes**: Route middleware and client-side auth guards
 - **Patient Management**: Patient list and detail views
+- **Vital Signs**: Mobile-friendly vital signs input and trend visualization
+  - Record vital signs with abnormal value warnings
+  - Trend charts for temperature, BP, pulse, respiratory rate, SpO2
+  - Real-time alert display with severity indicators
 - **Room Dashboard**: Real-time bed status monitoring with WebSocket updates
 - **Available Beds**: Filterable list of available beds by floor and room type
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
@@ -21,6 +25,7 @@ A Next.js frontend application for the Hospital Inpatient Management ERP System.
 - [React Hook Form](https://react-hook-form.com/) - Form handling
 - [Zod](https://zod.dev/) - Schema validation
 - [Radix UI](https://www.radix-ui.com/) - Accessible UI primitives
+- [Recharts](https://recharts.org/) - Chart visualization
 - [Socket.io Client](https://socket.io/) - Real-time WebSocket communication
 
 ## Getting Started
@@ -75,6 +80,7 @@ src/
 │   ├── features/          # Feature-specific components
 │   ├── layouts/           # Layout components
 │   ├── room/              # Room dashboard components (RoomCard, BedCell, SummaryCard)
+│   ├── vital-signs/       # Vital signs components (VitalSignsForm, VitalTrendChart, VitalAlerts)
 │   └── ui/                # Reusable UI components
 ├── hooks/                 # Custom React hooks
 ├── lib/                   # Utilities and configurations
