@@ -374,17 +374,154 @@ PATCH /patients/{patientId}
 }
 ```
 
-### 3.5 Search Patient (Legacy System Integration)
+### 3.5 Legacy System Integration
+
+#### 3.5.1 Search Patients in Legacy System
 
 ```http
-GET /patients/search/legacy
+GET /patients/legacy/search
 ```
 
 **Query Parameters**
 
-| Parameter       | Type   | Description              |
-| --------------- | ------ | ------------------------ |
-| legacyPatientId | string | Legacy system patient ID |
+| Parameter | Type   | Description  | Required |
+| --------- | ------ | ------------ | -------- |
+| q         | string | Search query | Yes      |
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "legacyId": "L2020001234",
+      "name": "John Doe",
+      "birthDate": "1990-05-15",
+      "gender": "M",
+      "ssn": "900515-1******",
+      "phone": "010-****-5678",
+      "bloodType": "A+",
+      "insuranceType": "NATIONAL"
+    }
+  ]
+}
+```
+
+#### 3.5.2 Get Legacy Patient Details
+
+```http
+GET /patients/legacy/{legacyId}
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "legacyId": "L2020001234",
+    "name": "John Doe",
+    "birthDate": "1990-05-15",
+    "gender": "M",
+    "ssn": "900515-1******",
+    "phone": "010-****-5678",
+    "address": "*** Teheran-ro, Gangnam-gu, Seoul",
+    "bloodType": "A+",
+    "insuranceType": "NATIONAL",
+    "insuranceNumber": "12345*****"
+  }
+}
+```
+
+#### 3.5.3 Get Medical History from Legacy
+
+```http
+GET /patients/legacy/{legacyId}/medical-history
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "legacyId": "L2020001234",
+    "diagnoses": [
+      {
+        "code": "J18.9",
+        "name": "Pneumonia",
+        "diagnosedAt": "2024-06-10",
+        "status": "RESOLVED"
+      }
+    ],
+    "medications": [
+      {
+        "name": "Aspirin",
+        "dosage": "100mg",
+        "frequency": "QD",
+        "startDate": "2024-01-01"
+      }
+    ],
+    "allergies": ["Penicillin"],
+    "surgeries": [
+      {
+        "name": "Appendectomy",
+        "performedAt": "2020-03-15",
+        "hospital": "Seoul General Hospital"
+      }
+    ],
+    "lastVisitDate": "2024-12-01"
+  }
+}
+```
+
+#### 3.5.4 Import Patient from Legacy System
+
+```http
+POST /patients/legacy/{legacyId}/import
+```
+
+**Response (201 Created)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "new-patient-uuid",
+    "patientNumber": "P2025001234",
+    "name": "John Doe",
+    "birthDate": "1990-05-15",
+    "gender": "MALE",
+    "legacyPatientId": "L2020001234"
+  }
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                      | Description                          |
+| ---- | ------------------------- | ------------------------------------ |
+| 404  | LEGACY_PATIENT_NOT_FOUND  | Patient not found in legacy system   |
+| 409  | PATIENT_ALREADY_IMPORTED  | Patient already imported from legacy |
+| 503  | LEGACY_SYSTEM_UNAVAILABLE | Legacy system connection failed      |
+
+#### 3.5.5 Check Legacy System Connection
+
+```http
+GET /patients/legacy/health
+```
+
+**Response (200 OK)**
+
+```json
+{
+  "success": true,
+  "data": {
+    "connected": true
+  }
+}
+```
 
 ---
 
@@ -1041,6 +1178,14 @@ const socket = io('wss://api.hospital-erp.com', {
 | ADMISSION_NOT_FOUND          | Admission record not found      | 404  |
 | ADMISSION_ALREADY_DISCHARGED | Patient already discharged      | 409  |
 | TRANSFER_SAME_BED            | Cannot transfer to the same bed | 400  |
+
+### 10.5 Legacy System Related
+
+| Code                      | Message                              | HTTP |
+| ------------------------- | ------------------------------------ | ---- |
+| LEGACY_PATIENT_NOT_FOUND  | Patient not found in legacy system   | 404  |
+| PATIENT_ALREADY_IMPORTED  | Patient already imported from legacy | 409  |
+| LEGACY_SYSTEM_UNAVAILABLE | Legacy system connection failed      | 503  |
 
 ---
 
