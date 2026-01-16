@@ -47,3 +47,4 @@ export {
   DialogTitle,
   DialogDescription,
 } from './dialog';
+export { Textarea } from './textarea';
