@@ -101,4 +101,18 @@ export default tseslint.config(
       'no-console': 'off',
     },
   },
+  {
+    files: ['**/k6/**/*.js'],
+    languageOptions: {
+      globals: {
+        __ENV: 'readonly',
+        console: 'readonly',
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-console': 'off',
+    },
+  },
 );

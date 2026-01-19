@@ -21,7 +21,14 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "test:perf": "k6 run k6/api-load-test.js",
+    "test:perf:api": "k6 run k6/api-load-test.js",
+    "test:perf:auth": "k6 run k6/auth-test.js",
+    "test:perf:vitals": "k6 run k6/vital-signs-test.js",
+    "test:perf:normal": "k6 run -e SCENARIO=normalLoad k6/api-load-test.js",
+    "test:perf:peak": "k6 run -e SCENARIO=peakLoad k6/api-load-test.js",
+    "test:perf:stress": "k6 run -e SCENARIO=stressTest k6/api-load-test.js"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
