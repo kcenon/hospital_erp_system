@@ -1,0 +1,12 @@
+name: 'Hospital ERP CodeQL Config'
+
+# Exclude paths from analysis
+paths-ignore:
+  # k6 performance test files - use Math.random() for test data generation only
+  # These are not security-sensitive operations
+  - 'apps/backend/k6/**'
+  # Third-party and generated files
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/*.min.js'
