@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # InfluxDB for k6 metrics storage
+  influxdb:
+    image: influxdb:1.8-alpine
+    container_name: hospital-erp-influxdb
+    restart: unless-stopped
+    ports:
+      - '8086:8086'
+    environment:
+      INFLUXDB_DB: k6
+      INFLUXDB_HTTP_AUTH_ENABLED: 'false'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    healthcheck:
+      test: ['CMD', 'influx', '-execute', 'SHOW DATABASES']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hospital-network
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: hospital-erp-grafana
+    restart: unless-stopped
+    ports:
+      - '3002:3000'
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    networks:
+      - hospital-network
+
+networks:
+  hospital-network:
+    external: true
+    name: hospital_erp_system_hospital-network
+
+volumes:
+  influxdb_data:
+  grafana_data:
