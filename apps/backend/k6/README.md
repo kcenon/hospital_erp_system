@@ -168,6 +168,30 @@ Ensure the backend server is running:
 npm run dev
 ```
 
+## Grafana Monitoring Dashboard
+
+For real-time visualization of test results, use the Grafana monitoring setup:
+
+```bash
+# Start monitoring services (InfluxDB + Grafana)
+npm run monitoring:up
+
+# Run tests with InfluxDB output
+npm run test:perf:monitor         # Smoke test
+npm run test:perf:monitor:normal  # Normal load
+npm run test:perf:monitor:peak    # Peak load
+npm run test:perf:ws:monitor      # WebSocket tests
+npm run test:perf:db:monitor      # Database tests
+
+# Access Grafana at http://localhost:3002
+# Dashboard: "Hospital ERP - k6 Performance Dashboard"
+
+# Stop monitoring services
+npm run monitoring:down
+```
+
+See `monitoring/README.md` for detailed setup instructions.
+
 ## CI/CD Integration
 
 See `.github/workflows/performance.yml` for GitHub Actions integration (to be added in issue #104).

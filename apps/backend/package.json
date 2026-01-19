@@ -30,7 +30,14 @@
     "test:perf:db": "k6 run k6/db-query-test.js",
     "test:perf:normal": "k6 run -e SCENARIO=normalLoad k6/api-load-test.js",
     "test:perf:peak": "k6 run -e SCENARIO=peakLoad k6/api-load-test.js",
-    "test:perf:stress": "k6 run -e SCENARIO=stressTest k6/api-load-test.js"
+    "test:perf:stress": "k6 run -e SCENARIO=stressTest k6/api-load-test.js",
+    "test:perf:monitor": "k6 run --out influxdb=http://localhost:8086/k6 k6/api-load-test.js",
+    "test:perf:monitor:normal": "k6 run --out influxdb=http://localhost:8086/k6 -e SCENARIO=normalLoad k6/api-load-test.js",
+    "test:perf:monitor:peak": "k6 run --out influxdb=http://localhost:8086/k6 -e SCENARIO=peakLoad k6/api-load-test.js",
+    "test:perf:ws:monitor": "k6 run --out influxdb=http://localhost:8086/k6 k6/websocket-test.js",
+    "test:perf:db:monitor": "k6 run --out influxdb=http://localhost:8086/k6 k6/db-query-test.js",
+    "monitoring:up": "docker compose -f monitoring/docker-compose.monitoring.yml up -d",
+    "monitoring:down": "docker compose -f monitoring/docker-compose.monitoring.yml down"
   },
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
