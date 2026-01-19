@@ -6,6 +6,7 @@ import { AuthModule } from '../../src/modules/auth/auth.module';
 import { PatientModule } from '../../src/modules/patient/patient.module';
 import { AdmissionModule } from '../../src/modules/admission/admission.module';
 import { RoomModule } from '../../src/modules/room/room.module';
+import { RoundingModule } from '../../src/modules/rounding/rounding.module';
 import { PrismaModule } from '../../src/prisma/prisma.module';
 import { RedisModule } from '../../src/redis';
 import { appConfig, databaseConfig, redisConfig, jwtConfig } from '../../src/config';
@@ -33,6 +34,7 @@ export async function createTestApp(): Promise<TestApp> {
       PatientModule,
       AdmissionModule,
       RoomModule,
+      RoundingModule,
     ],
   }).compile();
 
