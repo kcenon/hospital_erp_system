@@ -31,6 +31,8 @@ docker pull grafana/k6
 | `api-load-test.js`    | Core API endpoints (patients, rooms, dashboard) |
 | `auth-test.js`        | Authentication flow (login, refresh, logout)    |
 | `vital-signs-test.js` | Vital signs recording and retrieval             |
+| `websocket-test.js`   | WebSocket connection and broadcast latency      |
+| `db-query-test.js`    | Database query performance verification         |
 
 ## Usage
 
@@ -79,13 +81,16 @@ k6 run --out json=results.json api-load-test.js
 
 Based on SDS requirements (REQ-NFR-001~003, REQ-NFR-005):
 
-| Metric              | Target                     |
-| ------------------- | -------------------------- |
-| Page Load Time      | < 3 seconds                |
-| API Response Time   | < 500ms (95th percentile)  |
-| Login Response Time | < 1000ms (95th percentile) |
-| Concurrent Users    | 100+                       |
-| Error Rate          | < 1%                       |
+| Metric               | Target                     |
+| -------------------- | -------------------------- |
+| Page Load Time       | < 3 seconds                |
+| API Response Time    | < 500ms (95th percentile)  |
+| Database Query Time  | < 100ms (95th percentile)  |
+| WebSocket Connection | < 3 seconds                |
+| WebSocket Broadcast  | < 3 seconds latency        |
+| Login Response Time  | < 1000ms (95th percentile) |
+| Concurrent Users     | 100+                       |
+| Error Rate           | < 1%                       |
 
 ## Test Scenarios
 
@@ -166,3 +171,102 @@ npm run dev
 ## CI/CD Integration
 
 See `.github/workflows/performance.yml` for GitHub Actions integration (to be added in issue #104).
+
+## WebSocket Testing
+
+The `websocket-test.js` script tests Socket.IO WebSocket performance:
+
+### Test Scenarios
+
+```bash
+# Smoke test - 1 connection
+k6 run websocket-test.js
+
+# Normal load - 50 concurrent connections
+k6 run -e SCENARIO=normalLoad websocket-test.js
+
+# Peak load - ramp to 100 connections
+k6 run -e SCENARIO=peakLoad websocket-test.js
+
+# Connection stress test - 100 concurrent connections
+k6 run -e SCENARIO=connectionTest websocket-test.js
+```
+
+### Metrics
+
+| Metric                   | Description                            | Target     |
+| ------------------------ | -------------------------------------- | ---------- |
+| `ws_connection_duration` | Time to establish WebSocket connection | p(95) < 3s |
+| `ws_subscribe_duration`  | Time for subscription acknowledgement  | p(95) < 1s |
+| `ws_message_latency`     | Server-to-client message delivery time | p(95) < 3s |
+| `ws_connection_success`  | Connection success rate                | > 95%      |
+
+### Socket.IO Protocol
+
+The WebSocket tests handle Socket.IO/Engine.IO protocol:
+
+- Engine.IO handshake and ping/pong
+- Socket.IO namespace connection with JWT auth
+- Event subscription and acknowledgement
+
+## Database Query Testing
+
+The `db-query-test.js` script tests database query performance:
+
+### Test Scenarios
+
+```bash
+# Smoke test
+k6 run db-query-test.js
+
+# Normal load - 20 concurrent users
+k6 run -e SCENARIO=normalLoad db-query-test.js
+
+# Peak load - 50 concurrent users
+k6 run -e SCENARIO=peakLoad db-query-test.js
+
+# Stress test - up to 120 users
+k6 run -e SCENARIO=stressTest db-query-test.js
+```
+
+### Tested Queries
+
+| Query Type     | Description                             |
+| -------------- | --------------------------------------- |
+| Patient Search | Full-text search on name, number, phone |
+| Patient List   | Paginated list with sorting             |
+| Patient By ID  | Single record lookup                    |
+| Building List  | Active buildings                        |
+| Floor List     | Floors by building (hierarchical join)  |
+| Room List      | Rooms with bed aggregation              |
+| Room Dashboard | Complex aggregation for bed status      |
+| Admission List | Active admissions with relations        |
+
+### Metrics
+
+| Metric                       | Description                      | Target      |
+| ---------------------------- | -------------------------------- | ----------- |
+| `db_patient_search_duration` | Patient search query time        | p(95)<100ms |
+| `db_patient_list_duration`   | Patient list query time          | p(95)<100ms |
+| `db_room_dashboard_duration` | Room dashboard aggregation time  | p(95)<100ms |
+| `db_query_success_rate`      | Query success rate               | > 99%       |
+| `db_slow_queries`            | Count of queries exceeding 100ms | < 10        |
+
+### Optimization Recommendations
+
+Based on test results, consider:
+
+1. **Patient Search**: Add GiST index for trigram search
+
+   ```sql
+   CREATE INDEX idx_patient_name_trgm ON "Patient" USING gin (name gin_trgm_ops);
+   ```
+
+2. **Room Dashboard**: Use materialized views for complex aggregations
+
+3. **Pagination**: Ensure cursor-based pagination for large datasets
+
+4. **Query Logging**: Enable Prisma query logging for slow query analysis
+   ```typescript
+   new PrismaClient({ log: ['query', 'warn', 'error'] });
+   ```
