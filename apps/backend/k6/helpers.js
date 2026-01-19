@@ -80,8 +80,12 @@ export function checkResponseTime(response, name, maxDuration = 500) {
  * @param {number} min - Minimum value (inclusive)
  * @param {number} max - Maximum value (inclusive)
  * @returns {number} Random integer
+ * @note Uses Math.random() which is not cryptographically secure.
+ *       This is acceptable for load testing purposes where we only need
+ *       pseudo-random test data generation, not security-sensitive operations.
  */
 export function randomInt(min, max) {
+  // lgtm[js/insecure-randomness] - Used for test data generation only, not security
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 

@@ -106,9 +106,12 @@ export function setup() {
 }
 
 // Generate random vital signs within normal ranges
+// Note: Uses pseudo-random values for test data, not for security purposes
 function generateVitalSigns() {
+  // lgtm[js/insecure-randomness] - Used for test data generation only, not security
+  const tempVariation = Math.random() * 1.5;
   return {
-    temperature: (36.0 + Math.random() * 1.5).toFixed(1), // 36.0 - 37.5
+    temperature: (36.0 + tempVariation).toFixed(1), // 36.0 - 37.5
     systolicBp: randomInt(100, 140),
     diastolicBp: randomInt(60, 90),
     heartRate: randomInt(60, 100),
