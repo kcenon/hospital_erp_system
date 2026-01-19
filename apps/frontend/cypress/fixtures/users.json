@@ -26,5 +26,19 @@
   "invalid": {
     "username": "invalid_user",
     "password": "wrongpassword"
+  },
+  "testPatients": {
+    "john": {
+      "patientNumber": "P2025000001",
+      "name": "John Doe"
+    },
+    "jane": {
+      "patientNumber": "P2025000002",
+      "name": "Jane Smith"
+    },
+    "mike": {
+      "patientNumber": "P2025000003",
+      "name": "Mike Johnson"
+    }
   }
 }
