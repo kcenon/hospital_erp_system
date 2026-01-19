@@ -38,12 +38,15 @@ describe('Login Flow', () => {
         cy.url().should('not.include', '/login');
 
         // Verify auth state is set in localStorage
-        cy.window().its('localStorage').invoke('getItem', 'auth-storage').then((storage) => {
-          expect(storage).to.not.be.null;
-          const parsed = JSON.parse(storage as string);
-          expect(parsed.state.isAuthenticated).to.be.true;
-          expect(parsed.state.user).to.not.be.null;
-        });
+        cy.window()
+          .its('localStorage')
+          .invoke('getItem', 'auth-storage')
+          .then((storage) => {
+            expect(storage).to.not.be.null;
+            const parsed = JSON.parse(storage as string);
+            expect(parsed.state.isAuthenticated).to.be.true;
+            expect(parsed.state.user).to.not.be.null;
+          });
       });
     });
 
