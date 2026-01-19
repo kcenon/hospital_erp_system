@@ -5,3 +5,4 @@ export * from './room.factory';
 export * from './vital-sign.factory';
 export * from './intake-output.factory';
 export * from './medication.factory';
+export * from './nursing-note.factory';
