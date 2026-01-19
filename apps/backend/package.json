@@ -26,6 +26,8 @@
     "test:perf:api": "k6 run k6/api-load-test.js",
     "test:perf:auth": "k6 run k6/auth-test.js",
     "test:perf:vitals": "k6 run k6/vital-signs-test.js",
+    "test:perf:ws": "k6 run k6/websocket-test.js",
+    "test:perf:db": "k6 run k6/db-query-test.js",
     "test:perf:normal": "k6 run -e SCENARIO=normalLoad k6/api-load-test.js",
     "test:perf:peak": "k6 run -e SCENARIO=peakLoad k6/api-load-test.js",
     "test:perf:stress": "k6 run -e SCENARIO=stressTest k6/api-load-test.js"
