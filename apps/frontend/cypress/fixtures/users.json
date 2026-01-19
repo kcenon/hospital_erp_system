@@ -1,0 +1,30 @@
+{
+  "admin": {
+    "username": "test_admin",
+    "password": "TestAdmin123!",
+    "name": "Test Admin",
+    "role": "admin"
+  },
+  "doctor": {
+    "username": "test_doctor",
+    "password": "TestDoctor123!",
+    "name": "Test Doctor",
+    "role": "doctor"
+  },
+  "nurse": {
+    "username": "test_nurse",
+    "password": "TestNurse123!",
+    "name": "Test Nurse",
+    "role": "nurse"
+  },
+  "locked": {
+    "username": "test_locked",
+    "password": "TestLocked123!",
+    "name": "Test Locked User",
+    "role": "staff"
+  },
+  "invalid": {
+    "username": "invalid_user",
+    "password": "wrongpassword"
+  }
+}
