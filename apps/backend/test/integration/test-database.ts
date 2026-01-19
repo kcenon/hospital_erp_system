@@ -1,5 +1,6 @@
 import { PrismaService } from '../../src/prisma';
 import * as bcrypt from 'bcrypt';
+import { Gender, RoomType, BedStatus, AdmissionType, AdmissionStatus } from '@prisma/client';
 
 /**
  * Test user credentials
@@ -257,4 +258,488 @@ export async function resetUserLoginState(prisma: PrismaService, username: strin
       lockedUntil: null,
     },
   });
+}
+
+/**
+ * Test patient data
+ */
+export const TEST_PATIENTS = {
+  john: {
+    patientNumber: 'P2025000001',
+    name: 'John Doe',
+    birthDate: new Date('1990-01-15'),
+    gender: Gender.MALE,
+    bloodType: 'A+',
+    phone: '010-1234-5678',
+    address: '123 Main St, Seoul',
+    emergencyContactName: 'Jane Doe',
+    emergencyContactPhone: '010-9876-5432',
+    emergencyContactRelation: 'Spouse',
+  },
+  jane: {
+    patientNumber: 'P2025000002',
+    name: 'Jane Smith',
+    birthDate: new Date('1985-06-20'),
+    gender: Gender.FEMALE,
+    bloodType: 'B+',
+    phone: '010-2222-3333',
+    address: '456 Oak Ave, Seoul',
+  },
+  mike: {
+    patientNumber: 'P2025000003',
+    name: 'Mike Johnson',
+    birthDate: new Date('1975-03-10'),
+    gender: Gender.MALE,
+    bloodType: 'O-',
+    phone: '010-4444-5555',
+    address: '789 Pine Rd, Busan',
+    legacyPatientId: 'OLD-001',
+  },
+};
+
+/**
+ * Test room data
+ */
+export const TEST_ROOMS = {
+  building: {
+    code: 'MAIN',
+    name: 'Main Building',
+    address: '123 Hospital St',
+  },
+  floor: {
+    floorNumber: 3,
+    name: '3F - Internal Medicine',
+    department: 'Internal Medicine',
+  },
+  room301: {
+    roomNumber: '301',
+    name: 'Room 301',
+    roomType: RoomType.WARD,
+    bedCount: 2,
+  },
+  room302: {
+    roomNumber: '302',
+    name: 'Room 302',
+    roomType: RoomType.WARD,
+    bedCount: 2,
+  },
+  room310: {
+    roomNumber: '310',
+    name: 'Room 310 - ICU',
+    roomType: RoomType.ICU,
+    bedCount: 1,
+  },
+};
+
+/**
+ * Stored IDs for test data (populated by seed functions)
+ */
+export interface TestDataIds {
+  users: {
+    adminId: string;
+    doctorId: string;
+    nurseId: string;
+  };
+  patients: {
+    johnId: string;
+    janeId: string;
+    mikeId: string;
+  };
+  rooms: {
+    buildingId: string;
+    floorId: string;
+    room301Id: string;
+    room302Id: string;
+    room310Id: string;
+    bed301AId: string;
+    bed301BId: string;
+    bed302AId: string;
+    bed302BId: string;
+    bed310AId: string;
+  };
+  admissions: {
+    johnAdmissionId: string;
+  };
+}
+
+let testDataIds: TestDataIds | null = null;
+
+export function getTestDataIds(): TestDataIds {
+  if (!testDataIds) {
+    throw new Error('Test data not seeded. Call seedPatientTestData first.');
+  }
+  return testDataIds;
+}
+
+/**
+ * Seed test patients for integration tests
+ */
+export async function seedPatientTestData(prisma: PrismaService): Promise<TestDataIds> {
+  // Get test user IDs
+  const adminUser = await prisma.user.findUnique({
+    where: { username: TEST_USERS.admin.username },
+  });
+  const doctorUser = await prisma.user.findUnique({
+    where: { username: TEST_USERS.doctor.username },
+  });
+  const nurseUser = await prisma.user.findUnique({
+    where: { username: TEST_USERS.nurse.username },
+  });
+
+  if (!adminUser || !doctorUser || !nurseUser) {
+    throw new Error('Test users must be seeded first. Call seedTestDatabase first.');
+  }
+
+  // Create test permissions for patient/admission operations
+  const patientCreatePerm = await prisma.permission.upsert({
+    where: { code: 'patient:create' },
+    update: {},
+    create: {
+      code: 'patient:create',
+      resource: 'patient',
+      action: 'create',
+      description: 'Create patient',
+    },
+  });
+
+  const patientUpdatePerm = await prisma.permission.upsert({
+    where: { code: 'patient:update' },
+    update: {},
+    create: {
+      code: 'patient:update',
+      resource: 'patient',
+      action: 'update',
+      description: 'Update patient',
+    },
+  });
+
+  const patientDeletePerm = await prisma.permission.upsert({
+    where: { code: 'patient:delete' },
+    update: {},
+    create: {
+      code: 'patient:delete',
+      resource: 'patient',
+      action: 'delete',
+      description: 'Delete patient',
+    },
+  });
+
+  // Get admin role and assign all permissions
+  const adminRole = await prisma.role.findUnique({ where: { code: 'ADMIN' } });
+  if (adminRole) {
+    for (const perm of [patientCreatePerm, patientUpdatePerm, patientDeletePerm]) {
+      await prisma.rolePermission.upsert({
+        where: {
+          roleId_permissionId: { roleId: adminRole.id, permissionId: perm.id },
+        },
+        update: {},
+        create: { roleId: adminRole.id, permissionId: perm.id },
+      });
+    }
+  }
+
+  // Create building
+  const building = await prisma.building.upsert({
+    where: { code: TEST_ROOMS.building.code },
+    update: {},
+    create: {
+      ...TEST_ROOMS.building,
+      isActive: true,
+    },
+  });
+
+  // Create floor
+  const floor = await prisma.floor.upsert({
+    where: {
+      buildingId_floorNumber: {
+        buildingId: building.id,
+        floorNumber: TEST_ROOMS.floor.floorNumber,
+      },
+    },
+    update: {},
+    create: {
+      buildingId: building.id,
+      ...TEST_ROOMS.floor,
+      isActive: true,
+    },
+  });
+
+  // Create rooms
+  const room301 = await prisma.room.upsert({
+    where: {
+      floorId_roomNumber: { floorId: floor.id, roomNumber: TEST_ROOMS.room301.roomNumber },
+    },
+    update: {},
+    create: {
+      floorId: floor.id,
+      ...TEST_ROOMS.room301,
+      isActive: true,
+    },
+  });
+
+  const room302 = await prisma.room.upsert({
+    where: {
+      floorId_roomNumber: { floorId: floor.id, roomNumber: TEST_ROOMS.room302.roomNumber },
+    },
+    update: {},
+    create: {
+      floorId: floor.id,
+      ...TEST_ROOMS.room302,
+      isActive: true,
+    },
+  });
+
+  const room310 = await prisma.room.upsert({
+    where: {
+      floorId_roomNumber: { floorId: floor.id, roomNumber: TEST_ROOMS.room310.roomNumber },
+    },
+    update: {},
+    create: {
+      floorId: floor.id,
+      ...TEST_ROOMS.room310,
+      isActive: true,
+    },
+  });
+
+  // Create beds
+  const bed301A = await prisma.bed.upsert({
+    where: { roomId_bedNumber: { roomId: room301.id, bedNumber: 'A' } },
+    update: {},
+    create: {
+      roomId: room301.id,
+      bedNumber: 'A',
+      status: BedStatus.EMPTY,
+      isActive: true,
+    },
+  });
+
+  const bed301B = await prisma.bed.upsert({
+    where: { roomId_bedNumber: { roomId: room301.id, bedNumber: 'B' } },
+    update: {},
+    create: {
+      roomId: room301.id,
+      bedNumber: 'B',
+      status: BedStatus.EMPTY,
+      isActive: true,
+    },
+  });
+
+  const bed302A = await prisma.bed.upsert({
+    where: { roomId_bedNumber: { roomId: room302.id, bedNumber: 'A' } },
+    update: {},
+    create: {
+      roomId: room302.id,
+      bedNumber: 'A',
+      status: BedStatus.EMPTY,
+      isActive: true,
+    },
+  });
+
+  const bed302B = await prisma.bed.upsert({
+    where: { roomId_bedNumber: { roomId: room302.id, bedNumber: 'B' } },
+    update: {},
+    create: {
+      roomId: room302.id,
+      bedNumber: 'B',
+      status: BedStatus.EMPTY,
+      isActive: true,
+    },
+  });
+
+  const bed310A = await prisma.bed.upsert({
+    where: { roomId_bedNumber: { roomId: room310.id, bedNumber: 'A' } },
+    update: {},
+    create: {
+      roomId: room310.id,
+      bedNumber: 'A',
+      status: BedStatus.EMPTY,
+      isActive: true,
+    },
+  });
+
+  // Create test patients
+  const johnPatient = await prisma.patient.upsert({
+    where: { patientNumber: TEST_PATIENTS.john.patientNumber },
+    update: {},
+    create: TEST_PATIENTS.john,
+  });
+
+  const janePatient = await prisma.patient.upsert({
+    where: { patientNumber: TEST_PATIENTS.jane.patientNumber },
+    update: {},
+    create: TEST_PATIENTS.jane,
+  });
+
+  const mikePatient = await prisma.patient.upsert({
+    where: { patientNumber: TEST_PATIENTS.mike.patientNumber },
+    update: {},
+    create: TEST_PATIENTS.mike,
+  });
+
+  testDataIds = {
+    users: {
+      adminId: adminUser.id,
+      doctorId: doctorUser.id,
+      nurseId: nurseUser.id,
+    },
+    patients: {
+      johnId: johnPatient.id,
+      janeId: janePatient.id,
+      mikeId: mikePatient.id,
+    },
+    rooms: {
+      buildingId: building.id,
+      floorId: floor.id,
+      room301Id: room301.id,
+      room302Id: room302.id,
+      room310Id: room310.id,
+      bed301AId: bed301A.id,
+      bed301BId: bed301B.id,
+      bed302AId: bed302A.id,
+      bed302BId: bed302B.id,
+      bed310AId: bed310A.id,
+    },
+    admissions: {
+      johnAdmissionId: '', // Will be set after admission creation
+    },
+  };
+
+  return testDataIds;
+}
+
+/**
+ * Create a test admission
+ */
+export async function createTestAdmission(
+  prisma: PrismaService,
+  patientId: string,
+  bedId: string,
+  doctorId: string,
+  nurseId?: string,
+): Promise<string> {
+  // Get or create admission sequence
+  const currentYear = new Date().getFullYear();
+  const sequence = await prisma.admissionSequence.upsert({
+    where: { year: currentYear },
+    update: { lastValue: { increment: 1 } },
+    create: { year: currentYear, lastValue: 1 },
+  });
+
+  const admissionNumber = `ADM${currentYear}${String(sequence.lastValue).padStart(6, '0')}`;
+
+  // Update bed status
+  await prisma.bed.update({
+    where: { id: bedId },
+    data: { status: BedStatus.OCCUPIED },
+  });
+
+  // Create admission
+  const admission = await prisma.admission.create({
+    data: {
+      patientId,
+      bedId,
+      admissionNumber,
+      admissionDate: new Date(),
+      admissionTime: '14:30',
+      admissionType: AdmissionType.SCHEDULED,
+      diagnosis: 'Test diagnosis',
+      chiefComplaint: 'Test chief complaint',
+      attendingDoctorId: doctorId,
+      primaryNurseId: nurseId,
+      status: AdmissionStatus.ACTIVE,
+      createdBy: doctorId,
+    },
+  });
+
+  // Update bed with admission ID
+  await prisma.bed.update({
+    where: { id: bedId },
+    data: { currentAdmissionId: admission.id },
+  });
+
+  if (testDataIds) {
+    testDataIds.admissions.johnAdmissionId = admission.id;
+  }
+
+  return admission.id;
+}
+
+/**
+ * Clean up patient test data
+ */
+export async function cleanupPatientTestData(prisma: PrismaService): Promise<void> {
+  const patientNumbers = Object.values(TEST_PATIENTS).map((p) => p.patientNumber);
+
+  // Delete admissions first (due to foreign key constraints)
+  await prisma.admission.deleteMany({
+    where: {
+      patientId: {
+        in: await prisma.patient
+          .findMany({
+            where: { patientNumber: { in: patientNumbers } },
+            select: { id: true },
+          })
+          .then((patients) => patients.map((p) => p.id)),
+      },
+    },
+  });
+
+  // Reset bed statuses
+  await prisma.bed.updateMany({
+    where: {
+      room: {
+        floor: {
+          building: {
+            code: TEST_ROOMS.building.code,
+          },
+        },
+      },
+    },
+    data: {
+      status: BedStatus.EMPTY,
+      currentAdmissionId: null,
+    },
+  });
+
+  // Delete patients
+  await prisma.patient.deleteMany({
+    where: { patientNumber: { in: patientNumbers } },
+  });
+
+  // Delete beds, rooms, floors, buildings
+  await prisma.bed.deleteMany({
+    where: {
+      room: {
+        floor: {
+          building: {
+            code: TEST_ROOMS.building.code,
+          },
+        },
+      },
+    },
+  });
+
+  await prisma.room.deleteMany({
+    where: {
+      floor: {
+        building: {
+          code: TEST_ROOMS.building.code,
+        },
+      },
+    },
+  });
+
+  await prisma.floor.deleteMany({
+    where: {
+      building: {
+        code: TEST_ROOMS.building.code,
+      },
+    },
+  });
+
+  await prisma.building.deleteMany({
+    where: { code: TEST_ROOMS.building.code },
+  });
+
+  testDataIds = null;
 }
