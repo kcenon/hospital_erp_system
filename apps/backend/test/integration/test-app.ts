@@ -3,6 +3,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from '../../src/prisma';
 import { AuthModule } from '../../src/modules/auth/auth.module';
+import { PatientModule } from '../../src/modules/patient/patient.module';
+import { AdmissionModule } from '../../src/modules/admission/admission.module';
+import { RoomModule } from '../../src/modules/room/room.module';
 import { PrismaModule } from '../../src/prisma/prisma.module';
 import { RedisModule } from '../../src/redis';
 import { appConfig, databaseConfig, redisConfig, jwtConfig } from '../../src/config';
@@ -27,6 +30,9 @@ export async function createTestApp(): Promise<TestApp> {
       RedisModule,
       PrismaModule,
       AuthModule,
+      PatientModule,
+      AdmissionModule,
+      RoomModule,
     ],
   }).compile();
 
