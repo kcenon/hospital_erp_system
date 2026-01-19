@@ -1,0 +1,233 @@
+name: Performance Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Test scenario to run'
+        required: true
+        default: 'smokeTest'
+        type: choice
+        options:
+          - smokeTest
+          - normalLoad
+          - peakLoad
+          - stressTest
+      test_type:
+        description: 'Type of performance test'
+        required: true
+        default: 'api'
+        type: choice
+        options:
+          - api
+          - auth
+          - vitals
+          - websocket
+          - database
+          - all
+  schedule:
+    # Run smoke tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/backend/src/**'
+      - 'apps/backend/k6/**'
+
+concurrency:
+  group: performance-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+  K6_VERSION: '0.54.0'
+
+jobs:
+  performance-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: hospital_user
+          POSTGRES_PASSWORD: hospital_password
+          POSTGRES_DB: hospital_erp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @hospital-erp/backend db:generate
+
+      - name: Setup database
+        run: pnpm --filter @hospital-erp/backend db:push
+        env:
+          DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
+
+      - name: Seed test data
+        run: pnpm --filter @hospital-erp/backend db:seed
+        env:
+          DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
+
+      - name: Start backend server
+        run: |
+          cd apps/backend
+          pnpm start:prod &
+          sleep 10
+        env:
+          DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_SECRET: test-jwt-secret-for-ci
+          JWT_EXPIRES_IN: 1h
+          PORT: 3000
+
+      - name: Wait for server
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+              echo "Server is ready"
+              break
+            fi
+            echo "Waiting for server... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run performance tests
+        id: perf_test
+        run: |
+          cd apps/backend
+          SCENARIO="${{ github.event.inputs.scenario || 'smokeTest' }}"
+          TEST_TYPE="${{ github.event.inputs.test_type || 'api' }}"
+
+          mkdir -p ../../reports
+
+          if [ "$TEST_TYPE" = "all" ]; then
+            echo "Running all performance tests..."
+            k6 run -e SCENARIO=$SCENARIO --out json=../../reports/api-results.json k6/api-load-test.js || true
+            k6 run -e SCENARIO=$SCENARIO --out json=../../reports/auth-results.json k6/auth-test.js || true
+            k6 run -e SCENARIO=$SCENARIO --out json=../../reports/vitals-results.json k6/vital-signs-test.js || true
+            k6 run -e SCENARIO=$SCENARIO --out json=../../reports/ws-results.json k6/websocket-test.js || true
+            k6 run -e SCENARIO=$SCENARIO --out json=../../reports/db-results.json k6/db-query-test.js || true
+          else
+            echo "Running $TEST_TYPE performance test with $SCENARIO scenario..."
+            case $TEST_TYPE in
+              api)
+                k6 run -e SCENARIO=$SCENARIO --out json=../../reports/api-results.json k6/api-load-test.js
+                ;;
+              auth)
+                k6 run -e SCENARIO=$SCENARIO --out json=../../reports/auth-results.json k6/auth-test.js
+                ;;
+              vitals)
+                k6 run -e SCENARIO=$SCENARIO --out json=../../reports/vitals-results.json k6/vital-signs-test.js
+                ;;
+              websocket)
+                k6 run -e SCENARIO=$SCENARIO --out json=../../reports/ws-results.json k6/websocket-test.js
+                ;;
+              database)
+                k6 run -e SCENARIO=$SCENARIO --out json=../../reports/db-results.json k6/db-query-test.js
+                ;;
+            esac
+          fi
+        env:
+          BASE_URL: http://localhost:3000
+          TEST_USERNAME: admin
+          TEST_PASSWORD: admin123
+
+      - name: Upload performance reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-reports-${{ github.run_id }}
+          path: reports/
+          retention-days: 30
+
+      - name: Create performance summary
+        if: always()
+        run: |
+          echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Scenario | ${{ github.event.inputs.scenario || 'smokeTest' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Type | ${{ github.event.inputs.test_type || 'api' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run ID | ${{ github.run_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f reports/api-results.json ]; then
+            echo "### API Test Results" >> $GITHUB_STEP_SUMMARY
+            echo "Results available in artifacts" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  notify-on-failure:
+    name: Notify on Failure
+    needs: performance-test
+    runs-on: ubuntu-latest
+    if: failure() && github.event_name == 'schedule'
+    steps:
+      - name: Create issue on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Performance Test Failed - ${new Date().toISOString().split('T')[0]}`;
+            const body = `
+            ## Scheduled Performance Test Failed
+
+            - **Run ID**: ${{ github.run_id }}
+            - **Run URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            - **Triggered**: Scheduled daily run
+
+            Please investigate the failure and take appropriate action.
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['type:bug', 'priority:high', 'performance']
+            });
