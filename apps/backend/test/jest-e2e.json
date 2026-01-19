@@ -3,13 +3,20 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+  "testPathIgnorePatterns": ["/node_modules/"],
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": "<rootDir>/../tsconfig.json"
+      }
+    ]
   },
   "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/../src/$1"
   },
   "setupFilesAfterEnv": ["<rootDir>/setup.ts"],
   "collectCoverageFrom": ["../src/**/*.(t|j)s"],
-  "coverageDirectory": "../coverage-e2e"
+  "coverageDirectory": "../coverage-e2e",
+  "testTimeout": 30000
 }
