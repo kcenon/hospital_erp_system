@@ -93,4 +93,12 @@ export default tseslint.config(
       'no-console': 'off',
     },
   },
+  {
+    files: ['**/cypress/**/*.ts', '**/cypress.config.ts'],
+    rules: {
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      'no-console': 'off',
+    },
+  },
 );
