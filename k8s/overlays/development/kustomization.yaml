@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hospital-erp-dev
+
+resources:
+  - ../../base
+
+namePrefix: dev-
+
+labels:
+  - pairs:
+      environment: development
+    includeSelectors: true
+    includeTemplates: true
+
+replicas:
+  - name: backend
+    count: 1
+  - name: frontend
+    count: 1
+
+images:
+  - name: hospital-erp/backend
+    newTag: dev
+  - name: hospital-erp/frontend
+    newTag: dev
