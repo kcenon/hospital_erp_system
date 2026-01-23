@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/component: config
+data:
+  redis.conf: |
+    # Network configuration
+    bind 0.0.0.0
+    port 6379
+    tcp-keepalive 300
+    timeout 0
+
+    # Memory management
+    maxmemory 256mb
+    maxmemory-policy allkeys-lru
+
+    # Persistence - AOF (Append Only File)
+    appendonly yes
+    appendfsync everysec
+    auto-aof-rewrite-percentage 100
+    auto-aof-rewrite-min-size 64mb
+
+    # RDB snapshots (backup)
+    save 900 1
+    save 300 10
+    save 60 10000
+
+    # Security
+    protected-mode yes
+
+    # Logging
+    loglevel notice
+
+    # Performance tuning
+    tcp-backlog 511
+    databases 16
+
+    # Slow log (queries taking more than 10ms)
+    slowlog-log-slower-than 10000
+    slowlog-max-len 128

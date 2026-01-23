@@ -12,6 +12,11 @@ resources:
   - external-secrets/external-secret-database.yaml
   - external-secrets/external-secret-backend.yaml
   - external-secrets/external-secret-redis.yaml
+  # Redis Cache
+  - cache/redis-config.yaml
+  - cache/redis-statefulset.yaml
+  - cache/redis-service.yaml
+  # Backend Application
   - backend/deployment.yaml
   - backend/service.yaml
   - backend/hpa.yaml
