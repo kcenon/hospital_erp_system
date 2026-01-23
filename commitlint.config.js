@@ -37,6 +37,8 @@ module.exports = {
         'deps',
         'ci',
         'docs',
+        'infra',
+        'k8s',
       ],
     ],
     'subject-case': [2, 'always', 'lower-case'],
