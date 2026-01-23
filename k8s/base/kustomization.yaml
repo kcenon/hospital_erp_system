@@ -9,6 +9,8 @@ resources:
   - backend/service.yaml
   - frontend/deployment.yaml
   - frontend/service.yaml
+  - ingress/cluster-issuer.yaml
+  - ingress/ingress.yaml
 
 labels:
   - pairs:
