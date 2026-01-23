@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis';
+import { HealthModule } from './modules/health/health.module';
 import { RoomModule } from './modules/room/room.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { AdmissionModule } from './modules/admission/admission.module';
@@ -24,6 +25,7 @@ import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './c
     EventEmitterModule.forRoot(),
     RedisModule,
     PrismaModule,
+    HealthModule,
     AuthModule,
     RoomModule,
     PatientModule,
