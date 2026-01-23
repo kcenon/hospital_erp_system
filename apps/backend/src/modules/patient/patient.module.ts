@@ -8,6 +8,6 @@ import { DataMaskingService } from './data-masking.service';
 @Module({
   controllers: [PatientController],
   providers: [PatientService, PatientRepository, PatientNumberGenerator, DataMaskingService],
-  exports: [PatientService, PatientRepository, DataMaskingService],
+  exports: [PatientService, PatientRepository, PatientNumberGenerator, DataMaskingService],
 })
 export class PatientModule {}
