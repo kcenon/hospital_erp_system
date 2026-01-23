@@ -14,8 +14,12 @@ resources:
   - external-secrets/external-secret-redis.yaml
   - backend/deployment.yaml
   - backend/service.yaml
+  - backend/hpa.yaml
   - frontend/deployment.yaml
   - frontend/service.yaml
+  - frontend/hpa.yaml
+  # HorizontalPodAutoscaler (Auto-scaling)
+  - database/pgbouncer-hpa.yaml
   - ingress/cluster-issuer.yaml
   - ingress/ingress.yaml
   # RBAC (Role-Based Access Control)
