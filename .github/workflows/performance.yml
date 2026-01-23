@@ -113,29 +113,48 @@ jobs:
         env:
           DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
 
+      - name: Build backend
+        run: pnpm build
+
       - name: Start backend server
         run: |
           cd apps/backend
-          pnpm start:prod &
-          sleep 10
+          nohup pnpm start:prod > /tmp/server.log 2>&1 &
+          echo $! > /tmp/server.pid
+          echo "Server PID: $(cat /tmp/server.pid)"
+          # Wait for server to start
+          for i in {1..60}; do
+            if curl -sf http://localhost:3000/health/live > /dev/null 2>&1; then
+              echo "Server is ready after ${i} seconds"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server failed to start within 60 seconds"
+          echo "=== Server logs ==="
+          cat /tmp/server.log
+          exit 1
         env:
           DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           JWT_SECRET: test-jwt-secret-for-ci
+          JWT_ACCESS_SECRET: test-jwt-access-secret-for-ci
+          JWT_REFRESH_SECRET: test-jwt-refresh-secret-for-ci
           JWT_EXPIRES_IN: 1h
           PORT: 3000
 
-      - name: Wait for server
+      - name: Verify server is running
         run: |
-          for i in {1..30}; do
-            if curl -s http://localhost:3000 > /dev/null 2>&1; then
-              echo "Server is ready"
-              break
+          if ! curl -sf http://localhost:3000/health/live > /dev/null 2>&1; then
+            echo "Server health check failed"
+            if [ -f /tmp/server.log ]; then
+              echo "=== Server logs ==="
+              cat /tmp/server.log
             fi
-            echo "Waiting for server... ($i/30)"
-            sleep 2
-          done
+            exit 1
+          fi
+          echo "Server is healthy"
 
       - name: Run performance tests
         id: perf_test
@@ -176,7 +195,7 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
           TEST_USERNAME: admin
-          TEST_PASSWORD: admin123
+          TEST_PASSWORD: Hospital@2024
 
       - name: Upload performance reports
         uses: actions/upload-artifact@v4

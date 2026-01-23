@@ -23,6 +23,13 @@ export const config = {
     http_req_failed: ['rate<0.01'],
   },
 
+  // Relaxed thresholds for smoke tests (CI environment may have cold start delays)
+  smokeTestThresholds: {
+    http_req_duration: ['p(95)<500'],
+    // Allow slightly higher error rate for smoke tests (up to 5%)
+    http_req_failed: ['rate<0.05'],
+  },
+
   // Test scenarios
   scenarios: {
     // Normal load: 50 concurrent users

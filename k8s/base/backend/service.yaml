@@ -5,6 +5,10 @@ metadata:
   labels:
     app.kubernetes.io/name: backend
     app.kubernetes.io/component: api
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '3000'
+    prometheus.io/path: '/metrics'
 spec:
   type: ClusterIP
   ports:

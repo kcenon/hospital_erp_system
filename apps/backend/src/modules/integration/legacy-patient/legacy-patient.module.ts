@@ -2,6 +2,7 @@ import { Module, DynamicModule, Provider, InjectionToken } from '@nestjs/common'
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PatientModule } from '../../patient/patient.module';
+import { AuthModule } from '../../auth/auth.module';
 import { LegacyPatientController } from './legacy-patient.controller';
 import { LegacyCacheService, PatientSyncService } from './services';
 import { JdbcLegacyAdapter, RestLegacyAdapter } from './adapters';
@@ -33,6 +34,7 @@ export class LegacyPatientModule {
           }),
         }),
         PatientModule,
+        AuthModule,
       ],
       controllers: [LegacyPatientController],
       providers: [LegacyCacheService, PatientSyncService, adapterProvider],
@@ -64,6 +66,7 @@ export class LegacyPatientModule {
           }),
         }),
         PatientModule,
+        AuthModule,
       ],
       controllers: [LegacyPatientController],
       providers: [
