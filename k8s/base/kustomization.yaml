@@ -18,6 +18,13 @@ resources:
   - frontend/service.yaml
   - ingress/cluster-issuer.yaml
   - ingress/ingress.yaml
+  # Network Policies (Zero-Trust Security)
+  - network-policies/default-deny.yaml
+  - network-policies/allow-dns.yaml
+  - network-policies/frontend-policy.yaml
+  - network-policies/backend-policy.yaml
+  - network-policies/database-policy.yaml
+  - network-policies/redis-policy.yaml
 
 labels:
   - pairs:
