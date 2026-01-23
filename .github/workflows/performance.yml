@@ -114,7 +114,7 @@ jobs:
           DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
 
       - name: Build backend
-        run: pnpm --filter @hospital-erp/backend build
+        run: pnpm build
 
       - name: Start backend server
         run: |
