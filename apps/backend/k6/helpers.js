@@ -32,7 +32,8 @@ export function login() {
     'login has access token': (r) => {
       try {
         const body = JSON.parse(r.body);
-        return body.accessToken !== undefined;
+        // Support both direct accessToken and nested tokens.accessToken
+        return body.accessToken !== undefined || body.tokens?.accessToken !== undefined;
       } catch {
         return false;
       }
@@ -44,7 +45,8 @@ export function login() {
   }
 
   const body = JSON.parse(response.body);
-  return body.accessToken;
+  // Support both direct accessToken and nested tokens.accessToken
+  return body.accessToken || body.tokens?.accessToken;
 }
 
 /**
