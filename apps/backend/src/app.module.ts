@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis';
+import { MetricsModule, MetricsInterceptor } from './metrics';
 import { HealthModule } from './modules/health/health.module';
 import { RoomModule } from './modules/room/room.module';
 import { PatientModule } from './modules/patient/patient.module';
@@ -25,6 +27,7 @@ import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './c
     EventEmitterModule.forRoot(),
     RedisModule,
     PrismaModule,
+    MetricsModule,
     HealthModule,
     AuthModule,
     RoomModule,
@@ -36,6 +39,11 @@ import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './c
     IntegrationModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
+    },
+  ],
 })
 export class AppModule {}
