@@ -113,6 +113,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
 
+      - name: Build backend
+        run: pnpm --filter @hospital-erp/backend build
+
       - name: Start backend server
         run: |
           cd apps/backend
@@ -131,11 +134,13 @@ jobs:
           for i in {1..30}; do
             if curl -s http://localhost:3000 > /dev/null 2>&1; then
               echo "Server is ready"
-              break
+              exit 0
             fi
             echo "Waiting for server... ($i/30)"
             sleep 2
           done
+          echo "Server failed to start within 60 seconds"
+          exit 1
 
       - name: Run performance tests
         id: perf_test
