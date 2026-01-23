@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hospital-erp-system
+  labels:
+    app.kubernetes.io/name: hospital-erp
+    app.kubernetes.io/part-of: hospital-erp-system
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest
