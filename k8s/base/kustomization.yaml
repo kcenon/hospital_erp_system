@@ -5,6 +5,13 @@ namespace: hospital-erp-system
 
 resources:
   - namespace.yaml
+  - configs/backend-config.yaml
+  - configs/frontend-config.yaml
+  - external-secrets/service-account.yaml
+  - external-secrets/cluster-secret-store.yaml
+  - external-secrets/external-secret-database.yaml
+  - external-secrets/external-secret-backend.yaml
+  - external-secrets/external-secret-redis.yaml
   - backend/deployment.yaml
   - backend/service.yaml
   - frontend/deployment.yaml
