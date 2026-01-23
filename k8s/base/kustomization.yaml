@@ -18,6 +18,11 @@ resources:
   - frontend/service.yaml
   - ingress/cluster-issuer.yaml
   - ingress/ingress.yaml
+  # RBAC (Role-Based Access Control)
+  - rbac/service-accounts.yaml
+  - rbac/backend-role.yaml
+  - rbac/frontend-role.yaml
+  - rbac/role-bindings.yaml
   # Network Policies (Zero-Trust Security)
   - network-policies/default-deny.yaml
   - network-policies/allow-dns.yaml
