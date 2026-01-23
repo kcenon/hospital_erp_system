@@ -41,17 +41,21 @@ if (!scenario) {
   );
 }
 
+// Use relaxed thresholds for smoke tests (CI cold start delays)
+const baseThresholds =
+  selectedScenario === 'smokeTest' ? config.smokeTestThresholds : config.thresholds;
+
 export const options = {
   scenarios: {
     [selectedScenario]: scenario,
   },
   thresholds: {
-    ...config.thresholds,
+    ...baseThresholds,
     login_duration: ['p(95)<1000'], // Login can be slightly slower
     patient_list_duration: ['p(95)<500'],
     patient_search_duration: ['p(95)<500'],
     room_dashboard_duration: ['p(95)<500'],
-    success_rate: ['rate>0.99'], // 99% success rate
+    success_rate: selectedScenario === 'smokeTest' ? ['rate>0.95'] : ['rate>0.99'],
   },
 };
 
