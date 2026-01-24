@@ -2,23 +2,58 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: hospital-erp-dev
+namePrefix: dev-
 
 resources:
   - ../../base
 
-namePrefix: dev-
+patches:
+  - path: patches/reduce-replicas.yaml
+  - path: patches/reduce-resources.yaml
 
-labels:
-  - pairs:
-      environment: development
-    includeSelectors: true
-    includeTemplates: true
+# Disable HPA in development by setting min/max replicas to 1
+patchesJson6902:
+  - target:
+      group: autoscaling
+      version: v2
+      kind: HorizontalPodAutoscaler
+      name: backend-hpa
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 1
+      - op: replace
+        path: /spec/maxReplicas
+        value: 1
+  - target:
+      group: autoscaling
+      version: v2
+      kind: HorizontalPodAutoscaler
+      name: frontend-hpa
+    patch: |-
+      - op: replace
+        path: /spec/minReplicas
+        value: 1
+      - op: replace
+        path: /spec/maxReplicas
+        value: 1
 
-replicas:
-  - name: backend
-    count: 1
-  - name: frontend
-    count: 1
+configMapGenerator:
+  - name: backend-config
+    behavior: merge
+    literals:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - CORS_ORIGIN=http://localhost:3001
+
+  - name: frontend-config
+    behavior: merge
+    literals:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_URL=http://localhost:3001
+
+commonLabels:
+  environment: development
 
 images:
   - name: hospital-erp/backend
