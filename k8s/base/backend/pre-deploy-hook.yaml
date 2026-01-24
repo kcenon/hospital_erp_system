@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate-hook
+  namespace: hospital-erp-system
+  labels:
+    app: hospital-erp
+    component: database
+    job-type: migration
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: '0'
+spec:
+  template:
+    metadata:
+      labels:
+        app: hospital-erp
+        component: database
+        job-type: migration
+    spec:
+      serviceAccountName: backend-sa
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: hospital-erp/backend:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - npx
+            - prisma
+            - migrate
+            - deploy
+          envFrom:
+            - secretRef:
+                name: backend-secrets
+          env:
+            - name: NODE_ENV
+              value: production
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '100m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+  backoffLimit: 3
