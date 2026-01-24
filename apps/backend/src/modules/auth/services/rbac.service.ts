@@ -95,8 +95,8 @@ export class RbacService {
     });
 
     return userRoles
-      .filter((ur) => ur.role.isActive)
-      .map((ur) => ({
+      .filter((ur: { role: { isActive: boolean } }) => ur.role.isActive)
+      .map((ur: { role: { id: string; code: string; name: string } }) => ({
         id: ur.role.id,
         code: ur.role.code,
         name: ur.role.name,
@@ -214,8 +214,11 @@ export class RbacService {
     });
 
     // Deduplicate permissions
-    const uniquePermissions = new Map(
-      rolePermissions.map((rp) => [rp.permission.id, rp.permission.code]),
+    const uniquePermissions = new Map<string, string>(
+      rolePermissions.map((rp: { permission: { id: string; code: string } }) => [
+        rp.permission.id,
+        rp.permission.code,
+      ]),
     );
 
     return Array.from(uniquePermissions.values());

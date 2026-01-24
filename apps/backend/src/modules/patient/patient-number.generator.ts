@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma';
 
 @Injectable()
@@ -8,7 +9,7 @@ export class PatientNumberGenerator {
   async generate(): Promise<string> {
     const currentYear = new Date().getFullYear();
 
-    const sequence = await this.prisma.$transaction(async (tx) => {
+    const sequence = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existing = await tx.patientSequence.findUnique({
         where: { year: currentYear },
       });
