@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-seed
+  namespace: hospital-erp-system
+  labels:
+    app: hospital-erp
+    component: database
+    job-type: seed
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: hospital-erp
+        component: database
+        job-type: seed
+    spec:
+      serviceAccountName: backend-sa
+      restartPolicy: OnFailure
+      containers:
+        - name: seed
+          image: hospital-erp/backend:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - npx
+            - prisma
+            - db
+            - seed
+          envFrom:
+            - secretRef:
+                name: backend-secrets
+          env:
+            - name: NODE_ENV
+              value: development
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '100m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+  backoffLimit: 1
