@@ -8,6 +8,7 @@ resources:
   - prometheus/
   - grafana/
   - loki/
+  - alertmanager/
 
 labels:
   - pairs:
