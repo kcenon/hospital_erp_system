@@ -265,6 +265,92 @@ This project uses GitHub Actions for continuous integration and deployment:
 
 ---
 
+## Deployment
+
+### Kubernetes Deployment
+
+The Hospital ERP System supports production-grade Kubernetes deployment with high availability, auto-scaling, and comprehensive observability.
+
+#### Architecture Overview
+
+```
+Internet → Ingress (NGINX + TLS) → Frontend/Backend → Redis Cache → PgBouncer → RDS PostgreSQL
+                                        ↓
+                            Prometheus + Grafana + Loki (Monitoring)
+```
+
+**Key Features:**
+
+- **High Availability**: Multi-replica deployments with pod disruption budgets
+- **Auto-Scaling**: Horizontal pod autoscaling based on CPU/memory metrics
+- **Zero-Trust Security**: Network policies, RBAC, pod security standards
+- **GitOps**: ArgoCD-based continuous deployment
+- **Observability**: Prometheus metrics, Loki logging, Grafana dashboards
+- **TLS**: Automated certificate provisioning with cert-manager
+
+#### Quick Start (Kubernetes)
+
+```bash
+# Prerequisites: kubectl, kustomize, helm installed
+# Cluster: EKS, GKE, or local (kind/minikube)
+
+# 1. Install infrastructure (NGINX Ingress, cert-manager, monitoring)
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+
+# 2. Configure secrets in AWS Secrets Manager
+aws secretsmanager create-secret --name hospital-erp/database/credentials --secret-string '{...}'
+aws secretsmanager create-secret --name hospital-erp/backend/secrets --secret-string '{...}'
+
+# 3. Deploy application
+kubectl apply -k k8s/overlays/production
+
+# 4. Verify deployment
+kubectl get pods -n hospital-erp-system
+kubectl get ingress -n hospital-erp-system
+```
+
+#### Documentation
+
+| Document                                                | Description                                |
+| ------------------------------------------------------- | ------------------------------------------ |
+| [Architecture](docs/kubernetes/architecture.md)         | Detailed system architecture with diagrams |
+| [Deployment Guide](docs/kubernetes/deployment-guide.md) | Step-by-step deployment instructions       |
+| [Kubernetes Manifests](k8s/README.md)                   | Kustomize-based manifest structure         |
+
+#### Environment Configurations
+
+| Environment     | Namespace              | Replicas | Resources          | Auto-Scaling |
+| --------------- | ---------------------- | -------- | ------------------ | ------------ |
+| **Development** | `hospital-erp-dev`     | 1        | Low (512Mi/500m)   | Disabled     |
+| **Staging**     | `hospital-erp-staging` | 2        | Medium (1Gi/1000m) | Enabled      |
+| **Production**  | `hospital-erp-prod`    | 3+       | High (2Gi/2000m)   | Enabled      |
+
+#### Monitoring & Observability
+
+- **Prometheus**: Metrics collection and alerting
+- **Grafana**: Dashboards for application and infrastructure metrics
+- **Loki**: Centralized logging with LogQL queries
+- **AlertManager**: Alert routing to Slack/PagerDuty
+
+**Access Grafana:**
+
+```bash
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+# Open http://localhost:3000
+```
+
+#### Disaster Recovery
+
+| Scenario         | RTO       | RPO      | Recovery Method                |
+| ---------------- | --------- | -------- | ------------------------------ |
+| Pod failure      | < 1 min   | 0        | Automatic (Kubernetes)         |
+| Node failure     | < 5 min   | 0        | Automatic (Pod rescheduling)   |
+| Database failure | < 30 min  | < 5 min  | RDS automated snapshots        |
+| Cluster failure  | < 2 hours | < 1 hour | Rebuild + restore from Git/RDS |
+
+---
+
 ## Roadmap
 
 | Phase       | Period    | Focus                                        |
