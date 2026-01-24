@@ -312,11 +312,16 @@ kubectl get ingress -n hospital-erp-system
 
 #### Documentation
 
-| Document                                                | Description                                |
-| ------------------------------------------------------- | ------------------------------------------ |
-| [Architecture](docs/kubernetes/architecture.md)         | Detailed system architecture with diagrams |
-| [Deployment Guide](docs/kubernetes/deployment-guide.md) | Step-by-step deployment instructions       |
-| [Kubernetes Manifests](k8s/README.md)                   | Kustomize-based manifest structure         |
+| Document                                                  | Description                                |
+| --------------------------------------------------------- | ------------------------------------------ |
+| [Architecture](docs/kubernetes/architecture.md)           | Detailed system architecture with diagrams |
+| [Deployment Guide](docs/kubernetes/deployment-guide.md)   | Step-by-step deployment instructions       |
+| [Configuration](docs/kubernetes/configuration.md)         | Environment variables and settings         |
+| [Troubleshooting](docs/kubernetes/troubleshooting.md)     | Common issues and debugging guide          |
+| [Security](docs/kubernetes/security.md)                   | Network policies, RBAC, and compliance     |
+| [Disaster Recovery](docs/kubernetes/disaster-recovery.md) | Backup, restore, and failover procedures   |
+| [Runbooks](docs/kubernetes/runbooks/)                     | Operational procedures for incidents       |
+| [Kubernetes Manifests](k8s/README.md)                     | Kustomize-based manifest structure         |
 
 #### Environment Configurations
 
@@ -342,12 +347,27 @@ kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
 #### Disaster Recovery
 
-| Scenario         | RTO       | RPO      | Recovery Method                |
-| ---------------- | --------- | -------- | ------------------------------ |
-| Pod failure      | < 1 min   | 0        | Automatic (Kubernetes)         |
-| Node failure     | < 5 min   | 0        | Automatic (Pod rescheduling)   |
-| Database failure | < 30 min  | < 5 min  | RDS automated snapshots        |
-| Cluster failure  | < 2 hours | < 1 hour | Rebuild + restore from Git/RDS |
+| Scenario         | RTO       | RPO      | Recovery Method              |
+| ---------------- | --------- | -------- | ---------------------------- |
+| Pod failure      | < 1 min   | 0        | Automatic (Kubernetes)       |
+| Node failure     | < 5 min   | 0        | Automatic (Pod rescheduling) |
+| Database failure | < 1 hour  | < 15 min | Automated backups (CronJob)  |
+| Cluster failure  | < 2 hours | < 15 min | Velero backup restore        |
+
+See [Disaster Recovery Plan](docs/kubernetes/disaster-recovery.md) for detailed procedures.
+
+#### Security & Compliance
+
+The Kubernetes deployment implements HIPAA-compliant security measures:
+
+- **Network Security**: Zero-trust network policies with default deny
+- **Access Control**: RBAC with least privilege principle
+- **Secrets Management**: AWS Secrets Manager with External Secrets Operator
+- **Pod Security**: Restricted pod security standards enforced
+- **TLS/SSL**: Automated certificate management with cert-manager
+- **Audit Logging**: Comprehensive logging for all PHI access
+
+See [Security Documentation](docs/kubernetes/security.md) for complete security architecture.
 
 ---
 
