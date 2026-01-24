@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: hospital-erp
+  namespace: argocd
+spec:
+  description: Hospital ERP System Project
+  sourceRepos:
+    - 'https://github.com/kcenon/hospital_erp_system.git'
+  destinations:
+    - namespace: hospital-erp-system
+      server: https://kubernetes.default.svc
+    - namespace: hospital-erp-staging
+      server: https://kubernetes.default.svc
+    - namespace: hospital-erp-dev
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  roles:
+    - name: read-only
+      description: Read-only access to hospital-erp applications
+      policies:
+        - p, proj:hospital-erp:read-only, applications, get, hospital-erp/*, allow
+      groups:
+        - hospital-erp-viewers
+    - name: ci-role
+      description: CI/CD role for automated deployments
+      policies:
+        - p, proj:hospital-erp:ci-role, applications, sync, hospital-erp/*, allow
+        - p, proj:hospital-erp:ci-role, applications, get, hospital-erp/*, allow
