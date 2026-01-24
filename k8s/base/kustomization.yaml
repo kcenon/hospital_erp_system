@@ -39,6 +39,10 @@ resources:
   - network-policies/backend-policy.yaml
   - network-policies/database-policy.yaml
   - network-policies/redis-policy.yaml
+  # Pod Disruption Budgets (High Availability)
+  - pdb/backend-pdb.yaml
+  - pdb/frontend-pdb.yaml
+  - pdb/redis-pdb.yaml
 
 labels:
   - pairs:
