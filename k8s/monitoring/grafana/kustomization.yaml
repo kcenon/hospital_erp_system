@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ingress.yaml
   - dashboard-configmap.yaml
+  - loki-datasource.yaml
 
 labels:
   - pairs:

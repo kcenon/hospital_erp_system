@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: promtail-config
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: promtail
+    app.kubernetes.io/component: log-collector
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+
+    positions:
+      filename: /tmp/positions.yaml
+
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+        backoff_config:
+          min_period: 1s
+          max_period: 1m
+          max_retries: 10
+
+    scrape_configs:
+      # Scrape logs from all Kubernetes pods
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        pipeline_stages:
+          # Parse Docker JSON logs
+          - docker: {}
+          # Extract JSON fields for hospital-erp-system namespace
+          - match:
+              selector: '{namespace="hospital-erp-system"}'
+              stages:
+                - json:
+                    expressions:
+                      level: level
+                      message: msg
+                      timestamp: time
+                      context: context
+                      trace: trace
+                - labels:
+                    level:
+                    context:
+                - timestamp:
+                    source: timestamp
+                    format: RFC3339
+                - output:
+                    source: message
+        relabel_configs:
+          # Add pod labels
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+            target_label: app
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+          - source_labels: [__meta_kubernetes_pod_node_name]
+            target_label: node
