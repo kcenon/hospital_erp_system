@@ -1,24 +1,38 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: hospital-erp-prod
+namespace: hospital-erp-system
 
 resources:
   - ../../base
 
-namePrefix: prod-
+patches:
+  - path: patches/production-replicas.yaml
+  - path: patches/production-resources.yaml
+  - path: patches/production-hpa.yaml
+  - path: patches/production-affinity.yaml
 
-labels:
-  - pairs:
-      environment: production
-    includeSelectors: true
-    includeTemplates: true
+configMapGenerator:
+  - name: backend-config
+    behavior: merge
+    literals:
+      - NODE_ENV=production
+      - LOG_LEVEL=warn
+      - CORS_ORIGIN=https://hospital.example.com
 
-replicas:
-  - name: backend
-    count: 3
-  - name: frontend
-    count: 3
+  - name: frontend-config
+    behavior: merge
+    literals:
+      - NEXT_PUBLIC_API_URL=https://api.hospital.example.com
+      - NEXT_PUBLIC_APP_URL=https://hospital.example.com
+
+  - name: pgbouncer-config
+    behavior: create
+    literals:
+      - POSTGRESQL_HOST=hospital-erp.xxxxxxxx.ap-northeast-2.rds.amazonaws.com
+
+commonLabels:
+  environment: production
 
 images:
   - name: hospital-erp/backend
