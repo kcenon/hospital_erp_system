@@ -91,7 +91,15 @@ export class RoleService {
       createdAt: role.createdAt,
       updatedAt: role.updatedAt,
       permissions: role.rolePermissions.map(
-        (rp) =>
+        (rp: {
+          permission: {
+            id: string;
+            code: string;
+            resource: string;
+            action: string;
+            description: string | null;
+          };
+        }) =>
           new PermissionDto({
             id: rp.permission.id,
             code: rp.permission.code,

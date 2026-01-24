@@ -140,7 +140,9 @@ export class UserAdminService {
       throw new UserNotFoundException(id);
     }
 
-    const isAdmin = user.userRoles.some((ur) => ur.role.code === 'ADMIN');
+    const isAdmin = user.userRoles.some(
+      (ur: { role: { code: string } }) => ur.role.code === 'ADMIN',
+    );
     if (isAdmin) {
       const adminCount = await this.userRepo.countActiveAdmins();
       if (adminCount <= 1) {
@@ -329,9 +331,9 @@ export class UserAdminService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roles: user.userRoles
-        .filter((ur) => ur.role.isActive)
+        .filter((ur: { role: { isActive: boolean } }) => ur.role.isActive)
         .map(
-          (ur) =>
+          (ur: { role: { id: string; code: string; name: string } }) =>
             new RoleBasicDto({
               id: ur.role.id,
               code: ur.role.code,
@@ -355,7 +357,7 @@ export class UserAdminService {
       department: user.department,
       position: user.position,
       isActive: user.isActive,
-      roles: user.userRoles.map((ur) => ur.role.code),
+      roles: user.userRoles.map((ur: { role: { code: string } }) => ur.role.code),
     };
   }
 }
