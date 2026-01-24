@@ -4,10 +4,13 @@ kind: Kustomization
 namespace: monitoring
 
 resources:
-  - namespace.yaml
-  - prometheus/
-  - grafana/
-  - loki/
+  - rbac.yaml
+  - config.yaml
+  - statefulset.yaml
+  - service.yaml
+  - promtail-rbac.yaml
+  - promtail-config.yaml
+  - promtail-daemonset.yaml
 
 labels:
   - pairs:
