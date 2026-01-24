@@ -1,0 +1,106 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hospital-erp-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: hospital-erp.availability
+      rules:
+        - alert: HighErrorRate
+          expr: |
+            sum(rate(http_requests_total{namespace="hospital-erp-system", status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{namespace="hospital-erp-system"}[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+            service: hospital-erp
+          annotations:
+            summary: 'High error rate detected'
+            description: 'Error rate is above 5% for the last 5 minutes'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/high-error-rate'
+
+        - alert: HighResponseTime
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{namespace="hospital-erp-system"}[5m])) by (le)
+            ) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+            service: hospital-erp
+          annotations:
+            summary: 'High response time detected (P95 > 500ms)'
+            description: '95th percentile response time exceeds 500ms'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/high-response-time'
+
+        - alert: PodNotReady
+          expr: |
+            kube_pod_status_ready{namespace="hospital-erp-system", condition="true"} == 0
+          for: 5m
+          labels:
+            severity: warning
+            service: hospital-erp
+          annotations:
+            summary: 'Pod not ready: {{ $labels.pod }}'
+            description: 'Pod {{ $labels.pod }} has been not ready for more than 5 minutes'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/pod-not-ready'
+
+        - alert: PodCrashLooping
+          expr: |
+            rate(kube_pod_container_status_restarts_total{namespace="hospital-erp-system"}[15m]) > 0.1
+          for: 5m
+          labels:
+            severity: critical
+            service: hospital-erp
+          annotations:
+            summary: 'Pod crash looping: {{ $labels.pod }}'
+            description: 'Pod {{ $labels.pod }} is crash looping with frequent restarts'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/pod-crash-looping'
+
+    - name: hospital-erp.resources
+      rules:
+        - alert: HighCPUUsage
+          expr: |
+            (sum(rate(container_cpu_usage_seconds_total{namespace="hospital-erp-system"}[5m])) by (pod)
+            /
+            sum(kube_pod_container_resource_limits{namespace="hospital-erp-system", resource="cpu"}) by (pod)) > 0.9
+          for: 10m
+          labels:
+            severity: warning
+            service: hospital-erp
+          annotations:
+            summary: 'High CPU usage: {{ $labels.pod }}'
+            description: 'Pod {{ $labels.pod }} is using more than 90% of CPU limits for 10 minutes'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/high-cpu-usage'
+
+        - alert: HighMemoryUsage
+          expr: |
+            (container_memory_usage_bytes{namespace="hospital-erp-system"}
+            /
+            container_spec_memory_limit_bytes{namespace="hospital-erp-system"}) > 0.9
+          for: 10m
+          labels:
+            severity: warning
+            service: hospital-erp
+          annotations:
+            summary: 'High memory usage: {{ $labels.pod }}'
+            description: 'Pod {{ $labels.pod }} is using more than 90% of memory limits for 10 minutes'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/high-memory-usage'
+
+        - alert: PVCAlmostFull
+          expr: |
+            (kubelet_volume_stats_used_bytes{namespace="hospital-erp-system"}
+            /
+            kubelet_volume_stats_capacity_bytes{namespace="hospital-erp-system"}) > 0.85
+          for: 5m
+          labels:
+            severity: warning
+            service: hospital-erp
+          annotations:
+            summary: 'PVC almost full: {{ $labels.persistentvolumeclaim }}'
+            description: 'PVC {{ $labels.persistentvolumeclaim }} is more than 85% full'
+            runbook_url: 'https://docs.hospital-erp.com/runbooks/pvc-almost-full'
