@@ -34,6 +34,10 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
+
+  // Turbopack configuration (empty config to silence webpack vs turbopack warning)
+  // next-pwa uses webpack internally, this silences the warning while keeping compatibility
+  turbopack: {},
 };
 
 export default pwaConfig(nextConfig);
