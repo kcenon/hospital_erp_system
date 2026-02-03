@@ -330,7 +330,39 @@ Inpatient Management ERP
 | **SCR-08** | Rounding               | /rounds         | Physician       |
 | **SCR-09** | Admin                  | /admin          | Administrator   |
 
+> **Note**: The paths listed above are **frontend (UI) routes** for navigation. Backend API endpoints follow RESTful resource hierarchy. See Section 3.1.3 for the mapping between UI routes and API endpoints.
+
 > **Traceability Reference**: [PRD.md](PRD.md) Section 8
+
+#### 3.1.3 UI Route to API Endpoint Mapping
+
+The frontend routes (UI paths) and backend API endpoints serve different purposes:
+
+- **UI Routes**: Used for browser navigation and frontend routing (e.g., React Router)
+- **API Endpoints**: RESTful resource endpoints following parent-child hierarchy
+
+| Screen (UI Path) | API Endpoint(s)                            | Description                         |
+| ---------------- | ------------------------------------------ | ----------------------------------- |
+| /vitals/input    | POST /admissions/:admissionId/vitals       | Record vital signs for an admission |
+| /vitals/:id      | GET /admissions/:admissionId/vitals        | Get vital signs history             |
+| -                | GET /admissions/:admissionId/vitals/latest | Get latest vital signs              |
+| /admissions/new  | POST /admissions                           | Create new admission                |
+| /admissions/:id  | GET /admissions/:admissionId               | Get admission details               |
+| /patients        | GET /patients                              | List patients                       |
+| /patients/:id    | GET /patients/:patientId                   | Get patient details                 |
+| /rounds          | GET /rounds                                | List rounding sessions              |
+| /rounds/:id      | GET /rounds/:roundId                       | Get round details                   |
+
+**Design Rationale**:
+
+Vital signs use nested routes under admissions (`/admissions/:admissionId/vitals`) because:
+
+1. **Resource Ownership**: Vital signs belong to a specific admission record
+2. **Access Control**: Ensures vitals are always associated with a valid admission
+3. **RESTful Best Practice**: Parent-child relationship is clearly expressed in the URL
+4. **Consistency**: Other admission-related resources follow the same pattern (medications, nursing-notes, io)
+
+> **API Reference**: See [api-specification.md](reference/02-design/api-specification.md) Section 6 for complete API documentation
 
 ### 3.2 Hardware Interfaces
 

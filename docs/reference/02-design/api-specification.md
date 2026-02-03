@@ -865,6 +865,31 @@ GET /admissions/{admissionId}/transfers
 
 ## 6. Reports and Logs API
 
+This section covers APIs for patient reports and logs. All endpoints in this section use **nested routes under admissions** following the RESTful parent-child resource pattern.
+
+### Nested Route Structure
+
+All clinical data (vitals, medications, I/O, nursing notes, daily reports) are accessed through the admission resource:
+
+```
+/admissions/{admissionId}/vitals          - Vital signs
+/admissions/{admissionId}/medications     - Medication records
+/admissions/{admissionId}/io              - Intake/Output records
+/admissions/{admissionId}/notes           - Nursing notes
+/admissions/{admissionId}/daily-reports   - Daily aggregated reports
+```
+
+**Design Rationale**:
+
+| Aspect              | Benefit                                                |
+| ------------------- | ------------------------------------------------------ |
+| **Ownership**       | Clear parent-child relationship (Admission owns data)  |
+| **Access Control**  | Validates admission exists before accessing child data |
+| **Query Scope**     | Natural filtering by admission context                 |
+| **URL Consistency** | Uniform pattern across all clinical data endpoints     |
+
+> **Note**: Frontend UI routes (e.g., `/vitals/input`) differ from API endpoints. See [SRS.md](../../SRS.md) Section 3.1.3 for the complete UI-to-API mapping.
+
 ### 6.1 Record Vital Signs
 
 ```http
