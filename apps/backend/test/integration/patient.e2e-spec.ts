@@ -459,7 +459,7 @@ describe('Patient API (e2e)', () => {
       await prisma.patientDetail.create({
         data: {
           patientId: patient.id,
-          allergies: 'Original allergies',
+          allergiesEncrypted: Buffer.from('Original allergies', 'utf-8'),
           insuranceType: 'Original insurance',
         },
       });

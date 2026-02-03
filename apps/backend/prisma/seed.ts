@@ -652,7 +652,9 @@ async function main() {
         emergencyContactRelation: patientData.emergencyContactRelation,
         detail: {
           create: {
-            allergies: patientData.detail.allergies,
+            allergiesEncrypted: patientData.detail.allergies
+              ? Buffer.from(patientData.detail.allergies, 'utf-8')
+              : null,
             insuranceType: patientData.detail.insuranceType,
             insuranceCompany: patientData.detail.insuranceCompany,
             notes: patientData.detail.notes,

@@ -283,7 +283,7 @@ model PatientDetail {
   patientId                String   @unique @map("patient_id") @db.Uuid
   ssnEncrypted             Bytes?   @map("ssn_encrypted")
   medicalHistoryEncrypted  Bytes?   @map("medical_history_encrypted")
-  allergies                String?  @db.Text
+  allergiesEncrypted       Bytes?   @map("allergies_encrypted")
   insuranceType            String?  @map("insurance_type") @db.VarChar(50)
   insuranceNumberEncrypted Bytes?   @map("insurance_number_encrypted")
   insuranceCompany         String?  @map("insurance_company") @db.VarChar(100)

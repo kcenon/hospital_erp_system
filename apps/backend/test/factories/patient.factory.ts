@@ -33,18 +33,19 @@ export function createTestPatientDetail(
   overrides?: Partial<PatientDetail>,
 ): PatientDetail {
   const now = new Date();
+  const allergiesValue = faker.helpers.arrayElement([
+    'Penicillin',
+    'Aspirin',
+    'None',
+    'Peanuts, Shellfish',
+    null,
+  ]);
   return {
     id: faker.string.uuid(),
     patientId,
     ssnEncrypted: null,
     medicalHistoryEncrypted: null,
-    allergies: faker.helpers.arrayElement([
-      'Penicillin',
-      'Aspirin',
-      'None',
-      'Peanuts, Shellfish',
-      null,
-    ]),
+    allergiesEncrypted: allergiesValue ? Buffer.from(allergiesValue, 'utf-8') : null,
     insuranceType: faker.helpers.arrayElement([
       'National Health Insurance',
       'Medical Aid',
