@@ -608,8 +608,71 @@ Provides rounding session creation, rounding record input, and rounding history 
 | **REQ-FR-052** | Rounding History Inquiry  | View past rounding records                                  | High     | PRD FR-06-03 |
 | **REQ-FR-053** | Tablet Rounding Support   | Simultaneous patient info review and recording              | High     | -            |
 | **REQ-FR-054** | Rounding Patient List     | Display rounding target patient list by ward                | High     | -            |
+| **REQ-FR-055** | Rounding Session Start    | Transition session from PLANNED to IN_PROGRESS state        | High     | -            |
+| **REQ-FR-056** | Rounding Session Pause    | Transition session from IN_PROGRESS to PAUSED state         | High     | -            |
+| **REQ-FR-057** | Rounding Session Resume   | Transition session from PAUSED to IN_PROGRESS state         | High     | -            |
+| **REQ-FR-058** | Rounding Session Complete | Transition session to COMPLETED state (terminal)            | High     | -            |
+| **REQ-FR-059** | Rounding Session Cancel   | Transition session to CANCELLED state (terminal)            | Medium   | -            |
 
-#### 4.6.3 User Story
+#### 4.6.3 State Machine
+
+The rounding session follows a state machine pattern with the following states and transitions:
+
+##### States
+
+| State       | Description                                            |
+| ----------- | ------------------------------------------------------ |
+| PLANNED     | Session created but not yet started                    |
+| IN_PROGRESS | Session actively in progress                           |
+| PAUSED      | Session temporarily paused (e.g., emergency interrupt) |
+| COMPLETED   | Session finished successfully (terminal state)         |
+| CANCELLED   | Session cancelled before completion (terminal state)   |
+
+##### State Transitions
+
+```
+                     ┌──────────────────────────────────────────────────────────────┐
+                     │                                                               │
+    ┌────────────┐   │  start        ┌─────────────┐                               │
+    │  PLANNED   │───┼──────────────>│ IN_PROGRESS │                               │
+    └─────┬──────┘   │               └──────┬──────┘                               │
+          │          │                      │                                       │
+          │ cancel   │    ┌─────────────────┼─────────────────┐                    │
+          │          │    │ pause           │ complete        │                    │
+          │          │    ▼                 │                 │                    │
+          │          │  ┌──────────┐        │                 │                    │
+          │          │  │  PAUSED  │        │                 │                    │
+          │          │  └────┬─────┘        │                 │                    │
+          │          │       │              │                 │                    │
+          │          │       ├── resume ────┘                 │                    │
+          │          │       │                                │                    │
+          │          │       │ complete                       │                    │
+          │          │       │                                │                    │
+          ▼          │       │ cancel                         ▼                    │
+    ┌────────────┐   │       │                          ┌───────────┐             │
+    │ CANCELLED  │<──┼───────┘                          │ COMPLETED │             │
+    └────────────┘   │                                  └───────────┘             │
+                     │                                                             │
+                     └─────────────────────────────────────────────────────────────┘
+```
+
+##### Transition Rules
+
+| From        | To          | Trigger  | Description                 |
+| ----------- | ----------- | -------- | --------------------------- |
+| PLANNED     | IN_PROGRESS | start    | Begin rounding session      |
+| PLANNED     | CANCELLED   | cancel   | Cancel before starting      |
+| IN_PROGRESS | PAUSED      | pause    | Temporarily pause session   |
+| IN_PROGRESS | COMPLETED   | complete | Finish session successfully |
+| PAUSED      | IN_PROGRESS | resume   | Resume paused session       |
+| PAUSED      | COMPLETED   | complete | Complete from paused state  |
+| PAUSED      | CANCELLED   | cancel   | Cancel paused session       |
+
+##### Invalid Transitions
+
+Terminal states (COMPLETED, CANCELLED) do not allow any outgoing transitions. Attempting invalid transitions results in an error response.
+
+#### 4.6.4 User Story
 
 ```
 US-09: Rounding Record (Tablet)
@@ -623,6 +686,23 @@ Acceptance Criteria:
 ✓ Display recent vitals, key info per patient
 ✓ Observation notes, instructions input area
 ✓ Quick navigation to next patient
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+```
+US-10: Rounding State Management
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+As an Attending Physician
+I want to control the state of my rounding session (start, pause, resume, complete)
+So that I can handle interruptions and properly track rounding progress
+
+Acceptance Criteria:
+✓ Start a planned rounding session when ready
+✓ Pause session for emergencies or interruptions
+✓ Resume paused session to continue where left off
+✓ Complete session when all patients visited
+✓ Cancel session if rounding cannot be performed
+✓ Receive clear error when invalid transition attempted
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -823,6 +903,11 @@ Provides user account management, role/permission management, and audit log inqu
 | REQ-FR-050     | Rounding Session Creation       | PRD.md          | FR-06-01       | TC-RND-001  |
 | REQ-FR-051     | Rounding Record Input           | PRD.md          | FR-06-02       | TC-RND-002  |
 | REQ-FR-052     | Rounding History Inquiry        | PRD.md          | FR-06-03       | TC-RND-003  |
+| REQ-FR-055     | Rounding Session Start          | SRS.md          | 4.6.2          | TC-RND-004  |
+| REQ-FR-056     | Rounding Session Pause          | SRS.md          | 4.6.2          | TC-RND-005  |
+| REQ-FR-057     | Rounding Session Resume         | SRS.md          | 4.6.2          | TC-RND-006  |
+| REQ-FR-058     | Rounding Session Complete       | SRS.md          | 4.6.2          | TC-RND-007  |
+| REQ-FR-059     | Rounding Session Cancel         | SRS.md          | 4.6.2          | TC-RND-008  |
 | REQ-FR-060     | User Account Management         | PRD.md          | FR-07-01       | TC-ADM-010  |
 | REQ-FR-061     | Role/Permission Management      | PRD.md          | FR-07-02       | TC-ADM-011  |
 | REQ-FR-062     | Audit Log Inquiry               | PRD.md          | FR-07-03       | TC-ADM-012  |

@@ -4,7 +4,7 @@
 
 | Item             | Content                        |
 | ---------------- | ------------------------------ |
-| Document Version | 0.3.0.0                        |
+| Document Version | 0.4.0.0                        |
 | Created Date     | 2025-12-29                     |
 | Last Updated     | 2026-02-03                     |
 | Owner            | kcenon@naver.com               |
@@ -1469,6 +1469,40 @@ POST /rounds/{roundId}/start
 
 **State Transition**: PLANNED → IN_PROGRESS
 
+Initiates a rounding session that was previously created in PLANNED status. Sets the `startedAt` timestamp.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roundId   | uuid | Round UUID  |
+
+**Response (200 OK)**
+
+```json
+{
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "IN_PROGRESS",
+  "startedAt": "2025-12-29T09:05:00Z",
+  "completedAt": null,
+  "pausedAt": null,
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": ["PAUSED", "COMPLETED"]
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                     | Description                       |
+| ---- | ------------------------ | --------------------------------- |
+| 400  | INVALID_STATE_TRANSITION | Round is not in PLANNED status    |
+| 404  | ROUND_NOT_FOUND          | Round with specified ID not found |
+
 ### 7.5 Pause Rounding
 
 ```http
@@ -1476,6 +1510,40 @@ POST /rounds/{roundId}/pause
 ```
 
 **State Transition**: IN_PROGRESS → PAUSED
+
+Temporarily pauses an active rounding session. Useful for emergency interruptions or breaks. Sets the `pausedAt` timestamp.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roundId   | uuid | Round UUID  |
+
+**Response (200 OK)**
+
+```json
+{
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "PAUSED",
+  "startedAt": "2025-12-29T09:05:00Z",
+  "completedAt": null,
+  "pausedAt": "2025-12-29T09:30:00Z",
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": ["IN_PROGRESS", "COMPLETED", "CANCELLED"]
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                     | Description                        |
+| ---- | ------------------------ | ---------------------------------- |
+| 400  | INVALID_STATE_TRANSITION | Round is not in IN_PROGRESS status |
+| 404  | ROUND_NOT_FOUND          | Round with specified ID not found  |
 
 ### 7.6 Resume Rounding
 
@@ -1485,6 +1553,40 @@ POST /rounds/{roundId}/resume
 
 **State Transition**: PAUSED → IN_PROGRESS
 
+Resumes a paused rounding session. Clears the `pausedAt` timestamp.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roundId   | uuid | Round UUID  |
+
+**Response (200 OK)**
+
+```json
+{
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "IN_PROGRESS",
+  "startedAt": "2025-12-29T09:05:00Z",
+  "completedAt": null,
+  "pausedAt": null,
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": ["PAUSED", "COMPLETED"]
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                     | Description                       |
+| ---- | ------------------------ | --------------------------------- |
+| 400  | INVALID_STATE_TRANSITION | Round is not in PAUSED status     |
+| 404  | ROUND_NOT_FOUND          | Round with specified ID not found |
+
 ### 7.7 Complete Rounding
 
 ```http
@@ -1493,6 +1595,40 @@ POST /rounds/{roundId}/complete
 
 **State Transition**: IN_PROGRESS/PAUSED → COMPLETED
 
+Marks the rounding session as successfully completed. This is a terminal state - no further transitions are allowed. Sets the `completedAt` timestamp.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roundId   | uuid | Round UUID  |
+
+**Response (200 OK)**
+
+```json
+{
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "COMPLETED",
+  "startedAt": "2025-12-29T09:05:00Z",
+  "completedAt": "2025-12-29T10:30:00Z",
+  "pausedAt": null,
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": []
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                     | Description                                  |
+| ---- | ------------------------ | -------------------------------------------- |
+| 400  | INVALID_STATE_TRANSITION | Round is not in IN_PROGRESS or PAUSED status |
+| 404  | ROUND_NOT_FOUND          | Round with specified ID not found            |
+
 ### 7.8 Cancel Rounding
 
 ```http
@@ -1500,6 +1636,41 @@ POST /rounds/{roundId}/cancel
 ```
 
 **State Transition**: PLANNED/PAUSED → CANCELLED
+
+Cancels a rounding session that has not yet been completed. Can only be performed from PLANNED or PAUSED states. This is a terminal state - no further transitions are allowed.
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roundId   | uuid | Round UUID  |
+
+**Response (200 OK)**
+
+```json
+{
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "CANCELLED",
+  "startedAt": null,
+  "completedAt": null,
+  "pausedAt": null,
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": []
+}
+```
+
+**Error Responses**
+
+| HTTP | Code                     | Description                                      |
+| ---- | ------------------------ | ------------------------------------------------ |
+| 400  | INVALID_STATE_TRANSITION | Round is not in PLANNED or PAUSED status         |
+| 400  | INVALID_STATE_TRANSITION | Cannot cancel an IN_PROGRESS round (pause first) |
+| 404  | ROUND_NOT_FOUND          | Round with specified ID not found                |
 
 ### 7.9 Get Rounding Patient List (Tablet-Optimized)
 
@@ -1604,16 +1775,77 @@ PATCH /rounds/{roundId}/records/{recordId}
 }
 ```
 
-### State Machine
+### 7.12 State Machine
+
+#### State Definitions
+
+| State       | Description                                            | Terminal |
+| ----------- | ------------------------------------------------------ | -------- |
+| PLANNED     | Session created and scheduled but not yet started      | No       |
+| IN_PROGRESS | Session is actively in progress                        | No       |
+| PAUSED      | Session temporarily paused (e.g., emergency interrupt) | No       |
+| COMPLETED   | Session finished successfully                          | Yes      |
+| CANCELLED   | Session cancelled before completion                    | Yes      |
+
+#### State Transition Diagram
 
 ```
-PLANNED ─────────────────┬──────────────────> CANCELLED
-    │                    │
-    v                    │
-IN_PROGRESS <────────────┼─────────> PAUSED
-    │                    │              │
-    └────────────────────┴──────────────┴──────> COMPLETED
+                     ┌──────────────────────────────────────────────────────────────┐
+                     │                                                               │
+    ┌────────────┐   │  start        ┌─────────────┐                               │
+    │  PLANNED   │───┼──────────────>│ IN_PROGRESS │                               │
+    └─────┬──────┘   │               └──────┬──────┘                               │
+          │          │                      │                                       │
+          │ cancel   │    ┌─────────────────┼─────────────────┐                    │
+          │          │    │ pause           │ complete        │                    │
+          │          │    ▼                 │                 │                    │
+          │          │  ┌──────────┐        │                 │                    │
+          │          │  │  PAUSED  │        │                 │                    │
+          │          │  └────┬─────┘        │                 │                    │
+          │          │       │              │                 │                    │
+          │          │       ├── resume ────┘                 │                    │
+          │          │       │                                │                    │
+          │          │       │ complete                       │                    │
+          │          │       │                                │                    │
+          ▼          │       │ cancel                         ▼                    │
+    ┌────────────┐   │       │                          ┌───────────┐             │
+    │ CANCELLED  │<──┼───────┘                          │ COMPLETED │             │
+    └────────────┘   │                                  └───────────┘             │
+                     │                                                             │
+                     └─────────────────────────────────────────────────────────────┘
 ```
+
+#### Transition Matrix
+
+| From / To   | PLANNED | IN_PROGRESS | PAUSED | COMPLETED | CANCELLED |
+| ----------- | ------- | ----------- | ------ | --------- | --------- |
+| PLANNED     | -       | start       | -      | -         | cancel    |
+| IN_PROGRESS | -       | -           | pause  | complete  | -         |
+| PAUSED      | -       | resume      | -      | complete  | cancel    |
+| COMPLETED   | -       | -           | -      | -         | -         |
+| CANCELLED   | -       | -           | -      | -         | -         |
+
+#### Timestamp Behavior
+
+| Transition            | Timestamp Updated            |
+| --------------------- | ---------------------------- |
+| PLANNED → IN_PROGRESS | `startedAt` = current time   |
+| IN_PROGRESS → PAUSED  | `pausedAt` = current time    |
+| PAUSED → IN_PROGRESS  | `pausedAt` = null            |
+| \* → COMPLETED        | `completedAt` = current time |
+| \* → CANCELLED        | No timestamp change          |
+
+#### WebSocket Events
+
+State transitions emit WebSocket events for real-time updates:
+
+| Event             | Trigger           | Payload                            |
+| ----------------- | ----------------- | ---------------------------------- |
+| `round:started`   | start transition  | `{ roundId, status, startedAt }`   |
+| `round:paused`    | pause transition  | `{ roundId, status, pausedAt }`    |
+| `round:resumed`   | resume transition | `{ roundId, status }`              |
+| `round:completed` | complete          | `{ roundId, status, completedAt }` |
+| `round:cancelled` | cancel            | `{ roundId, status }`              |
 
 ---
 
@@ -1947,6 +2179,36 @@ const socket = io('wss://api.hospital-erp.com', {
 | LEGACY_PATIENT_NOT_FOUND  | Patient not found in legacy system   | 404  |
 | PATIENT_ALREADY_IMPORTED  | Patient already imported from legacy | 409  |
 | LEGACY_SYSTEM_UNAVAILABLE | Legacy system connection failed      | 503  |
+
+### 10.6 Rounding Related
+
+| Code                     | Message                                      | HTTP |
+| ------------------------ | -------------------------------------------- | ---- |
+| ROUND_NOT_FOUND          | Rounding session not found                   | 404  |
+| ROUND_RECORD_NOT_FOUND   | Rounding record not found                    | 404  |
+| INVALID_STATE_TRANSITION | Invalid state transition from {from} to {to} | 400  |
+| ROUND_ALREADY_STARTED    | Rounding session has already been started    | 409  |
+| ROUND_ALREADY_COMPLETED  | Rounding session has already been completed  | 409  |
+| ROUND_ALREADY_CANCELLED  | Rounding session has already been cancelled  | 409  |
+
+**State Transition Error Details**
+
+When an invalid state transition is attempted, the error response includes details about the current state and valid transitions:
+
+```json
+{
+  "statusCode": 400,
+  "timestamp": "2025-12-29T10:30:00Z",
+  "path": "/rounds/round-uuid/start",
+  "method": "POST",
+  "message": "Invalid state transition from IN_PROGRESS to IN_PROGRESS",
+  "details": {
+    "currentState": "IN_PROGRESS",
+    "attemptedState": "IN_PROGRESS",
+    "validTransitions": ["PAUSED", "COMPLETED"]
+  }
+}
+```
 
 ---
 
