@@ -141,7 +141,7 @@ export class PatientService {
       medicalHistoryEncrypted: dto.medicalHistory
         ? this.encryptData(dto.medicalHistory)
         : undefined,
-      allergies: dto.allergies,
+      allergiesEncrypted: dto.allergies ? this.encryptData(dto.allergies) : undefined,
       insuranceType: dto.insuranceType,
       insuranceNumberEncrypted: dto.insuranceNumber
         ? this.encryptData(dto.insuranceNumber)
@@ -166,7 +166,7 @@ export class PatientService {
       ssnEncrypted: dto.ssn !== undefined ? this.encryptData(dto.ssn) : undefined,
       medicalHistoryEncrypted:
         dto.medicalHistory !== undefined ? this.encryptData(dto.medicalHistory) : undefined,
-      allergies: dto.allergies,
+      allergiesEncrypted: dto.allergies !== undefined ? this.encryptData(dto.allergies) : undefined,
       insuranceType: dto.insuranceType,
       insuranceNumberEncrypted:
         dto.insuranceNumber !== undefined ? this.encryptData(dto.insuranceNumber) : undefined,
@@ -211,7 +211,7 @@ export class PatientService {
       medicalHistory: detail.medicalHistoryEncrypted
         ? this.decryptData(detail.medicalHistoryEncrypted)
         : null,
-      allergies: detail.allergies,
+      allergies: detail.allergiesEncrypted ? this.decryptData(detail.allergiesEncrypted) : null,
       insuranceType: detail.insuranceType,
       insuranceNumber: detail.insuranceNumberEncrypted
         ? this.dataMaskingService.maskInsuranceNumber(

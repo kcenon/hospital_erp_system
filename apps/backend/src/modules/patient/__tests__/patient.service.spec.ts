@@ -243,19 +243,27 @@ describe('PatientService', () => {
   });
 
   describe('createDetail', () => {
-    it('should create patient detail', async () => {
+    it('should create patient detail with encrypted allergies', async () => {
       const patient = createTestPatient();
-      const detail = createTestPatientDetail(patient.id);
+      const allergiesValue = 'Penicillin';
+      const detail = createTestPatientDetail(patient.id, {
+        allergiesEncrypted: Buffer.from(allergiesValue, 'utf-8'),
+      });
       mockRepository.findById.mockResolvedValue({ ...patient, detail: null });
       mockRepository.createDetail.mockResolvedValue(detail);
 
       const result = await service.createDetail(patient.id, {
-        allergies: 'Penicillin',
+        allergies: allergiesValue,
         insuranceType: 'National Health Insurance',
       });
 
-      expect(result.allergies).toBe(detail.allergies);
-      expect(mockRepository.createDetail).toHaveBeenCalled();
+      expect(result.allergies).toBe(allergiesValue);
+      expect(mockRepository.createDetail).toHaveBeenCalledWith(
+        patient.id,
+        expect.objectContaining({
+          allergiesEncrypted: expect.any(Buffer),
+        }),
+      );
     });
 
     it('should throw when patient not found', async () => {
@@ -277,17 +285,27 @@ describe('PatientService', () => {
   });
 
   describe('updateDetail', () => {
-    it('should update patient detail', async () => {
+    it('should update patient detail with encrypted allergies', async () => {
       const detail = createTestPatientDetail('patient-id');
-      const updatedDetail = { ...detail, allergies: 'Updated allergies' };
+      const updatedAllergies = 'Updated allergies';
+      const updatedDetail = {
+        ...detail,
+        allergiesEncrypted: Buffer.from(updatedAllergies, 'utf-8'),
+      };
       mockRepository.findDetailByPatientId.mockResolvedValue(detail);
       mockRepository.updateDetail.mockResolvedValue(updatedDetail);
 
       const result = await service.updateDetail('patient-id', {
-        allergies: 'Updated allergies',
+        allergies: updatedAllergies,
       });
 
-      expect(result.allergies).toBe('Updated allergies');
+      expect(result.allergies).toBe(updatedAllergies);
+      expect(mockRepository.updateDetail).toHaveBeenCalledWith(
+        'patient-id',
+        expect.objectContaining({
+          allergiesEncrypted: expect.any(Buffer),
+        }),
+      );
     });
 
     it('should throw when detail not found', async () => {

@@ -204,7 +204,7 @@ export class PatientRepository {
     data: {
       ssnEncrypted?: Buffer;
       medicalHistoryEncrypted?: Buffer;
-      allergies?: string;
+      allergiesEncrypted?: Buffer;
       insuranceType?: string;
       insuranceNumberEncrypted?: Buffer;
       insuranceCompany?: string;
@@ -224,7 +224,7 @@ export class PatientRepository {
     data: {
       ssnEncrypted?: Buffer;
       medicalHistoryEncrypted?: Buffer;
-      allergies?: string;
+      allergiesEncrypted?: Buffer;
       insuranceType?: string;
       insuranceNumberEncrypted?: Buffer;
       insuranceCompany?: string;
