@@ -4,8 +4,9 @@
 
 | Item             | Content                           |
 | ---------------- | --------------------------------- |
-| Document Version | 0.1.0.0                           |
+| Document Version | 0.2.0.0                           |
 | Created Date     | 2025-12-29                        |
+| Last Updated     | 2026-02-03                        |
 | Owner            | kcenon@naver.com                  |
 | API Version      | v1                                |
 | Base URL         | `https://api.hospital-erp.com/v1` |
@@ -44,53 +45,72 @@ X-RateLimit-Reset: 1704067200
 
 ### 1.3 Common Response Format
 
-#### Success Response
+> **Note**: The API follows NestJS conventions and returns DTO objects directly without wrapper envelopes. This approach simplifies client integration and aligns with standard RESTful practices.
+
+#### Success Response (Single Resource)
+
+Returns the DTO object directly:
 
 ```json
 {
-  "success": true,
-  "data": { ... },
-  "meta": {
-    "timestamp": "2025-12-29T10:30:00Z",
-    "requestId": "550e8400-e29b-41d4-a716-446655440000"
-  }
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "patientNumber": "P2025001234",
+  "name": "John Doe",
+  "birthDate": "1990-05-15",
+  "gender": "M",
+  "createdAt": "2025-12-29T10:30:00Z",
+  "updatedAt": "2025-12-29T10:30:00Z"
 }
 ```
 
 #### List Response (Pagination)
 
+Returns paginated results with metadata:
+
 ```json
 {
-  "success": true,
-  "data": [ ... ],
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "patientNumber": "P2025001234",
+      "name": "John Doe",
+      ...
+    }
+  ],
   "meta": {
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 150,
-      "totalPages": 8
-    },
-    "timestamp": "2025-12-29T10:30:00Z"
+    "total": 150,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 8,
+    "hasNextPage": true,
+    "hasPrevPage": false
   }
 }
 ```
 
 #### Error Response
 
+Error responses follow a consistent format handled by `HttpExceptionFilter`:
+
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "PATIENT_NOT_FOUND",
-    "message": "Patient not found.",
-    "details": {
-      "patientId": "invalid-uuid"
-    }
-  },
-  "meta": {
-    "timestamp": "2025-12-29T10:30:00Z",
-    "requestId": "550e8400-e29b-41d4-a716-446655440000"
-  }
+  "statusCode": 404,
+  "timestamp": "2025-12-29T10:30:00Z",
+  "path": "/patients/invalid-uuid",
+  "method": "GET",
+  "message": "Patient not found"
+}
+```
+
+For validation errors (HTTP 400/422), the message may be an array:
+
+```json
+{
+  "statusCode": 400,
+  "timestamp": "2025-12-29T10:30:00Z",
+  "path": "/patients",
+  "method": "POST",
+  "message": ["patientNumber must be a string", "name should not be empty"]
 }
 ```
 
@@ -133,19 +153,16 @@ POST /auth/login
 
 ```json
 {
-  "success": true,
-  "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
-    "expiresIn": 3600,
-    "tokenType": "Bearer",
-    "user": {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "username": "nurse001",
-      "name": "Kim Nurse",
-      "department": "Internal Medicine Ward",
-      "roles": ["NURSE"]
-    }
+  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+  "expiresIn": 3600,
+  "tokenType": "Bearer",
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "nurse001",
+    "name": "Kim Nurse",
+    "department": "Internal Medicine Ward",
+    "roles": ["NURSE"]
   }
 }
 ```
@@ -205,10 +222,7 @@ POST /auth/change-password
 
 ```json
 {
-  "success": true,
-  "data": {
-    "message": "Password changed successfully"
-  }
+  "message": "Password changed successfully"
 }
 ```
 
@@ -246,7 +260,6 @@ GET /patients
 
 ```json
 {
-  "success": true,
   "data": [
     {
       "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -267,12 +280,12 @@ GET /patients
     }
   ],
   "meta": {
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 45,
-      "totalPages": 3
-    }
+    "total": 45,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 3,
+    "hasNextPage": true,
+    "hasPrevPage": false
   }
 }
 ```
@@ -287,52 +300,49 @@ GET /patients/{patientId}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "patientNumber": "P2025001234",
-    "name": "John Doe",
-    "birthDate": "1990-05-15",
-    "gender": "M",
-    "bloodType": "A+",
-    "phone": "010-1234-5678",
-    "emergencyContact": "Jane Doe",
-    "emergencyPhone": "010-9876-5432",
-    "address": "123 Teheran-ro, Gangnam-gu, Seoul",
-    "allergies": ["Penicillin"],
-    "currentAdmission": {
-      "id": "660e8400-e29b-41d4-a716-446655440001",
-      "admissionNumber": "A2025123456",
-      "admissionDate": "2025-12-25",
-      "admissionTime": "14:30",
-      "diagnosis": "Pneumonia",
-      "room": {
-        "id": "room-uuid",
-        "number": "301",
-        "floor": "3rd Floor Internal Medicine"
-      },
-      "bed": {
-        "id": "bed-uuid",
-        "number": "A"
-      },
-      "attendingDoctor": {
-        "id": "doctor-uuid",
-        "name": "Dr. Lee"
-      },
-      "primaryNurse": {
-        "id": "nurse-uuid",
-        "name": "Nurse Kim"
-      }
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "patientNumber": "P2025001234",
+  "name": "John Doe",
+  "birthDate": "1990-05-15",
+  "gender": "M",
+  "bloodType": "A+",
+  "phone": "010-1234-5678",
+  "emergencyContact": "Jane Doe",
+  "emergencyPhone": "010-9876-5432",
+  "address": "123 Teheran-ro, Gangnam-gu, Seoul",
+  "allergies": ["Penicillin"],
+  "currentAdmission": {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "admissionNumber": "A2025123456",
+    "admissionDate": "2025-12-25",
+    "admissionTime": "14:30",
+    "diagnosis": "Pneumonia",
+    "room": {
+      "id": "room-uuid",
+      "number": "301",
+      "floor": "3rd Floor Internal Medicine"
     },
-    "admissionHistory": [
-      {
-        "id": "prev-admission-uuid",
-        "admissionDate": "2024-06-10",
-        "dischargeDate": "2024-06-20",
-        "diagnosis": "Acute Gastroenteritis"
-      }
-    ]
-  }
+    "bed": {
+      "id": "bed-uuid",
+      "number": "A"
+    },
+    "attendingDoctor": {
+      "id": "doctor-uuid",
+      "name": "Dr. Lee"
+    },
+    "primaryNurse": {
+      "id": "nurse-uuid",
+      "name": "Nurse Kim"
+    }
+  },
+  "admissionHistory": [
+    {
+      "id": "prev-admission-uuid",
+      "admissionDate": "2024-06-10",
+      "dischargeDate": "2024-06-20",
+      "diagnosis": "Acute Gastroenteritis"
+    }
+  ]
 }
 ```
 
@@ -391,21 +401,18 @@ GET /patients/legacy/search
 **Response (200 OK)**
 
 ```json
-{
-  "success": true,
-  "data": [
-    {
-      "legacyId": "L2020001234",
-      "name": "John Doe",
-      "birthDate": "1990-05-15",
-      "gender": "M",
-      "ssn": "900515-1******",
-      "phone": "010-****-5678",
-      "bloodType": "A+",
-      "insuranceType": "NATIONAL"
-    }
-  ]
-}
+[
+  {
+    "legacyId": "L2020001234",
+    "name": "John Doe",
+    "birthDate": "1990-05-15",
+    "gender": "M",
+    "ssn": "900515-1******",
+    "phone": "010-****-5678",
+    "bloodType": "A+",
+    "insuranceType": "NATIONAL"
+  }
+]
 ```
 
 #### 3.5.2 Get Legacy Patient Details
@@ -418,19 +425,16 @@ GET /patients/legacy/{legacyId}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "legacyId": "L2020001234",
-    "name": "John Doe",
-    "birthDate": "1990-05-15",
-    "gender": "M",
-    "ssn": "900515-1******",
-    "phone": "010-****-5678",
-    "address": "*** Teheran-ro, Gangnam-gu, Seoul",
-    "bloodType": "A+",
-    "insuranceType": "NATIONAL",
-    "insuranceNumber": "12345*****"
-  }
+  "legacyId": "L2020001234",
+  "name": "John Doe",
+  "birthDate": "1990-05-15",
+  "gender": "M",
+  "ssn": "900515-1******",
+  "phone": "010-****-5678",
+  "address": "*** Teheran-ro, Gangnam-gu, Seoul",
+  "bloodType": "A+",
+  "insuranceType": "NATIONAL",
+  "insuranceNumber": "12345*****"
 }
 ```
 
@@ -444,35 +448,32 @@ GET /patients/legacy/{legacyId}/medical-history
 
 ```json
 {
-  "success": true,
-  "data": {
-    "legacyId": "L2020001234",
-    "diagnoses": [
-      {
-        "code": "J18.9",
-        "name": "Pneumonia",
-        "diagnosedAt": "2024-06-10",
-        "status": "RESOLVED"
-      }
-    ],
-    "medications": [
-      {
-        "name": "Aspirin",
-        "dosage": "100mg",
-        "frequency": "QD",
-        "startDate": "2024-01-01"
-      }
-    ],
-    "allergies": ["Penicillin"],
-    "surgeries": [
-      {
-        "name": "Appendectomy",
-        "performedAt": "2020-03-15",
-        "hospital": "Seoul General Hospital"
-      }
-    ],
-    "lastVisitDate": "2024-12-01"
-  }
+  "legacyId": "L2020001234",
+  "diagnoses": [
+    {
+      "code": "J18.9",
+      "name": "Pneumonia",
+      "diagnosedAt": "2024-06-10",
+      "status": "RESOLVED"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Aspirin",
+      "dosage": "100mg",
+      "frequency": "QD",
+      "startDate": "2024-01-01"
+    }
+  ],
+  "allergies": ["Penicillin"],
+  "surgeries": [
+    {
+      "name": "Appendectomy",
+      "performedAt": "2020-03-15",
+      "hospital": "Seoul General Hospital"
+    }
+  ],
+  "lastVisitDate": "2024-12-01"
 }
 ```
 
@@ -486,15 +487,12 @@ POST /patients/legacy/{legacyId}/import
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "new-patient-uuid",
-    "patientNumber": "P2025001234",
-    "name": "John Doe",
-    "birthDate": "1990-05-15",
-    "gender": "MALE",
-    "legacyPatientId": "L2020001234"
-  }
+  "id": "new-patient-uuid",
+  "patientNumber": "P2025001234",
+  "name": "John Doe",
+  "birthDate": "1990-05-15",
+  "gender": "MALE",
+  "legacyPatientId": "L2020001234"
 }
 ```
 
@@ -516,10 +514,7 @@ GET /patients/legacy/health
 
 ```json
 {
-  "success": true,
-  "data": {
-    "connected": true
-  }
+  "connected": true
 }
 ```
 
@@ -545,42 +540,39 @@ GET /rooms
 **Response (200 OK)**
 
 ```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "room-uuid-1",
-      "number": "301",
-      "floor": {
-        "id": "floor-uuid",
-        "number": 3,
-        "name": "3rd Floor Internal Medicine"
-      },
-      "roomType": "DOUBLE",
-      "capacity": 2,
-      "currentCount": 1,
-      "status": "AVAILABLE",
-      "beds": [
-        {
-          "id": "bed-uuid-1",
-          "number": "A",
-          "status": "OCCUPIED",
-          "patient": {
-            "id": "patient-uuid",
-            "name": "John Doe",
-            "patientNumber": "P2025001234"
-          }
-        },
-        {
-          "id": "bed-uuid-2",
-          "number": "B",
-          "status": "EMPTY",
-          "patient": null
+[
+  {
+    "id": "room-uuid-1",
+    "number": "301",
+    "floor": {
+      "id": "floor-uuid",
+      "number": 3,
+      "name": "3rd Floor Internal Medicine"
+    },
+    "roomType": "DOUBLE",
+    "capacity": 2,
+    "currentCount": 1,
+    "status": "AVAILABLE",
+    "beds": [
+      {
+        "id": "bed-uuid-1",
+        "number": "A",
+        "status": "OCCUPIED",
+        "patient": {
+          "id": "patient-uuid",
+          "name": "John Doe",
+          "patientNumber": "P2025001234"
         }
-      ]
-    }
-  ]
-}
+      },
+      {
+        "id": "bed-uuid-2",
+        "number": "B",
+        "status": "EMPTY",
+        "patient": null
+      }
+    ]
+  }
+]
 ```
 
 ### 4.2 Floor Room Dashboard
@@ -593,31 +585,28 @@ GET /rooms/dashboard/floor/{floorId}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "floor": {
-      "id": "floor-uuid",
-      "number": 3,
-      "name": "3rd Floor Internal Medicine",
-      "building": "Main Building"
-    },
-    "summary": {
-      "totalBeds": 30,
-      "occupiedBeds": 22,
-      "emptyBeds": 6,
-      "maintenanceBeds": 2,
-      "occupancyRate": 73.3
-    },
-    "rooms": [
-      {
-        "id": "room-uuid",
-        "number": "301",
-        "status": "AVAILABLE",
-        "beds": [...]
-      }
-    ],
-    "updatedAt": "2025-12-29T10:30:00Z"
-  }
+  "floor": {
+    "id": "floor-uuid",
+    "number": 3,
+    "name": "3rd Floor Internal Medicine",
+    "building": "Main Building"
+  },
+  "summary": {
+    "totalBeds": 30,
+    "occupiedBeds": 22,
+    "emptyBeds": 6,
+    "maintenanceBeds": 2,
+    "occupancyRate": 73.3
+  },
+  "rooms": [
+    {
+      "id": "room-uuid",
+      "number": "301",
+      "status": "AVAILABLE",
+      "beds": [...]
+    }
+  ],
+  "updatedAt": "2025-12-29T10:30:00Z"
 }
 ```
 
@@ -665,15 +654,12 @@ POST /admissions
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "admission-uuid",
-    "admissionNumber": "A2025123456",
-    "patient": { ... },
-    "bed": { ... },
-    "status": "ACTIVE",
-    "createdAt": "2025-12-29T14:30:00Z"
-  }
+  "id": "admission-uuid",
+  "admissionNumber": "A2025123456",
+  "patient": { ... },
+  "bed": { ... },
+  "status": "ACTIVE",
+  "createdAt": "2025-12-29T14:30:00Z"
 }
 ```
 
@@ -745,16 +731,13 @@ GET /admissions/by-number/{admissionNumber}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "admission-uuid",
-    "admissionNumber": "A2025123456",
-    "patient": { ... },
-    "bed": { ... },
-    "status": "ACTIVE",
-    "transfers": [ ... ],
-    "discharge": null
-  }
+  "id": "admission-uuid",
+  "admissionNumber": "A2025123456",
+  "patient": { ... },
+  "bed": { ... },
+  "status": "ACTIVE",
+  "transfers": [ ... ],
+  "discharge": null
 }
 ```
 
@@ -787,22 +770,19 @@ GET /admissions/{admissionId}/transfers
 **Response (200 OK)**
 
 ```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "transfer-uuid",
-      "admissionId": "admission-uuid",
-      "fromBedId": "old-bed-uuid",
-      "toBedId": "new-bed-uuid",
-      "transferDate": "2025-12-29",
-      "transferTime": "10:00",
-      "reason": "Room upgrade request",
-      "transferredBy": "user-uuid",
-      "createdAt": "2025-12-29T10:00:00Z"
-    }
-  ]
-}
+[
+  {
+    "id": "transfer-uuid",
+    "admissionId": "admission-uuid",
+    "fromBedId": "old-bed-uuid",
+    "toBedId": "new-bed-uuid",
+    "transferDate": "2025-12-29",
+    "transferTime": "10:00",
+    "reason": "Room upgrade request",
+    "transferredBy": "user-uuid",
+    "createdAt": "2025-12-29T10:00:00Z"
+  }
+]
 ```
 
 ---
@@ -850,25 +830,22 @@ GET /admissions/{admissionId}/vitals
 **Response (200 OK)**
 
 ```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "vital-uuid",
-      "measuredAt": "2025-12-29T08:00:00Z",
-      "temperature": 36.5,
-      "systolicBp": 120,
-      "diastolicBp": 80,
-      "pulseRate": 72,
-      "respiratoryRate": 18,
-      "oxygenSaturation": 98,
-      "recordedBy": {
-        "id": "nurse-uuid",
-        "name": "Nurse Kim"
-      }
+[
+  {
+    "id": "vital-uuid",
+    "measuredAt": "2025-12-29T08:00:00Z",
+    "temperature": 36.5,
+    "systolicBp": 120,
+    "diastolicBp": 80,
+    "pulseRate": 72,
+    "respiratoryRate": 18,
+    "oxygenSaturation": 98,
+    "recordedBy": {
+      "id": "nurse-uuid",
+      "name": "Nurse Kim"
     }
-  ]
-}
+  }
+]
 ```
 
 ### 6.3 Daily Report API (Aggregated Reports)
@@ -890,34 +867,31 @@ GET /admissions/{admissionId}/daily-reports/{date}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "report-uuid",
-    "admissionId": "admission-uuid",
-    "reportDate": "2025-12-29",
-    "vitalsSummary": {
-      "measurementCount": 6,
-      "temperature": { "min": 36.2, "max": 37.0, "avg": 36.5, "count": 6 },
-      "bloodPressure": {
-        "systolic": { "min": 110, "max": 130, "avg": 120, "count": 6 },
-        "diastolic": { "min": 70, "max": 85, "avg": 78, "count": 6 }
-      },
-      "pulseRate": { "min": 68, "max": 82, "avg": 74, "count": 6 },
-      "respiratoryRate": { "min": 14, "max": 18, "avg": 16, "count": 6 },
-      "oxygenSaturation": { "min": 96, "max": 99, "avg": 98, "count": 6 },
-      "alertCount": 0
+  "id": "report-uuid",
+  "admissionId": "admission-uuid",
+  "reportDate": "2025-12-29",
+  "vitalsSummary": {
+    "measurementCount": 6,
+    "temperature": { "min": 36.2, "max": 37.0, "avg": 36.5, "count": 6 },
+    "bloodPressure": {
+      "systolic": { "min": 110, "max": 130, "avg": 120, "count": 6 },
+      "diastolic": { "min": 70, "max": 85, "avg": 78, "count": 6 }
     },
-    "totalIntake": 2300,
-    "totalOutput": 1900,
-    "ioBalance": 400,
-    "medicationsGiven": 8,
-    "medicationsHeld": 1,
-    "patientStatus": "STABLE",
-    "summary": null,
-    "alerts": [],
-    "generatedAt": "2025-12-30T00:01:00Z",
-    "generatedBy": null
-  }
+    "pulseRate": { "min": 68, "max": 82, "avg": 74, "count": 6 },
+    "respiratoryRate": { "min": 14, "max": 18, "avg": 16, "count": 6 },
+    "oxygenSaturation": { "min": 96, "max": 99, "avg": 98, "count": 6 },
+    "alertCount": 0
+  },
+  "totalIntake": 2300,
+  "totalOutput": 1900,
+  "ioBalance": 400,
+  "medicationsGiven": 8,
+  "medicationsHeld": 1,
+  "patientStatus": "STABLE",
+  "summary": null,
+  "alerts": [],
+  "generatedAt": "2025-12-30T00:01:00Z",
+  "generatedBy": null
 }
 ```
 
@@ -945,49 +919,46 @@ Returns a real-time aggregated summary without persisting to database.
 
 ```json
 {
-  "success": true,
-  "data": {
-    "admissionId": "admission-uuid",
-    "date": "2025-12-29",
-    "vitalsSummary": { ... },
-    "ioBalance": {
-      "intake": {
-        "oral": 800,
-        "iv": 1500,
-        "tubeFeeding": 0,
-        "other": 0,
-        "total": 2300
-      },
-      "output": {
-        "urine": 1800,
-        "stool": 100,
-        "vomit": 0,
-        "drainage": 0,
-        "other": 0,
-        "total": 1900
-      },
-      "balance": 400,
-      "status": "NORMAL"
+  "admissionId": "admission-uuid",
+  "date": "2025-12-29",
+  "vitalsSummary": { ... },
+  "ioBalance": {
+    "intake": {
+      "oral": 800,
+      "iv": 1500,
+      "tubeFeeding": 0,
+      "other": 0,
+      "total": 2300
     },
-    "medicationCompliance": {
-      "scheduled": 10,
-      "administered": 8,
-      "held": 1,
-      "refused": 0,
-      "missed": 1,
-      "complianceRate": 80
+    "output": {
+      "urine": 1800,
+      "stool": 100,
+      "vomit": 0,
+      "drainage": 0,
+      "other": 0,
+      "total": 1900
     },
-    "significantNotes": [
-      {
-        "id": "note-uuid",
-        "noteType": "ASSESSMENT",
-        "summary": "Patient condition stable",
-        "recordedAt": "2025-12-29T08:00:00Z"
-      }
-    ],
-    "alerts": [],
-    "patientStatus": "STABLE"
-  }
+    "balance": 400,
+    "status": "NORMAL"
+  },
+  "medicationCompliance": {
+    "scheduled": 10,
+    "administered": 8,
+    "held": 1,
+    "refused": 0,
+    "missed": 1,
+    "complianceRate": 80
+  },
+  "significantNotes": [
+    {
+      "id": "note-uuid",
+      "noteType": "ASSESSMENT",
+      "summary": "Patient condition stable",
+      "recordedAt": "2025-12-29T08:00:00Z"
+    }
+  ],
+  "alerts": [],
+  "patientStatus": "STABLE"
 }
 ```
 
@@ -1027,7 +998,6 @@ GET /admissions/{admissionId}/daily-reports
 
 ```json
 {
-  "success": true,
   "data": [
     {
       "id": "report-uuid-1",
@@ -1051,12 +1021,12 @@ GET /admissions/{admissionId}/daily-reports
     }
   ],
   "meta": {
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 5,
-      "totalPages": 1
-    }
+    "total": 5,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
   }
 }
 ```
@@ -1358,18 +1328,15 @@ POST /rounds
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "round-uuid",
-    "roundNumber": "R2025122901",
-    "floorId": "floor-uuid",
-    "roundType": "MORNING",
-    "scheduledDate": "2025-12-29",
-    "scheduledTime": "09:00:00",
-    "status": "PLANNED",
-    "leadDoctorId": "doctor-uuid",
-    "validTransitions": ["IN_PROGRESS", "CANCELLED"]
-  }
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "status": "PLANNED",
+  "leadDoctorId": "doctor-uuid",
+  "validTransitions": ["IN_PROGRESS", "CANCELLED"]
 }
 ```
 
@@ -1402,22 +1369,19 @@ GET /rounds/{roundId}
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "round-uuid",
-    "roundNumber": "R2025122901",
-    "floorId": "floor-uuid",
-    "roundType": "MORNING",
-    "scheduledDate": "2025-12-29",
-    "scheduledTime": "09:00:00",
-    "startedAt": "2025-12-29T09:05:00Z",
-    "completedAt": null,
-    "pausedAt": null,
-    "status": "IN_PROGRESS",
-    "leadDoctorId": "doctor-uuid",
-    "records": [],
-    "validTransitions": ["PAUSED", "COMPLETED"]
-  }
+  "id": "round-uuid",
+  "roundNumber": "R2025122901",
+  "floorId": "floor-uuid",
+  "roundType": "MORNING",
+  "scheduledDate": "2025-12-29",
+  "scheduledTime": "09:00:00",
+  "startedAt": "2025-12-29T09:05:00Z",
+  "completedAt": null,
+  "pausedAt": null,
+  "status": "IN_PROGRESS",
+  "leadDoctorId": "doctor-uuid",
+  "records": [],
+  "validTransitions": ["PAUSED", "COMPLETED"]
 }
 ```
 
@@ -1471,49 +1435,46 @@ GET /rounds/{roundId}/patients
 
 ```json
 {
-  "success": true,
-  "data": {
-    "roundId": "round-uuid",
-    "roundNumber": "R2025122901",
-    "patients": [
-      {
-        "admissionId": "admission-uuid",
-        "patient": {
-          "id": "patient-uuid",
-          "patientNumber": "P2025000001",
-          "name": "Hong Gildong",
-          "age": 65,
-          "gender": "MALE",
-          "birthDate": "1960-05-15"
-        },
-        "bed": {
-          "id": "bed-uuid",
-          "roomNumber": "301",
-          "bedNumber": "A",
-          "roomName": "Internal Medicine 301"
-        },
-        "admission": {
-          "diagnosis": "Pneumonia",
-          "admissionDate": "2025-12-25",
-          "admissionDays": 4
-        },
-        "latestVitals": {
-          "temperature": 36.8,
-          "bloodPressure": "120/80",
-          "pulseRate": 72,
-          "oxygenSaturation": 98,
-          "hasAlert": false,
-          "measuredAt": "2025-12-29T08:00:00Z"
-        },
-        "previousRoundNote": "Patient improving",
-        "existingRecordId": null,
-        "isVisited": false
-      }
-    ],
-    "totalPatients": 12,
-    "visitedCount": 5,
-    "progress": 42
-  }
+  "roundId": "round-uuid",
+  "roundNumber": "R2025122901",
+  "patients": [
+    {
+      "admissionId": "admission-uuid",
+      "patient": {
+        "id": "patient-uuid",
+        "patientNumber": "P2025000001",
+        "name": "Hong Gildong",
+        "age": 65,
+        "gender": "MALE",
+        "birthDate": "1960-05-15"
+      },
+      "bed": {
+        "id": "bed-uuid",
+        "roomNumber": "301",
+        "bedNumber": "A",
+        "roomName": "Internal Medicine 301"
+      },
+      "admission": {
+        "diagnosis": "Pneumonia",
+        "admissionDate": "2025-12-25",
+        "admissionDays": 4
+      },
+      "latestVitals": {
+        "temperature": 36.8,
+        "bloodPressure": "120/80",
+        "pulseRate": 72,
+        "oxygenSaturation": 98,
+        "hasAlert": false,
+        "measuredAt": "2025-12-29T08:00:00Z"
+      },
+      "previousRoundNote": "Patient improving",
+      "existingRecordId": null,
+      "isVisited": false
+    }
+  ],
+  "totalPatients": 12,
+  "visitedCount": 5,
+  "progress": 42
 }
 ```
 
@@ -1541,17 +1502,14 @@ POST /rounds/{roundId}/records
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": "record-uuid",
-    "roundId": "round-uuid",
-    "admissionId": "admission-uuid",
-    "visitOrder": 1,
-    "patientStatus": "STABLE",
-    "observation": "V/S stable, meal intake good",
-    "visitedAt": "2025-12-29T09:15:00Z",
-    "recordedBy": "doctor-uuid"
-  }
+  "id": "record-uuid",
+  "roundId": "round-uuid",
+  "admissionId": "admission-uuid",
+  "visitOrder": 1,
+  "patientStatus": "STABLE",
+  "observation": "V/S stable, meal intake good",
+  "visitedAt": "2025-12-29T09:15:00Z",
+  "recordedBy": "doctor-uuid"
 }
 ```
 
