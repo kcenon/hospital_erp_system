@@ -8,7 +8,7 @@
 
 | Item                | Content                             |
 | ------------------- | ----------------------------------- |
-| Document Version    | 1.0.0                               |
+| Document Version    | 1.1.0                               |
 | Created Date        | 2025-12-29                          |
 | Status              | Draft                               |
 | Maintainer          | kcenon@naver.com                    |
@@ -19,9 +19,10 @@
 
 ## Document History
 
-| Version | Date       | Author | Changes       |
-| ------- | ---------- | ------ | ------------- |
-| 1.0.0   | 2025-12-29 | -      | Initial draft |
+| Version | Date       | Author | Changes                         |
+| ------- | ---------- | ------ | ------------------------------- |
+| 1.0.0   | 2025-12-29 | -      | Initial draft                   |
+| 1.1.0   | 2026-02-03 | -      | Add Health Module (Section 4.8) |
 
 ---
 
@@ -73,7 +74,8 @@ SDS Scope
 │   ├── Admission/Discharge Module (Admission)
 │   ├── Report/Journal Module (Report)
 │   ├── Rounding Module (Rounding)
-│   └── Admin Module (Admin)
+│   ├── Admin Module (Admin)
+│   └── Health Module (Health)
 │
 ├── Data Design
 │   ├── Logical Data Model
@@ -1088,6 +1090,93 @@ export class AuditService {
 ```
 
 > **Traceability**: REQ-NFR-030~033 -> AuditService
+
+### 4.8 Health Module
+
+#### 4.8.1 Module Overview
+
+| Item                      | Content                                                           |
+| ------------------------- | ----------------------------------------------------------------- |
+| **Responsibility**        | Health checks for Kubernetes probes and infrastructure monitoring |
+| **Related Requirements**  | REQ-NFR-040 (System Availability)                                 |
+| **External Dependencies** | Prisma (Database connection check)                                |
+
+#### 4.8.2 Health Service
+
+```typescript
+// Health Service (REQ-NFR-040)
+export interface HealthCheckResult {
+  status: 'ok' | 'error';
+  timestamp: string;
+  uptime: number;
+  checks?: {
+    database?: 'ok' | 'error';
+  };
+}
+
+@Injectable()
+export class HealthService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  // Full health check - verifies all dependencies
+  async check(): Promise<HealthCheckResult> {
+    const result: HealthCheckResult = {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      checks: { database: 'ok' },
+    };
+
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+    } catch {
+      result.status = 'error';
+      result.checks!.database = 'error';
+      throw new ServiceUnavailableException(result);
+    }
+    return result;
+  }
+
+  // Liveness probe - basic process check (no dependencies)
+  live(): { status: string; timestamp: string } {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  }
+
+  // Readiness probe - full dependency check
+  async ready(): Promise<HealthCheckResult> {
+    return this.check();
+  }
+}
+```
+
+#### 4.8.3 API Endpoints
+
+| Endpoint        | Method | Description                             | Authentication |
+| --------------- | ------ | --------------------------------------- | -------------- |
+| `/health`       | GET    | Full health check with all dependencies | Not required   |
+| `/health/live`  | GET    | Kubernetes liveness probe               | Not required   |
+| `/health/ready` | GET    | Kubernetes readiness probe              | Not required   |
+
+#### 4.8.4 Kubernetes Integration
+
+```yaml
+# Example Kubernetes probe configuration
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 15
+
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+```
+
+> **Traceability**: REQ-NFR-040 -> HealthService
 
 ---
 

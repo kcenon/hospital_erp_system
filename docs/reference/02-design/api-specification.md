@@ -4,7 +4,7 @@
 
 | Item             | Content                        |
 | ---------------- | ------------------------------ |
-| Document Version | 0.4.0.0                        |
+| Document Version | 0.5.0.0                        |
 | Created Date     | 2025-12-29                     |
 | Last Updated     | 2026-02-03                     |
 | Owner            | kcenon@naver.com               |
@@ -2137,9 +2137,166 @@ const socket = io('wss://api.hospital-erp.com', {
 
 ---
 
-## 10. Error Code Definitions
+## 10. Health Check API
 
-### 10.1 Authentication Related
+Health check endpoints for Kubernetes probes and infrastructure monitoring. These endpoints do not require authentication.
+
+### 10.1 Full Health Check
+
+```http
+GET /health
+```
+
+Performs a comprehensive health check including all dependencies (database, etc.).
+
+**Authentication**: Not required
+
+**Response (200 OK)**
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-12-29T10:30:00.000Z",
+  "uptime": 86400.123,
+  "checks": {
+    "database": "ok"
+  }
+}
+```
+
+**Response (503 Service Unavailable)**
+
+```json
+{
+  "status": "error",
+  "timestamp": "2025-12-29T10:30:00.000Z",
+  "uptime": 86400.123,
+  "checks": {
+    "database": "error"
+  }
+}
+```
+
+**Response Fields**
+
+| Field           | Type   | Description                             |
+| --------------- | ------ | --------------------------------------- |
+| status          | string | Overall health status (`ok` or `error`) |
+| timestamp       | string | ISO 8601 timestamp of the check         |
+| uptime          | number | Server uptime in seconds                |
+| checks          | object | Individual component health statuses    |
+| checks.database | string | Database connection status              |
+
+### 10.2 Liveness Probe
+
+```http
+GET /health/live
+```
+
+Kubernetes liveness probe endpoint. Returns immediately without checking dependencies. Used to determine if the application process is running and should not be restarted.
+
+**Authentication**: Not required
+
+**Response (200 OK)**
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-12-29T10:30:00.000Z"
+}
+```
+
+**Response Fields**
+
+| Field     | Type   | Description                     |
+| --------- | ------ | ------------------------------- |
+| status    | string | Always `ok` if process is alive |
+| timestamp | string | ISO 8601 timestamp of the check |
+
+**Usage Notes**
+
+- This endpoint always returns 200 OK if the application is running
+- No external dependencies are checked
+- Suitable for Kubernetes `livenessProbe` configuration
+
+### 10.3 Readiness Probe
+
+```http
+GET /health/ready
+```
+
+Kubernetes readiness probe endpoint. Checks if the application is ready to accept traffic by verifying all dependencies.
+
+**Authentication**: Not required
+
+**Response (200 OK)**
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-12-29T10:30:00.000Z",
+  "uptime": 86400.123,
+  "checks": {
+    "database": "ok"
+  }
+}
+```
+
+**Response (503 Service Unavailable)**
+
+Returns the same structure as `/health` with `status: "error"` when dependencies are unavailable.
+
+**Usage Notes**
+
+- Returns 503 if database is not connected
+- Kubernetes will stop routing traffic to this pod until it returns 200
+- Suitable for Kubernetes `readinessProbe` configuration
+
+### 10.4 Kubernetes Configuration Example
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hospital-erp-backend
+spec:
+  containers:
+    - name: backend
+      image: hospital-erp-backend:latest
+      ports:
+        - containerPort: 3000
+      livenessProbe:
+        httpGet:
+          path: /health/live
+          port: 3000
+        initialDelaySeconds: 10
+        periodSeconds: 15
+        timeoutSeconds: 5
+        failureThreshold: 3
+      readinessProbe:
+        httpGet:
+          path: /health/ready
+          port: 3000
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+```
+
+**Probe Configuration Guidelines**
+
+| Parameter           | Liveness Probe | Readiness Probe | Description                        |
+| ------------------- | -------------- | --------------- | ---------------------------------- |
+| initialDelaySeconds | 10             | 5               | Wait before first probe            |
+| periodSeconds       | 15             | 10              | Interval between probes            |
+| timeoutSeconds      | 5              | 5               | Timeout for each probe             |
+| failureThreshold    | 3              | 3               | Consecutive failures before action |
+
+---
+
+## 11. Error Code Definitions
+
+### 11.1 Authentication Related
 
 | Code                          | Message                      | HTTP |
 | ----------------------------- | ---------------------------- | ---- |
@@ -2148,7 +2305,7 @@ const socket = io('wss://api.hospital-erp.com', {
 | AUTH_TOKEN_INVALID            | Invalid token                | 401  |
 | AUTH_INSUFFICIENT_PERMISSIONS | Insufficient permissions     | 403  |
 
-### 10.2 Patient Related
+### 11.2 Patient Related
 
 | Code                         | Message                           | HTTP |
 | ---------------------------- | --------------------------------- | ---- |
@@ -2156,7 +2313,7 @@ const socket = io('wss://api.hospital-erp.com', {
 | PATIENT_ALREADY_EXISTS       | Patient number already registered | 409  |
 | PATIENT_HAS_ACTIVE_ADMISSION | Patient is currently admitted     | 409  |
 
-### 10.3 Room Related
+### 11.3 Room Related
 
 | Code                 | Message                 | HTTP |
 | -------------------- | ----------------------- | ---- |
@@ -2164,7 +2321,7 @@ const socket = io('wss://api.hospital-erp.com', {
 | BED_NOT_AVAILABLE    | Bed is not available    | 409  |
 | BED_ALREADY_OCCUPIED | Bed is already occupied | 409  |
 
-### 10.4 Admission Related
+### 11.4 Admission Related
 
 | Code                         | Message                         | HTTP |
 | ---------------------------- | ------------------------------- | ---- |
@@ -2172,7 +2329,7 @@ const socket = io('wss://api.hospital-erp.com', {
 | ADMISSION_ALREADY_DISCHARGED | Patient already discharged      | 409  |
 | TRANSFER_SAME_BED            | Cannot transfer to the same bed | 400  |
 
-### 10.5 Legacy System Related
+### 11.5 Legacy System Related
 
 | Code                      | Message                              | HTTP |
 | ------------------------- | ------------------------------------ | ---- |
@@ -2180,7 +2337,7 @@ const socket = io('wss://api.hospital-erp.com', {
 | PATIENT_ALREADY_IMPORTED  | Patient already imported from legacy | 409  |
 | LEGACY_SYSTEM_UNAVAILABLE | Legacy system connection failed      | 503  |
 
-### 10.6 Rounding Related
+### 11.6 Rounding Related
 
 | Code                     | Message                                      | HTTP |
 | ------------------------ | -------------------------------------------- | ---- |
