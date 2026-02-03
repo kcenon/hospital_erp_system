@@ -2,14 +2,14 @@
 
 ## Document Information
 
-| Item             | Content                           |
-| ---------------- | --------------------------------- |
-| Document Version | 0.2.0.0                           |
-| Created Date     | 2025-12-29                        |
-| Last Updated     | 2026-02-03                        |
-| Owner            | kcenon@naver.com                  |
-| API Version      | v1                                |
-| Base URL         | `https://api.hospital-erp.com/v1` |
+| Item             | Content                        |
+| ---------------- | ------------------------------ |
+| Document Version | 0.3.0.0                        |
+| Created Date     | 2025-12-29                     |
+| Last Updated     | 2026-02-03                     |
+| Owner            | kcenon@naver.com               |
+| API Version      | 1.0                            |
+| Base URL         | `https://api.hospital-erp.com` |
 
 ---
 
@@ -21,7 +21,7 @@
 | ----------------- | ------------------------------------------------ |
 | **RESTful**       | Resource-centric design, HTTP method utilization |
 | **JSON**          | Request/response body in JSON format             |
-| **Versioning**    | Version included in URL path (/v1/)              |
+| **Versioning**    | Single-version API (see Section 1.6)             |
 | **Consistency**   | Unified naming conventions and response format   |
 | **Documentation** | Auto-generated OpenAPI 3.0 (Swagger)             |
 
@@ -129,6 +129,82 @@ For validation errors (HTTP 400/422), the message may be an array:
 | 422  | Unprocessable     | Validation failed          |
 | 429  | Too Many Requests | Rate limit exceeded        |
 | 500  | Internal Error    | Server error               |
+
+### 1.5 API Versioning Strategy
+
+#### Current Approach
+
+This API uses a **single-version approach without URL path versioning**. All endpoints are accessed directly without a version prefix:
+
+```
+https://api.hospital-erp.com/patients
+https://api.hospital-erp.com/admissions
+https://api.hospital-erp.com/rounds
+```
+
+#### Rationale
+
+The single-version approach was chosen for the initial release based on:
+
+| Consideration       | Decision                                                  |
+| ------------------- | --------------------------------------------------------- |
+| **Simplicity**      | Reduces complexity for initial development and deployment |
+| **Early Stage**     | No existing clients require backward compatibility        |
+| **Rapid Iteration** | Allows faster feature development without version burden  |
+| **Single Client**   | Primary consumer is the internal frontend application     |
+
+#### Future Versioning Plan
+
+When breaking changes become necessary, the following strategies will be considered:
+
+| Strategy            | Format                | Pros             | Cons                         |
+| ------------------- | --------------------- | ---------------- | ---------------------------- |
+| **URL Path**        | `/v2/patients`        | Clear, cacheable | URL proliferation            |
+| **Header**          | `Accept-Version: v2`  | Clean URLs       | Less visible, harder to test |
+| **Query Parameter** | `/patients?version=2` | Flexible         | Not RESTful, cache issues    |
+
+**Recommended**: URL path versioning will be adopted when version 2 is introduced:
+
+```typescript
+// NestJS implementation
+app.setGlobalPrefix('v1'); // For version 1
+app.setGlobalPrefix('v2'); // For version 2 (separate deployment)
+```
+
+#### Breaking Change Policy
+
+Changes that constitute breaking changes:
+
+- Removing an endpoint or HTTP method
+- Removing or renaming a required field
+- Changing field data types
+- Modifying authentication requirements
+- Changing error response structure
+
+Non-breaking changes (allowed without versioning):
+
+- Adding new endpoints
+- Adding optional fields to requests/responses
+- Adding new enum values (with client guidance)
+- Performance improvements
+- Bug fixes
+
+#### Deprecation Guidelines
+
+When deprecating features:
+
+1. **Announcement**: Document deprecation at least 30 days before removal
+2. **Warning Header**: Add `Deprecation` header to affected endpoints
+3. **Migration Guide**: Provide documentation for transitioning to new API
+4. **Sunset Date**: Clearly communicate the removal date
+
+Example deprecation header:
+
+```http
+Deprecation: true
+Sunset: Sat, 01 Mar 2026 00:00:00 GMT
+Link: <https://docs.hospital-erp.com/migration/v2>; rel="successor-version"
+```
 
 ---
 
@@ -1884,7 +1960,7 @@ info:
   description: RESTful API for Inpatient Management
 
 servers:
-  - url: https://api.hospital-erp.com/v1
+  - url: https://api.hospital-erp.com
     description: Production
 
 security:
