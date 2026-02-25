@@ -33,6 +33,7 @@ export function createTestAdmission(overrides?: Partial<Admission>): Admission {
     createdAt: now,
     updatedAt: now,
     createdBy: faker.string.uuid(),
+    deletedAt: null,
     ...overrides,
   };
 }
