@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Patient, PatientDetail } from '@prisma/client';
+import { PrismaService } from '../../prisma';
 import { PatientRepository, PatientWithDetail } from './patient.repository';
 import { PatientNumberGenerator } from './patient-number.generator';
 import { DataMaskingService, UserRole } from './data-masking.service';
@@ -30,6 +31,7 @@ export class PatientService {
     private readonly patientNumberGenerator: PatientNumberGenerator,
     private readonly dataMaskingService: DataMaskingService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(dto: CreatePatientDto): Promise<PatientResponseDto> {
@@ -252,6 +254,65 @@ export class PatientService {
       insuranceNumber: insuranceResult.value,
       insuranceCompany: detail.insuranceCompany,
       notes: detail.notes,
+    };
+  }
+
+  async findHistory(
+    patientId: string,
+    options: {
+      page?: number;
+      limit?: number;
+      from?: string;
+      to?: string;
+    },
+  ) {
+    const patient = await this.repository.findById(patientId);
+    if (!patient) {
+      throw new NotFoundException(`Patient ${patientId} not found`);
+    }
+
+    const page = options.page || 1;
+    const limit = options.limit || 20;
+    const where: Record<string, unknown> = { patientId };
+
+    if (options.from || options.to) {
+      const changedAt: Record<string, Date> = {};
+      if (options.from) changedAt.gte = new Date(options.from);
+      if (options.to) changedAt.lte = new Date(options.to);
+      where.changedAt = changedAt;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.patientHistory.findMany({
+        where,
+        orderBy: { changedAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          changer: {
+            select: { id: true, username: true, name: true },
+          },
+        },
+      }),
+      this.prisma.patientHistory.count({ where }),
+    ]);
+
+    return {
+      data: data.map((h) => ({
+        id: h.id,
+        patientId: h.patientId,
+        changedBy: h.changedBy,
+        changerName: h.changer.name || h.changer.username,
+        changedAt: h.changedAt,
+        changeType: h.changeType,
+        fieldName: h.fieldName,
+        oldValue: h.oldValue,
+        newValue: h.newValue,
+      })),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     };
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -16,6 +16,7 @@ import { Permissions } from '../auth/constants';
 import { AdmissionStatus } from '@prisma/client';
 import {
   CreateAdmissionDto,
+  UpdateAdmissionDto,
   TransferDto,
   DischargeDto,
   FindAdmissionsDto,
@@ -113,6 +114,21 @@ export class AdmissionController {
     @Query('status') status?: AdmissionStatus,
   ): Promise<AdmissionResponseDto[]> {
     return this.admissionService.findByFloor(floorId, status);
+  }
+
+  @ApiOperation({ summary: 'Update admission details' })
+  @ApiParam({ name: 'id', description: 'Admission ID', format: 'uuid' })
+  @ApiResponse({ status: 200, description: 'Admission updated', type: AdmissionResponseDto })
+  @ApiResponse({ status: 400, description: 'Admission is not active' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Admission not found' })
+  @RequirePermission(Permissions.ADMISSION_UPDATE)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateAdmissionDto,
+  ): Promise<AdmissionResponseDto> {
+    return this.admissionService.updateAdmission(id, dto);
   }
 
   @ApiOperation({ summary: 'Find admission by ID' })

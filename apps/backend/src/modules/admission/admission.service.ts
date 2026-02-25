@@ -6,6 +6,7 @@ import { AdmissionNumberGenerator } from './admission-number.generator';
 import { BedService } from '../room/bed.service';
 import {
   CreateAdmissionDto,
+  UpdateAdmissionDto,
   TransferDto,
   DischargeDto,
   FindAdmissionsDto,
@@ -211,6 +212,30 @@ export class AdmissionService {
     });
 
     return this.toDischargeResponseDto(discharge);
+  }
+
+  async updateAdmission(id: string, dto: UpdateAdmissionDto): Promise<AdmissionResponseDto> {
+    const admission = await this.repository.findById(id);
+    if (!admission) {
+      throw new AdmissionNotFoundException(id);
+    }
+
+    if (admission.status !== AdmissionStatus.ACTIVE) {
+      throw new AdmissionNotActiveException(id);
+    }
+
+    await this.repository.update(id, {
+      diagnosis: dto.diagnosis,
+      attendingDoctorId: dto.attendingDoctorId,
+      primaryNurseId: dto.primaryNurseId,
+      expectedDischargeDate: dto.expectedDischargeDate
+        ? new Date(dto.expectedDischargeDate)
+        : undefined,
+      notes: dto.notes,
+    });
+
+    const updated = await this.repository.findById(id);
+    return this.toResponseDto(updated!);
   }
 
   async findById(id: string): Promise<AdmissionResponseDto> {

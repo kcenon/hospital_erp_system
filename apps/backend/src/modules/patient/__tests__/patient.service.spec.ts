@@ -5,6 +5,7 @@ import { PatientService } from '../patient.service';
 import { PatientRepository } from '../patient.repository';
 import { PatientNumberGenerator } from '../patient-number.generator';
 import { DataMaskingService } from '../data-masking.service';
+import { PrismaService } from '../../../prisma';
 import {
   createTestPatient,
   createTestPatientWithDetail,
@@ -41,6 +42,13 @@ describe('PatientService', () => {
     emit: jest.fn(),
   };
 
+  const mockPrismaService = {
+    patientHistory: {
+      findMany: jest.fn().mockResolvedValue([]),
+      count: jest.fn().mockResolvedValue(0),
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,6 +56,7 @@ describe('PatientService', () => {
         { provide: PatientRepository, useValue: mockRepository },
         { provide: PatientNumberGenerator, useValue: mockPatientNumberGenerator },
         { provide: EventEmitter2, useValue: mockEventEmitter },
+        { provide: PrismaService, useValue: mockPrismaService },
         DataMaskingService,
       ],
     }).compile();
