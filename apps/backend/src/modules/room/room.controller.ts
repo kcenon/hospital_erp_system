@@ -1,8 +1,29 @@
-import { Controller, Get, Patch, Post, Param, Query, Body, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Param,
+  Query,
+  Body,
+  ParseUUIDPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { RoomService } from './room.service';
 import { BedService } from './bed.service';
 import { RoomDashboardService } from './room-dashboard.service';
+import { JwtAuthGuard } from '../../common/guards';
+import { PermissionGuard } from '../auth/guards';
+import { RequirePermission } from '../auth/decorators';
+import { Permissions } from '../auth/constants';
 import {
   FindAvailableBedsDto,
   UpdateBedStatusDto,
@@ -15,6 +36,8 @@ import {
 } from './dto';
 
 @ApiTags('rooms')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @Controller('rooms')
 export class RoomController {
   constructor(
@@ -23,6 +46,7 @@ export class RoomController {
     private readonly roomDashboardService: RoomDashboardService,
   ) {}
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get all buildings' })
   @ApiResponse({ status: 200, description: 'Building list', type: [BuildingResponseDto] })
   @Get('buildings')
@@ -30,6 +54,7 @@ export class RoomController {
     return this.roomService.findAllBuildings();
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get building by ID' })
   @ApiParam({ name: 'id', description: 'Building ID' })
   @ApiResponse({ status: 200, description: 'Building found', type: BuildingResponseDto })
@@ -39,6 +64,7 @@ export class RoomController {
     return this.roomService.findBuildingById(id);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get floors by building' })
   @ApiParam({ name: 'buildingId', description: 'Building ID' })
   @ApiResponse({ status: 200, description: 'Floor list', type: [FloorResponseDto] })
@@ -47,6 +73,7 @@ export class RoomController {
     return this.roomService.findFloorsByBuilding(buildingId);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get rooms by floor' })
   @ApiParam({ name: 'floorId', description: 'Floor ID' })
   @ApiResponse({ status: 200, description: 'Room list', type: [RoomResponseDto] })
@@ -55,6 +82,7 @@ export class RoomController {
     return this.roomService.findRoomsByFloor(floorId);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get room by ID' })
   @ApiParam({ name: 'id', description: 'Room ID' })
   @ApiResponse({ status: 200, description: 'Room found', type: RoomResponseDto })
@@ -64,6 +92,7 @@ export class RoomController {
     return this.roomService.findRoomById(id);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get available beds' })
   @ApiResponse({ status: 200, description: 'Available beds', type: [BedResponseDto] })
   @Get('beds/available')
@@ -71,6 +100,7 @@ export class RoomController {
     return this.bedService.findAvailable(query);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get bed by ID' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiResponse({ status: 200, description: 'Bed found', type: BedResponseDto })
@@ -80,6 +110,7 @@ export class RoomController {
     return this.bedService.findById(id);
   }
 
+  @RequirePermission(Permissions.ROOM_ASSIGN)
   @ApiOperation({ summary: 'Update bed status' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiResponse({ status: 200, description: 'Bed status updated', type: BedResponseDto })
@@ -88,6 +119,7 @@ export class RoomController {
     return this.bedService.updateStatus(id, dto);
   }
 
+  @RequirePermission(Permissions.ROOM_ASSIGN)
   @ApiOperation({ summary: 'Occupy bed with admission' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiBody({ schema: { properties: { admissionId: { type: 'string', format: 'uuid' } } } })
@@ -100,6 +132,7 @@ export class RoomController {
     return this.bedService.occupy(id, admissionId);
   }
 
+  @RequirePermission(Permissions.ROOM_ASSIGN)
   @ApiOperation({ summary: 'Release bed' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiResponse({ status: 200, description: 'Bed released', type: BedResponseDto })
@@ -108,6 +141,7 @@ export class RoomController {
     return this.bedService.release(id);
   }
 
+  @RequirePermission(Permissions.ROOM_ASSIGN)
   @ApiOperation({ summary: 'Reserve bed' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiResponse({ status: 200, description: 'Bed reserved', type: BedResponseDto })
@@ -116,6 +150,7 @@ export class RoomController {
     return this.bedService.reserve(id);
   }
 
+  @RequirePermission(Permissions.ROOM_ASSIGN)
   @ApiOperation({ summary: 'Set bed to maintenance' })
   @ApiParam({ name: 'id', description: 'Bed ID' })
   @ApiBody({ schema: { properties: { notes: { type: 'string' } } } })
@@ -125,6 +160,7 @@ export class RoomController {
     return this.bedService.setMaintenance(id, notes);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get all buildings dashboard' })
   @ApiResponse({ status: 200, description: 'Buildings dashboard', type: [BuildingDashboard] })
   @Get('dashboard/buildings')
@@ -132,6 +168,7 @@ export class RoomController {
     return this.roomDashboardService.getAllBuildingsDashboard();
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get building dashboard' })
   @ApiParam({ name: 'buildingId', description: 'Building ID' })
   @ApiResponse({ status: 200, description: 'Building dashboard', type: BuildingDashboard })
@@ -140,6 +177,7 @@ export class RoomController {
     return this.roomDashboardService.getBuildingDashboard(buildingId);
   }
 
+  @RequirePermission(Permissions.ROOM_READ)
   @ApiOperation({ summary: 'Get floor dashboard' })
   @ApiParam({ name: 'floorId', description: 'Floor ID' })
   @ApiResponse({ status: 200, description: 'Floor dashboard', type: FloorDashboard })

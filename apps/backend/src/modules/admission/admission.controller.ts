@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -8,7 +8,11 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { AdmissionService } from './admission.service';
-import { ParseUUIDPipe } from '../../common';
+import { ParseUUIDPipe, CurrentUser } from '../../common';
+import { JwtAuthGuard } from '../../common/guards';
+import { PermissionGuard } from '../auth/guards';
+import { RequirePermission } from '../auth/decorators';
+import { Permissions } from '../auth/constants';
 import { AdmissionStatus } from '@prisma/client';
 import {
   CreateAdmissionDto,
@@ -23,6 +27,7 @@ import {
 
 @ApiTags('admissions')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @Controller('admissions')
 export class AdmissionController {
   constructor(private readonly admissionService: AdmissionService) {}
@@ -36,13 +41,13 @@ export class AdmissionController {
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 409, description: 'Bed is already occupied or patient already admitted' })
+  @RequirePermission(Permissions.ADMISSION_CREATE)
   @Post()
   async create(
     @Body() dto: CreateAdmissionDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<AdmissionResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.admissionService.admitPatient(dto, effectiveUserId);
+    return this.admissionService.admitPatient(dto, user.id);
   }
 
   @ApiOperation({ summary: 'Get all admissions with pagination and filters' })
@@ -52,6 +57,7 @@ export class AdmissionController {
     type: PaginatedAdmissionsResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get()
   async findAll(@Query() dto: FindAdmissionsDto): Promise<PaginatedAdmissionsResponseDto> {
     return this.admissionService.findAll(dto);
@@ -62,6 +68,7 @@ export class AdmissionController {
   @ApiResponse({ status: 200, description: 'Admission found', type: AdmissionResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Admission not found' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get('by-number/:admissionNumber')
   async findByAdmissionNumber(
     @Param('admissionNumber') admissionNumber: string,
@@ -77,6 +84,7 @@ export class AdmissionController {
     type: AdmissionResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get('patient/:patientId/active')
   async findActiveByPatient(
     @Param('patientId', ParseUUIDPipe) patientId: string,
@@ -98,6 +106,7 @@ export class AdmissionController {
     type: [AdmissionResponseDto],
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get('floor/:floorId')
   async findByFloor(
     @Param('floorId', ParseUUIDPipe) floorId: string,
@@ -111,6 +120,7 @@ export class AdmissionController {
   @ApiResponse({ status: 200, description: 'Admission found', type: AdmissionResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Admission not found' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get(':id')
   async findById(@Param('id', ParseUUIDPipe) id: string): Promise<AdmissionResponseDto> {
     return this.admissionService.findById(id);
@@ -127,14 +137,14 @@ export class AdmissionController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Admission not found' })
   @ApiResponse({ status: 409, description: 'Target bed is occupied' })
+  @RequirePermission(Permissions.ADMISSION_UPDATE)
   @Post(':id/transfer')
   async transfer(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: TransferDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<TransferResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.admissionService.transferPatient(id, dto, effectiveUserId);
+    return this.admissionService.transferPatient(id, dto, user.id);
   }
 
   @ApiOperation({ summary: 'Discharge patient' })
@@ -148,14 +158,14 @@ export class AdmissionController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Admission not found' })
   @ApiResponse({ status: 409, description: 'Patient already discharged' })
+  @RequirePermission(Permissions.ADMISSION_UPDATE)
   @Post(':id/discharge')
   async discharge(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: DischargeDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<DischargeResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.admissionService.dischargePatient(id, dto, effectiveUserId);
+    return this.admissionService.dischargePatient(id, dto, user.id);
   }
 
   @ApiOperation({ summary: 'Get transfer history for an admission' })
@@ -163,6 +173,7 @@ export class AdmissionController {
   @ApiResponse({ status: 200, description: 'List of transfers', type: [TransferResponseDto] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Admission not found' })
+  @RequirePermission(Permissions.ADMISSION_READ)
   @Get(':id/transfers')
   async getTransferHistory(@Param('id', ParseUUIDPipe) id: string): Promise<TransferResponseDto[]> {
     return this.admissionService.getTransferHistory(id);

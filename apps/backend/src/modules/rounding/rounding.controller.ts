@@ -1,15 +1,12 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, Headers } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiParam,
-  ApiHeader,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { RoundingService } from './rounding.service';
 import { TabletRoundingService } from './tablet-rounding.service';
-import { ParseUUIDPipe } from '../../common';
+import { ParseUUIDPipe, CurrentUser } from '../../common';
+import { JwtAuthGuard } from '../../common/guards';
+import { PermissionGuard } from '../auth/guards';
+import { RequirePermission } from '../auth/decorators';
+import { Permissions } from '../auth/constants';
 import {
   CreateRoundDto,
   CreateRoundRecordDto,
@@ -23,6 +20,7 @@ import {
 
 @ApiTags('rounds')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @Controller('rounds')
 export class RoundController {
   constructor(
@@ -30,20 +28,20 @@ export class RoundController {
     private readonly tabletRoundingService: TabletRoundingService,
   ) {}
 
+  @RequirePermission(Permissions.ROUND_WRITE)
   @ApiOperation({ summary: 'Create a new rounding session' })
-  @ApiHeader({ name: 'x-user-id', description: 'User ID creating the round', required: false })
   @ApiResponse({ status: 201, description: 'Round created successfully', type: RoundResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post()
   async create(
     @Body() dto: CreateRoundDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<RoundResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.roundingService.createSession(dto, effectiveUserId);
+    return this.roundingService.createSession(dto, user.id);
   }
 
+  @RequirePermission(Permissions.ROUND_READ)
   @ApiOperation({ summary: 'Get all rounding sessions with filters' })
   @ApiResponse({ status: 200, description: 'List of rounds', type: PaginatedRoundsResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -57,6 +55,7 @@ export class RoundController {
   @ApiResponse({ status: 200, description: 'Round details', type: RoundResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_READ)
   @Get('by-number/:roundNumber')
   async findByRoundNumber(@Param('roundNumber') roundNumber: string): Promise<RoundResponseDto> {
     return this.roundingService.findByRoundNumber(roundNumber);
@@ -67,6 +66,7 @@ export class RoundController {
   @ApiResponse({ status: 200, description: 'Round details', type: RoundResponseDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_READ)
   @Get(':id')
   async findById(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.findById(id);
@@ -78,6 +78,7 @@ export class RoundController {
   @ApiResponse({ status: 400, description: 'Invalid state transition' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_WRITE)
   @Post(':id/start')
   async start(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.startSession(id);
@@ -89,6 +90,7 @@ export class RoundController {
   @ApiResponse({ status: 400, description: 'Invalid state transition' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_WRITE)
   @Post(':id/pause')
   async pause(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.pauseSession(id);
@@ -100,6 +102,7 @@ export class RoundController {
   @ApiResponse({ status: 400, description: 'Invalid state transition' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_WRITE)
   @Post(':id/resume')
   async resume(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.resumeSession(id);
@@ -111,6 +114,7 @@ export class RoundController {
   @ApiResponse({ status: 400, description: 'Invalid state transition' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_WRITE)
   @Post(':id/complete')
   async complete(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.completeSession(id);
@@ -122,6 +126,7 @@ export class RoundController {
   @ApiResponse({ status: 400, description: 'Invalid state transition' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_WRITE)
   @Post(':id/cancel')
   async cancel(@Param('id', ParseUUIDPipe) id: string): Promise<RoundResponseDto> {
     return this.roundingService.cancelSession(id);
@@ -136,6 +141,7 @@ export class RoundController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_READ)
   @Get(':id/patients')
   async getPatientList(@Param('id', ParseUUIDPipe) id: string): Promise<RoundingPatientListDto> {
     return this.tabletRoundingService.getRoundingPatientList(id);
@@ -150,14 +156,15 @@ export class RoundController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Round not found' })
+  @RequirePermission(Permissions.ROUND_READ)
   @Get(':id/records')
   async getRecords(@Param('id', ParseUUIDPipe) id: string): Promise<RoundRecordResponseDto[]> {
     return this.roundingService.getRecordsByRound(id);
   }
 
+  @RequirePermission(Permissions.ROUND_WRITE)
   @ApiOperation({ summary: 'Add a record to a rounding session' })
   @ApiParam({ name: 'id', description: 'Round UUID' })
-  @ApiHeader({ name: 'x-user-id', description: 'User ID recording the round', required: false })
   @ApiResponse({
     status: 201,
     description: 'Record added successfully',
@@ -170,16 +177,15 @@ export class RoundController {
   async addRecord(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreateRoundRecordDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<RoundRecordResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.tabletRoundingService.addRoundRecord(id, dto, effectiveUserId);
+    return this.tabletRoundingService.addRoundRecord(id, dto, user.id);
   }
 
+  @RequirePermission(Permissions.ROUND_WRITE)
   @ApiOperation({ summary: 'Update a round record' })
   @ApiParam({ name: 'id', description: 'Round UUID' })
   @ApiParam({ name: 'recordId', description: 'Record UUID' })
-  @ApiHeader({ name: 'x-user-id', description: 'User ID updating the record', required: false })
   @ApiResponse({
     status: 200,
     description: 'Record updated successfully',
@@ -193,9 +199,8 @@ export class RoundController {
     @Param('id', ParseUUIDPipe) id: string,
     @Param('recordId', ParseUUIDPipe) recordId: string,
     @Body() dto: UpdateRoundRecordDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<RoundRecordResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.roundingService.updateRecord(id, recordId, dto, effectiveUserId);
+    return this.roundingService.updateRecord(id, recordId, dto, user.id);
   }
 }
