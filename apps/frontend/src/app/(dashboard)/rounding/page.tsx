@@ -10,6 +10,7 @@ import {
   useCompleteRound,
   useCreateRound,
 } from '@/hooks';
+import { useAuthStore } from '@/stores';
 import {
   Card,
   CardContent,
@@ -48,6 +49,7 @@ const roundTypeOptions = [
 ];
 
 export default function RoundingSessionsPage() {
+  const user = useAuthStore((state) => state.user);
   const [selectedFloorId, setSelectedFloorId] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [roundTypeFilter, setRoundTypeFilter] = useState('');
@@ -85,7 +87,7 @@ export default function RoundingSessionsPage() {
   ];
 
   const handleCreateRound = async () => {
-    if (!newRoundData.floorId || !newRoundData.roundType || !newRoundData.scheduledDate) {
+    if (!newRoundData.floorId || !newRoundData.roundType || !newRoundData.scheduledDate || !user) {
       return;
     }
 
@@ -95,7 +97,7 @@ export default function RoundingSessionsPage() {
         roundType: newRoundData.roundType as RoundType,
         scheduledDate: newRoundData.scheduledDate,
         scheduledTime: newRoundData.scheduledTime,
-        leadDoctorId: 'current-user',
+        leadDoctorId: user.id,
       });
       setIsCreateDialogOpen(false);
       setNewRoundData({
@@ -295,7 +297,7 @@ export default function RoundingSessionsPage() {
             </Button>
             <Button
               onClick={handleCreateRound}
-              disabled={!newRoundData.floorId || createRound.isPending}
+              disabled={!newRoundData.floorId || !user || createRound.isPending}
             >
               Create Session
             </Button>
