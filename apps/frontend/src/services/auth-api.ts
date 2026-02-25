@@ -7,10 +7,10 @@ import type {
 } from '@/types';
 
 const AUTH_ENDPOINTS = {
-  LOGIN: '/api/v1/auth/login',
-  LOGOUT: '/api/v1/auth/logout',
-  REFRESH: '/api/v1/auth/refresh',
-  CHANGE_PASSWORD: '/api/v1/auth/change-password',
+  LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
+  REFRESH: '/auth/refresh',
+  CHANGE_PASSWORD: '/auth/change-password',
 } as const;
 
 export async function login(credentials: LoginCredentials): Promise<LoginResponse> {

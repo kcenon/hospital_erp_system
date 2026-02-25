@@ -2,10 +2,20 @@ import { apiGet } from '@/lib/api-client';
 import type { Floor, FloorDashboard, AvailableBed, AvailableBedFilters } from '@/types';
 
 const ROOM_ENDPOINTS = {
-  FLOORS: '/api/v1/floors',
-  FLOOR_DASHBOARD: '/api/v1/rooms/floor-dashboard',
-  AVAILABLE_BEDS: '/api/v1/beds/available',
+  BUILDINGS: '/rooms/buildings',
+  FLOOR_DASHBOARD: '/rooms/dashboard/floor',
+  AVAILABLE_BEDS: '/rooms/beds/available',
 } as const;
+
+interface BuildingResponse {
+  id: string;
+  name: string;
+  floors?: Array<{
+    id: string;
+    name: string;
+    floorNumber: number;
+  }>;
+}
 
 function buildAvailableBedsQuery(filters: AvailableBedFilters): string {
   const searchParams = new URLSearchParams();
@@ -18,8 +28,16 @@ function buildAvailableBedsQuery(filters: AvailableBedFilters): string {
 }
 
 export const roomApi = {
-  getFloors: (): Promise<Floor[]> => {
-    return apiGet<Floor[]>(ROOM_ENDPOINTS.FLOORS);
+  getFloors: async (): Promise<Floor[]> => {
+    const buildings = await apiGet<BuildingResponse[]>(ROOM_ENDPOINTS.BUILDINGS);
+    return buildings.flatMap((building) =>
+      (building.floors || []).map((floor) => ({
+        id: floor.id,
+        name: floor.name,
+        floorNumber: floor.floorNumber,
+        building: building.name,
+      })),
+    );
   },
 
   getFloorDashboard: (floorId: string): Promise<FloorDashboard> => {
