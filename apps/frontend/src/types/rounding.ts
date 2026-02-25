@@ -6,7 +6,13 @@ import type { Consciousness } from './vital-sign';
 
 export type RoundType = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
 
-export type RoundStatus = 'PLANNED' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' | 'CANCELLED';
+export type RoundStatus =
+  | 'SCHEDULED'
+  | 'PLANNED'
+  | 'IN_PROGRESS'
+  | 'PAUSED'
+  | 'COMPLETED'
+  | 'CANCELLED';
 
 export type RoundPatientStatus = 'STABLE' | 'IMPROVING' | 'DECLINING' | 'CRITICAL';
 

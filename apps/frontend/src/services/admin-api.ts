@@ -18,7 +18,7 @@ import type {
   SuspiciousActivity,
 } from '@/types';
 
-function buildQueryString(params: Record<string, unknown>): string {
+function buildQueryString<T extends object>(params: T): string {
   const searchParams = new URLSearchParams();
 
   for (const [key, value] of Object.entries(params)) {

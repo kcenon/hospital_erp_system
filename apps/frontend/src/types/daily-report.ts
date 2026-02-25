@@ -55,7 +55,7 @@ export interface MedicationCompliance {
   complianceRate: number;
 }
 
-export type AlertSeverity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+import type { AlertSeverity } from './vital-sign';
 
 export interface DailyAlert {
   type: string;

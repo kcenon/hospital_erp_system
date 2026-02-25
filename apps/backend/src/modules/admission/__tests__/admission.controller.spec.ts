@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdmissionController } from '../admission.controller';
 import { AdmissionService } from '../admission.service';
 import { AdmissionStatus } from '@prisma/client';
+import { JwtAuthGuard } from '../../../common/guards';
+import { PermissionGuard } from '../../auth/guards';
 
 describe('AdmissionController', () => {
   let controller: AdmissionController;
@@ -41,7 +43,12 @@ describe('AdmissionController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AdmissionController],
       providers: [{ provide: AdmissionService, useValue: mockAdmissionService }],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(PermissionGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<AdmissionController>(AdmissionController);
     service = module.get(AdmissionService);
