@@ -70,7 +70,7 @@ async function handleTokenRefresh(): Promise<string | null> {
   isRefreshing = true;
 
   try {
-    await useAuthStore.getState().refreshToken();
+    await useAuthStore.getState().refresh();
     const newToken = useAuthStore.getState().accessToken;
     if (newToken) {
       onTokenRefreshed(newToken);

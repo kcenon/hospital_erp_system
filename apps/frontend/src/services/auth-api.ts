@@ -21,8 +21,11 @@ export async function logout(): Promise<void> {
   return apiPost<void>(AUTH_ENDPOINTS.LOGOUT);
 }
 
-export async function refreshToken(): Promise<RefreshTokenResponse> {
-  return apiPost<RefreshTokenResponse>(AUTH_ENDPOINTS.REFRESH);
+export async function refreshToken(token?: string): Promise<RefreshTokenResponse> {
+  return apiPost<RefreshTokenResponse>(
+    AUTH_ENDPOINTS.REFRESH,
+    token ? { refreshToken: token } : undefined,
+  );
 }
 
 export async function changePassword(data: ChangePasswordRequest): Promise<void> {
