@@ -1,5 +1,14 @@
 export { useFormWithZod } from './use-form-with-zod';
-export { usePatients, usePatient, usePatientSearch, useCreatePatient } from './use-patients';
+export {
+  usePatients,
+  usePatient,
+  usePatientSearch,
+  useCreatePatient,
+  useUpdatePatient,
+  useDeletePatient,
+  useCreatePatientDetail,
+  useUpdatePatientDetail,
+} from './use-patients';
 export {
   usePatientAdmissions,
   useAdmission,

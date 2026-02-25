@@ -1,5 +1,12 @@
-import { apiGet, apiPost, apiPatch } from '@/lib/api-client';
-import type { Patient, PaginatedPatients, FindPatientsParams, CreatePatientData } from '@/types';
+import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api-client';
+import type {
+  Patient,
+  PatientDetail,
+  PaginatedPatients,
+  FindPatientsParams,
+  CreatePatientData,
+  CreatePatientDetailData,
+} from '@/types';
 
 function buildQueryString(params: FindPatientsParams): string {
   const searchParams = new URLSearchParams();
@@ -40,5 +47,20 @@ export const patientApi = {
 
   update: (id: string, data: Partial<CreatePatientData>): Promise<Patient> => {
     return apiPatch<Patient>(`/patients/${id}`, data);
+  },
+
+  delete: (id: string): Promise<void> => {
+    return apiDelete<void>(`/patients/${id}`);
+  },
+
+  createDetail: (patientId: string, data: CreatePatientDetailData): Promise<PatientDetail> => {
+    return apiPost<PatientDetail>(`/patients/${patientId}/detail`, data);
+  },
+
+  updateDetail: (
+    patientId: string,
+    data: Partial<CreatePatientDetailData>,
+  ): Promise<PatientDetail> => {
+    return apiPatch<PatientDetail>(`/patients/${patientId}/detail`, data);
   },
 };
