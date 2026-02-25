@@ -1,0 +1,49 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+dist
+.next
+out
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+coverage
+.nyc_output
+cypress/videos
+cypress/screenshots
+
+# Documentation
+docs
+*.md
+!README.md
+
+# CI/CD
+.github
+.claude
+
+# Credentials and secrets
+*.pem
+*.key
+*.p12
+credentials
+secrets
