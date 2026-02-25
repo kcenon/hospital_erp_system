@@ -26,3 +26,5 @@ export * from './room';
 export * from './vital-sign';
 export * from './rounding';
 export * from './medication';
+export * from './nursing-note';
+export * from './intake-output';
