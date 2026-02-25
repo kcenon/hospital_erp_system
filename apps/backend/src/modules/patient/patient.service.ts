@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Patient, PatientDetail } from '@prisma/client';
 import { PatientRepository, PatientWithDetail } from './patient.repository';
 import { PatientNumberGenerator } from './patient-number.generator';
@@ -14,12 +15,21 @@ import {
   PaginatedPatientsResponseDto,
 } from './dto';
 
+export interface PiiAccessEvent {
+  patientId: string;
+  accessedFields: string[];
+  role: UserRole;
+}
+
 @Injectable()
 export class PatientService {
+  private readonly logger = new Logger(PatientService.name);
+
   constructor(
     private readonly repository: PatientRepository,
     private readonly patientNumberGenerator: PatientNumberGenerator,
     private readonly dataMaskingService: DataMaskingService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(dto: CreatePatientDto): Promise<PatientResponseDto> {
@@ -150,7 +160,7 @@ export class PatientService {
       notes: dto.notes,
     });
 
-    return this.toDetailResponseDto(detail);
+    return this.toDetailResponseDto(detail, patientId);
   }
 
   async updateDetail(
@@ -174,7 +184,7 @@ export class PatientService {
       notes: dto.notes,
     });
 
-    return this.toDetailResponseDto(detail);
+    return this.toDetailResponseDto(detail, patientId);
   }
 
   private toResponseDto(patient: Patient | PatientWithDetail, role?: UserRole): PatientResponseDto {
@@ -185,10 +195,10 @@ export class PatientService {
       birthDate: patient.birthDate,
       gender: patient.gender,
       bloodType: patient.bloodType,
-      phone: this.dataMaskingService.maskPhone(patient.phone),
+      phone: this.dataMaskingService.maskPhone(patient.phone, role),
       address: this.dataMaskingService.maskAddress(patient.address),
       emergencyContactName: patient.emergencyContactName,
-      emergencyContactPhone: this.dataMaskingService.maskPhone(patient.emergencyContactPhone),
+      emergencyContactPhone: this.dataMaskingService.maskPhone(patient.emergencyContactPhone, role),
       emergencyContactRelation: patient.emergencyContactRelation,
       legacyPatientId: patient.legacyPatientId,
       createdAt: patient.createdAt,
@@ -196,29 +206,50 @@ export class PatientService {
     };
 
     if ('detail' in patient && patient.detail) {
-      dto.detail = this.toDetailResponseDto(patient.detail, role);
+      dto.detail = this.toDetailResponseDto(patient.detail, patient.id, role);
     }
 
     return dto;
   }
 
-  private toDetailResponseDto(detail: PatientDetail, role?: UserRole): PatientDetailResponseDto {
+  private toDetailResponseDto(
+    detail: PatientDetail,
+    patientId: string,
+    role?: UserRole,
+  ): PatientDetailResponseDto {
+    const unmaskedFields: string[] = [];
+
+    const ssnResult = detail.ssnEncrypted
+      ? this.dataMaskingService.maskSsn(this.decryptData(detail.ssnEncrypted), role)
+      : { value: null, unmasked: false };
+
+    const insuranceResult = detail.insuranceNumberEncrypted
+      ? this.dataMaskingService.maskInsuranceNumber(
+          this.decryptData(detail.insuranceNumberEncrypted),
+          role,
+        )
+      : { value: null, unmasked: false };
+
+    if (ssnResult.unmasked) unmaskedFields.push('ssn');
+    if (insuranceResult.unmasked) unmaskedFields.push('insuranceNumber');
+
+    if (unmaskedFields.length > 0 && role) {
+      this.eventEmitter.emit('pii.accessed', {
+        patientId,
+        accessedFields: unmaskedFields,
+        role,
+      } as PiiAccessEvent);
+    }
+
     return {
       id: detail.id,
-      ssn: detail.ssnEncrypted
-        ? this.dataMaskingService.maskSsn(this.decryptData(detail.ssnEncrypted), role)
-        : null,
+      ssn: ssnResult.value,
       medicalHistory: detail.medicalHistoryEncrypted
         ? this.decryptData(detail.medicalHistoryEncrypted)
         : null,
       allergies: detail.allergiesEncrypted ? this.decryptData(detail.allergiesEncrypted) : null,
       insuranceType: detail.insuranceType,
-      insuranceNumber: detail.insuranceNumberEncrypted
-        ? this.dataMaskingService.maskInsuranceNumber(
-            this.decryptData(detail.insuranceNumberEncrypted),
-            role,
-          )
-        : null,
+      insuranceNumber: insuranceResult.value,
       insuranceCompany: detail.insuranceCompany,
       notes: detail.notes,
     };

@@ -7,6 +7,7 @@ import { AuditService } from './audit.service';
 import { AuditQueryService } from './audit-query.service';
 import { AuditController } from './audit.controller';
 import { AuditInterceptor } from './interceptors';
+import { PiiAccessListener } from './pii-access.listener';
 import { UserAdminRepository } from './user-admin.repository';
 import { UserAdminService } from './user-admin.service';
 import { UserAdminController } from './user-admin.controller';
@@ -21,6 +22,7 @@ import { RoleController } from './role.controller';
     AuditRepository,
     AuditService,
     AuditQueryService,
+    PiiAccessListener,
     {
       provide: APP_INTERCEPTOR,
       useClass: AuditInterceptor,

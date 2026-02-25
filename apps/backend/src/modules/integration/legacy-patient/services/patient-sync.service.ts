@@ -100,7 +100,9 @@ export class PatientSyncService {
       name: patient.name,
       birthDate: patient.birthDate,
       gender: patient.gender,
-      ssn: this.nullToUndefined(patient.ssn ? this.dataMaskingService.maskSsn(patient.ssn) : null),
+      ssn: this.nullToUndefined(
+        patient.ssn ? this.dataMaskingService.maskSsn(patient.ssn).value : null,
+      ),
       phone: this.nullToUndefined(
         patient.phone ? this.dataMaskingService.maskPhone(patient.phone) : null,
       ),
@@ -111,7 +113,7 @@ export class PatientSyncService {
       insuranceType: patient.insuranceType,
       insuranceNumber: this.nullToUndefined(
         patient.insuranceNumber
-          ? this.dataMaskingService.maskInsuranceNumber(patient.insuranceNumber)
+          ? this.dataMaskingService.maskInsuranceNumber(patient.insuranceNumber).value
           : null,
       ),
     };
