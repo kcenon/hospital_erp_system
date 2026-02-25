@@ -32,6 +32,16 @@ export class AdmissionService {
     private readonly prisma: PrismaService,
   ) {}
 
+  private parseTime(timeStr: string): Date {
+    return new Date(`1970-01-01T${timeStr}:00.000Z`);
+  }
+
+  private formatTime(date: Date): string {
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
   async admitPatient(dto: CreateAdmissionDto, userId: string): Promise<AdmissionResponseDto> {
     const patient = await this.prisma.patient.findFirst({
       where: { id: dto.patientId, deletedAt: null },
@@ -59,7 +69,7 @@ export class AdmissionService {
           bedId: dto.bedId,
           admissionNumber,
           admissionDate: new Date(dto.admissionDate),
-          admissionTime: dto.admissionTime,
+          admissionTime: this.parseTime(dto.admissionTime),
           admissionType: dto.admissionType,
           diagnosis: dto.diagnosis,
           chiefComplaint: dto.chiefComplaint,
@@ -117,7 +127,7 @@ export class AdmissionService {
           fromBedId: oldBedId,
           toBedId: dto.toBedId,
           transferDate: new Date(dto.transferDate),
-          transferTime: dto.transferTime,
+          transferTime: this.parseTime(dto.transferTime),
           reason: dto.reason,
           notes: dto.notes,
           transferredBy: userId,
@@ -174,7 +184,7 @@ export class AdmissionService {
         data: {
           admissionId,
           dischargeDate: new Date(dto.dischargeDate),
-          dischargeTime: dto.dischargeTime,
+          dischargeTime: this.parseTime(dto.dischargeTime),
           dischargeType: dto.dischargeType,
           dischargeDiagnosis: dto.dischargeDiagnosis,
           dischargeSummary: dto.dischargeSummary,
@@ -271,7 +281,7 @@ export class AdmissionService {
       bedId: admission.bedId,
       admissionNumber: admission.admissionNumber,
       admissionDate: admission.admissionDate,
-      admissionTime: admission.admissionTime,
+      admissionTime: this.formatTime(admission.admissionTime),
       admissionType: admission.admissionType,
       diagnosis: admission.diagnosis,
       chiefComplaint: admission.chiefComplaint,
@@ -295,7 +305,7 @@ export class AdmissionService {
       fromBedId: transfer.fromBedId,
       toBedId: transfer.toBedId,
       transferDate: transfer.transferDate,
-      transferTime: transfer.transferTime,
+      transferTime: this.formatTime(transfer.transferTime),
       reason: transfer.reason,
       notes: transfer.notes,
       transferredBy: transfer.transferredBy,
@@ -308,7 +318,7 @@ export class AdmissionService {
       id: discharge.id,
       admissionId: discharge.admissionId,
       dischargeDate: discharge.dischargeDate,
-      dischargeTime: discharge.dischargeTime,
+      dischargeTime: this.formatTime(discharge.dischargeTime),
       dischargeType: discharge.dischargeType,
       dischargeDiagnosis: discharge.dischargeDiagnosis,
       dischargeSummary: discharge.dischargeSummary,

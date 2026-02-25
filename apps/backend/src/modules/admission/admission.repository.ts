@@ -15,7 +15,7 @@ export interface CreateAdmissionData {
   bedId: string;
   admissionNumber: string;
   admissionDate: Date;
-  admissionTime: string;
+  admissionTime: Date;
   admissionType: AdmissionType;
   diagnosis?: string;
   chiefComplaint?: string;
@@ -43,7 +43,7 @@ export interface CreateTransferData {
   fromBedId: string;
   toBedId: string;
   transferDate: Date;
-  transferTime: string;
+  transferTime: Date;
   reason: string;
   notes?: string;
   transferredBy: string;
@@ -52,7 +52,7 @@ export interface CreateTransferData {
 export interface CreateDischargeData {
   admissionId: string;
   dischargeDate: Date;
-  dischargeTime: string;
+  dischargeTime: Date;
   dischargeType: DischargeType;
   dischargeDiagnosis?: string;
   dischargeSummary?: string;

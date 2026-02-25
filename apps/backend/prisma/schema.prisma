@@ -394,7 +394,7 @@ model Admission {
   bedId                 String          @map("bed_id") @db.Uuid
   admissionNumber       String          @unique @map("admission_number") @db.VarChar(20)
   admissionDate         DateTime        @map("admission_date") @db.Date
-  admissionTime         String          @map("admission_time") @db.VarChar(10)
+  admissionTime         DateTime        @map("admission_time") @db.Time
   admissionType         AdmissionType   @map("admission_type")
   diagnosis             String?         @db.Text
   chiefComplaint        String?         @map("chief_complaint") @db.Text
@@ -444,7 +444,7 @@ model Transfer {
   fromBedId     String   @map("from_bed_id") @db.Uuid
   toBedId       String   @map("to_bed_id") @db.Uuid
   transferDate  DateTime @map("transfer_date") @db.Date
-  transferTime  String   @map("transfer_time") @db.VarChar(10)
+  transferTime  DateTime @map("transfer_time") @db.Time
   reason        String   @db.VarChar(255)
   notes         String?  @db.Text
   transferredBy String   @map("transferred_by") @db.Uuid
@@ -470,7 +470,7 @@ model Discharge {
   id                   String        @id @default(uuid()) @db.Uuid
   admissionId          String        @unique @map("admission_id") @db.Uuid
   dischargeDate        DateTime      @map("discharge_date") @db.Date
-  dischargeTime        String        @map("discharge_time") @db.VarChar(10)
+  dischargeTime        DateTime      @map("discharge_time") @db.Time
   dischargeType        DischargeType @map("discharge_type")
   dischargeDiagnosis   String?       @map("discharge_diagnosis") @db.Text
   dischargeSummary     String?       @map("discharge_summary") @db.Text
