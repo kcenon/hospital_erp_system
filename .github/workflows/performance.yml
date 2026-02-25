@@ -124,7 +124,7 @@ jobs:
           echo "Server PID: $(cat /tmp/server.pid)"
           # Wait for server to start
           for i in {1..60}; do
-            if curl -sf http://localhost:3000/health/live > /dev/null 2>&1; then
+            if curl -sf http://localhost:3000/v1/health/live > /dev/null 2>&1; then
               echo "Server is ready after ${i} seconds"
               exit 0
             fi
@@ -146,7 +146,7 @@ jobs:
 
       - name: Verify server is running
         run: |
-          if ! curl -sf http://localhost:3000/health/live > /dev/null 2>&1; then
+          if ! curl -sf http://localhost:3000/v1/health/live > /dev/null 2>&1; then
             echo "Server health check failed"
             if [ -f /tmp/server.log ]; then
               echo "=== Server logs ==="
@@ -193,7 +193,7 @@ jobs:
             esac
           fi
         env:
-          BASE_URL: http://localhost:3000
+          BASE_URL: http://localhost:3000/api/v1
           TEST_USERNAME: admin
           TEST_PASSWORD: Hospital@2024
 
