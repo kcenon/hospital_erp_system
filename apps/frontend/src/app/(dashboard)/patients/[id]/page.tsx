@@ -28,10 +28,12 @@ import {
   AlertCircle,
   FileText,
   Activity,
+  Pill,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
 import { VitalSignsForm, VitalTrendChart, VitalAlerts } from '@/components/vital-signs';
+import { MedicationScheduleForm, MedicationList } from '@/components/medications';
 import type { Gender, AdmissionStatus } from '@/types';
 
 function formatDate(dateString: string): string {
@@ -77,6 +79,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
   const { data: patient, isLoading: isLoadingPatient, error: patientError } = usePatient(id);
   const { data: admissions, isLoading: isLoadingAdmissions } = usePatientAdmissions(id);
   const [showVitalForm, setShowVitalForm] = useState(false);
+  const [showMedForm, setShowMedForm] = useState(false);
 
   if (isLoadingPatient) {
     return (
@@ -204,19 +207,34 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               New Admission
             </Button>
             {currentAdmission && (
-              <Button
-                className="w-full"
-                variant="outline"
-                onClick={() => setShowVitalForm((prev) => !prev)}
-              >
-                <Activity className="h-4 w-4 mr-2" />
-                {showVitalForm ? 'Hide Vital Form' : 'Record Vitals'}
-                {showVitalForm ? (
-                  <ChevronUp className="h-4 w-4 ml-auto" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 ml-auto" />
-                )}
-              </Button>
+              <>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowVitalForm((prev) => !prev)}
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  {showVitalForm ? 'Hide Vital Form' : 'Record Vitals'}
+                  {showVitalForm ? (
+                    <ChevronUp className="h-4 w-4 ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 ml-auto" />
+                  )}
+                </Button>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowMedForm((prev) => !prev)}
+                >
+                  <Pill className="h-4 w-4 mr-2" />
+                  {showMedForm ? 'Hide Medication Form' : 'Schedule Medication'}
+                  {showMedForm ? (
+                    <ChevronUp className="h-4 w-4 ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 ml-auto" />
+                  )}
+                </Button>
+              </>
             )}
           </CardContent>
         </Card>
@@ -246,6 +264,38 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
               <VitalAlerts admissionId={currentAdmission.id} />
             </div>
           </div>
+        </div>
+      )}
+
+      {currentAdmission && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Pill className="h-5 w-5" />
+            <h2 className="text-xl font-semibold">Medications</h2>
+          </div>
+
+          {showMedForm && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Schedule New Medication</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MedicationScheduleForm
+                  admissionId={currentAdmission.id}
+                  onSuccess={() => setShowMedForm(false)}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Medication History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MedicationList admissionId={currentAdmission.id} />
+            </CardContent>
+          </Card>
         </div>
       )}
 
