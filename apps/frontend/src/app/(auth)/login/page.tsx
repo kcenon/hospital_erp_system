@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores';
@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, isLoading, error, clearError } = useAuthStore();
 
   const form = useForm<LoginFormData>({
@@ -34,7 +35,8 @@ export default function LoginPage() {
     clearError();
     try {
       await login(data);
-      router.push('/');
+      const redirectTo = searchParams.get('redirect') || '/patients';
+      router.push(redirectTo);
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.message.includes('locked')) {

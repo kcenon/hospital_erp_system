@@ -24,13 +24,18 @@ export function middleware(request: NextRequest) {
   if (!authStorage && pathname !== '/login') {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    if (pathname !== '/') {
+      url.searchParams.set('redirect', pathname);
+    }
     return NextResponse.redirect(url);
   }
 
-  // If has auth storage and on login page, redirect to dashboard
+  // If has auth storage and on login page, redirect to patients
   if (authStorage && pathname === '/login') {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
+    const redirect = request.nextUrl.searchParams.get('redirect');
+    url.pathname = redirect || '/patients';
+    url.searchParams.delete('redirect');
     return NextResponse.redirect(url);
   }
 
