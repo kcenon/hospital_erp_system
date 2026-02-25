@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ConflictException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PatientService } from '../patient.service';
 import { PatientRepository } from '../patient.repository';
 import { PatientNumberGenerator } from '../patient-number.generator';
@@ -15,6 +16,7 @@ describe('PatientService', () => {
   let repository: jest.Mocked<PatientRepository>;
   let patientNumberGenerator: jest.Mocked<PatientNumberGenerator>;
   let dataMaskingService: DataMaskingService;
+  let eventEmitter: jest.Mocked<EventEmitter2>;
 
   const mockRepository = {
     create: jest.fn(),
@@ -35,12 +37,17 @@ describe('PatientService', () => {
     parsePatientNumber: jest.fn(),
   };
 
+  const mockEventEmitter = {
+    emit: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PatientService,
         { provide: PatientRepository, useValue: mockRepository },
         { provide: PatientNumberGenerator, useValue: mockPatientNumberGenerator },
+        { provide: EventEmitter2, useValue: mockEventEmitter },
         DataMaskingService,
       ],
     }).compile();
@@ -49,6 +56,7 @@ describe('PatientService', () => {
     repository = module.get(PatientRepository);
     patientNumberGenerator = module.get(PatientNumberGenerator);
     dataMaskingService = module.get<DataMaskingService>(DataMaskingService);
+    eventEmitter = module.get(EventEmitter2);
 
     jest.clearAllMocks();
   });
