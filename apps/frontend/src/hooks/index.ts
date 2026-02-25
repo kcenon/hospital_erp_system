@@ -26,3 +26,11 @@ export {
   useAddRoundRecord,
   useUpdateRoundRecord,
 } from './use-rounding';
+export {
+  useMedicationHistory,
+  useScheduledMedications,
+  useScheduleMedication,
+  useAdministerMedication,
+  useHoldMedication,
+  useRefuseMedication,
+} from './use-medications';
