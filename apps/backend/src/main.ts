@@ -37,14 +37,19 @@ async function bootstrap() {
       .setDescription('Inpatient Management ERP System API Documentation')
       .setVersion('1.0')
       .addBearerAuth()
+      .addTag('health', 'Health check and probe endpoints')
       .addTag('auth', 'Authentication endpoints')
       .addTag('patients', 'Patient management')
       .addTag('rooms', 'Room and bed management')
       .addTag('admissions', 'Admission/discharge management')
       .addTag('vitals', 'Vital signs recording')
+      .addTag('medications', 'Medication management')
+      .addTag('nursing-notes', 'Nursing note management')
+      .addTag('daily-reports', 'Daily report management')
+      .addTag('intake-output', 'Intake and output tracking')
       .addTag('rounds', 'Rounding management')
-      .addTag('reports', 'Reporting endpoints')
       .addTag('admin', 'Admin functions')
+      .addTag('integration', 'Legacy system integration')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
