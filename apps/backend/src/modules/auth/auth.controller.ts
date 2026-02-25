@@ -11,6 +11,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { User } from '@prisma/client';
 import { AuthService, SessionService } from './services';
@@ -41,8 +42,14 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful', type: LoginResponseDto })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiResponse({ status: 423, description: 'Account locked' })
+  @ApiResponse({ status: 429, description: 'Too many login attempts' })
   @Public()
   @UseGuards(LocalAuthGuard)
+  @Throttle({
+    short: { ttl: 60000, limit: 10 },
+    medium: { ttl: 60000, limit: 10 },
+    long: { ttl: 60000, limit: 10 },
+  })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Req() req: Request, @Body() loginDto: LoginDto): Promise<LoginResponseDto> {
@@ -56,7 +63,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Tokens refreshed', type: TokenResponseDto })
   @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+  @ApiResponse({ status: 429, description: 'Too many refresh attempts' })
   @Public()
+  @Throttle({
+    short: { ttl: 60000, limit: 20 },
+    medium: { ttl: 60000, limit: 20 },
+    long: { ttl: 60000, limit: 20 },
+  })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponseDto> {
