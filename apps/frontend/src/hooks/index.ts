@@ -56,3 +56,9 @@ export {
   useAccessLogs,
   useChangeLogs,
 } from './use-admin';
+export {
+  useDailyReport,
+  useDailySummary,
+  useDailyReportList,
+  useGenerateDailyReport,
+} from './use-daily-reports';

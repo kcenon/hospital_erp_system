@@ -29,3 +29,4 @@ export * from './medication';
 export * from './nursing-note';
 export * from './intake-output';
 export * from './admin';
+export * from './daily-report';
