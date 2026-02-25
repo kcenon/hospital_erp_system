@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from '../services/auth.service';
 import { SessionService } from '../services/session.service';
 import { JwtTokenService } from '../services/jwt-token.service';
+import { TokenBlacklistService } from '../services/token-blacklist.service';
 import { PrismaService } from '../../../prisma';
 import {
   createTestUser,
@@ -35,6 +36,13 @@ describe('AuthService', () => {
     verifyRefreshToken: jest.fn(),
   };
 
+  const mockTokenBlacklistService = {
+    blacklist: jest.fn(),
+    isBlacklisted: jest.fn().mockResolvedValue(false),
+    revokeAllForUser: jest.fn(),
+    isUserTokenRevoked: jest.fn().mockResolvedValue(false),
+  };
+
   beforeEach(async () => {
     prismaService = createMockPrismaService();
 
@@ -44,6 +52,7 @@ describe('AuthService', () => {
         { provide: PrismaService, useValue: prismaService },
         { provide: SessionService, useValue: mockSessionService },
         { provide: JwtTokenService, useValue: mockJwtTokenService },
+        { provide: TokenBlacklistService, useValue: mockTokenBlacklistService },
       ],
     }).compile();
 

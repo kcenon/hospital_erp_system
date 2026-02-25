@@ -18,6 +18,7 @@ const statusConfig: Record<
   RoundStatus,
   { label: string; variant: 'default' | 'secondary' | 'success' | 'warning' | 'destructive' }
 > = {
+  SCHEDULED: { label: 'Scheduled', variant: 'secondary' },
   PLANNED: { label: 'Planned', variant: 'secondary' },
   IN_PROGRESS: { label: 'In Progress', variant: 'warning' },
   PAUSED: { label: 'Paused', variant: 'default' },
