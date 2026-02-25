@@ -1,5 +1,13 @@
 import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MinLength,
+  ValidateIf,
+  validateSync,
+} from 'class-validator';
 
 export enum Environment {
   Development = 'development',
@@ -18,14 +26,16 @@ export class EnvironmentVariables {
   @IsString()
   DATABASE_URL: string;
 
+  @ValidateIf((o) => o.NODE_ENV === Environment.Production)
   @IsString()
-  @IsOptional()
   REDIS_URL?: string;
 
   @IsString()
+  @MinLength(32)
   JWT_ACCESS_SECRET: string;
 
   @IsString()
+  @MinLength(32)
   JWT_REFRESH_SECRET: string;
 
   @IsString()
@@ -36,8 +46,9 @@ export class EnvironmentVariables {
   @IsOptional()
   JWT_REFRESH_EXPIRATION?: string = '7d';
 
+  @ValidateIf((o) => o.NODE_ENV === Environment.Production)
   @IsString()
-  @IsOptional()
+  @MinLength(32)
   ENCRYPTION_KEY?: string;
 
   @IsString()
@@ -72,6 +83,12 @@ export function validate(config: Record<string, unknown>) {
 
   if (errors.length > 0) {
     throw new Error(errors.toString());
+  }
+
+  if (validatedConfig.NODE_ENV !== Environment.Production && !validatedConfig.ENCRYPTION_KEY) {
+    console.warn(
+      '[WARNING] ENCRYPTION_KEY is not set. Patient PII will not be encrypted. Set ENCRYPTION_KEY before deploying to production.',
+    );
   }
 
   return validatedConfig;
