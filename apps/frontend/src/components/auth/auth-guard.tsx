@@ -23,9 +23,10 @@ export function AuthGuard({ children }: AuthGuardProps) {
     const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
     if (!isAuthenticated && !isPublicPath) {
-      router.replace('/login');
+      const redirectParam = pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : '';
+      router.replace(`/login${redirectParam}`);
     } else if (isAuthenticated && isPublicPath) {
-      router.replace('/');
+      router.replace('/patients');
     }
   }, [isAuthenticated, isHydrated, pathname, router]);
 
