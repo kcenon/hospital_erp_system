@@ -428,8 +428,11 @@ model Admission {
   @@index([bedId])
   @@index([status])
   @@index([attendingDoctorId])
+  @@index([primaryNurseId])
+  @@index([createdBy])
   @@index([admissionDate])
   @@index([patientId, status])
+  @@index([bedId, status])
   @@map("admissions")
   @@schema("admission")
 }
@@ -456,6 +459,7 @@ model Transfer {
   @@index([admissionId])
   @@index([fromBedId])
   @@index([toBedId])
+  @@index([transferredBy])
   @@index([transferDate])
   @@map("transfers")
   @@schema("admission")
@@ -479,6 +483,7 @@ model Discharge {
   admission  Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   discharger User      @relation("Discharger", fields: [dischargedBy], references: [id], onDelete: Restrict)
 
+  @@index([dischargedBy])
   @@index([dischargeDate])
   @@map("discharges")
   @@schema("admission")
@@ -582,6 +587,7 @@ model VitalSign {
   measurer  User      @relation("VitalSignMeasurer", fields: [measuredBy], references: [id], onDelete: Restrict)
 
   @@index([admissionId, measuredAt(sort: Desc)])
+  @@index([measuredAt])
   @@index([hasAlert])
   @@index([measuredBy])
   @@map("vital_signs")
@@ -643,6 +649,8 @@ model Medication {
 
   @@index([admissionId, administeredAt])
   @@index([admissionId, status])
+  @@index([medicationName])
+  @@index([scheduledTime])
   @@index([administeredBy])
   @@map("medications")
   @@schema("report")
@@ -671,6 +679,7 @@ model NursingNote {
 
   @@index([admissionId, recordedAt(sort: Desc)])
   @@index([admissionId, noteType])
+  @@index([recordedAt])
   @@index([recordedBy])
   @@index([isSignificant])
   @@map("nursing_notes")
@@ -753,6 +762,8 @@ model LoginHistory {
 
   @@index([userId, loginAt(sort: Desc)])
   @@index([ipAddress, loginAt(sort: Desc)])
+  @@index([sessionId])
+  @@index([success])
   @@index([createdAt(sort: Desc)])
   @@map("login_history")
   @@schema("audit")
@@ -884,6 +895,7 @@ model Round {
   @@index([floorId, scheduledDate])
   @@index([status])
   @@index([leadDoctorId])
+  @@index([createdBy])
   @@index([scheduledDate])
   @@index([roundType])
   @@map("rounds")
@@ -916,6 +928,7 @@ model RoundRecord {
   @@unique([roundId, admissionId])
   @@index([roundId])
   @@index([admissionId])
+  @@index([visitedAt])
   @@index([recordedBy])
   @@index([roundId, visitOrder])
   @@map("round_records")
