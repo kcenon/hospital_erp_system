@@ -6,13 +6,15 @@ import { authApi } from '@/services';
 interface AuthState {
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
+  isHydrated: boolean;
   isLoading: boolean;
   error: string | null;
 
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
-  refreshToken: () => Promise<void>;
+  refresh: () => Promise<void>;
   setUser: (user: User) => void;
   setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
@@ -24,7 +26,9 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
+      isHydrated: false,
       isLoading: false,
       error: null,
 
@@ -35,6 +39,7 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: response.user,
             accessToken: response.accessToken,
+            refreshToken: response.refreshToken || null,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -55,15 +60,17 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: null,
             accessToken: null,
+            refreshToken: null,
             isAuthenticated: false,
             error: null,
           });
         }
       },
 
-      refreshToken: async () => {
+      refresh: async () => {
+        const { refreshToken } = get();
         try {
-          const response = await authApi.refreshToken();
+          const response = await authApi.refreshToken(refreshToken || undefined);
           set({ accessToken: response.accessToken });
         } catch (error) {
           get().clearAuth();
@@ -80,6 +87,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           accessToken: null,
+          refreshToken: null,
           isAuthenticated: false,
           error: null,
         }),
@@ -91,8 +99,16 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => {
+        return (_state, error) => {
+          if (!error) {
+            useAuthStore.setState({ isHydrated: true });
+          }
+        };
+      },
     },
   ),
 );
