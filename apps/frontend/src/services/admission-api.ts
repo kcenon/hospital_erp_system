@@ -1,5 +1,13 @@
-import { apiGet } from '@/lib/api-client';
-import type { Admission, PaginatedAdmissions } from '@/types';
+import { apiGet, apiPost } from '@/lib/api-client';
+import type {
+  Admission,
+  PaginatedAdmissions,
+  CreateAdmissionData,
+  TransferData,
+  Transfer,
+  DischargeData,
+  Discharge,
+} from '@/types';
 
 interface FindAdmissionsParams {
   patientId?: string;
@@ -34,5 +42,25 @@ export const admissionApi = {
       `/admissions?patientId=${patientId}&limit=100`,
     );
     return response.data;
+  },
+
+  findActiveByPatientId: (patientId: string): Promise<Admission | null> => {
+    return apiGet<Admission | null>(`/admissions/patient/${patientId}/active`);
+  },
+
+  create: (data: CreateAdmissionData): Promise<Admission> => {
+    return apiPost<Admission>('/admissions', data);
+  },
+
+  transfer: (admissionId: string, data: TransferData): Promise<Transfer> => {
+    return apiPost<Transfer>(`/admissions/${admissionId}/transfer`, data);
+  },
+
+  discharge: (admissionId: string, data: DischargeData): Promise<Discharge> => {
+    return apiPost<Discharge>(`/admissions/${admissionId}/discharge`, data);
+  },
+
+  getTransfers: (admissionId: string): Promise<Transfer[]> => {
+    return apiGet<Transfer[]>(`/admissions/${admissionId}/transfers`);
   },
 };

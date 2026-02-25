@@ -21,6 +21,7 @@ import {
 } from '@/components/ui';
 import {
   ArrowLeft,
+  ArrowRightLeft,
   User,
   Phone,
   MapPin,
@@ -33,11 +34,13 @@ import {
   Droplets,
   ChevronDown,
   ChevronUp,
+  LogOut,
 } from 'lucide-react';
 import { VitalSignsForm, VitalTrendChart, VitalAlerts } from '@/components/vital-signs';
 import { MedicationScheduleForm, MedicationList } from '@/components/medications';
 import { NursingNoteForm, NursingNoteList } from '@/components/nursing-notes';
 import { IORecordForm, IOHistory, IODailySummaryCard } from '@/components/intake-output';
+import { AdmissionForm, TransferDialog, DischargeDialog } from '@/components/admissions';
 import type { Gender, AdmissionStatus } from '@/types';
 
 function formatDate(dateString: string): string {
@@ -86,6 +89,9 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
   const [showMedForm, setShowMedForm] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [showIOForm, setShowIOForm] = useState(false);
+  const [showAdmissionForm, setShowAdmissionForm] = useState(false);
+  const [showTransferDialog, setShowTransferDialog] = useState(false);
+  const [showDischargeDialog, setShowDischargeDialog] = useState(false);
 
   if (isLoadingPatient) {
     return (
@@ -208,10 +214,36 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full" variant="outline">
-              <FileText className="h-4 w-4 mr-2" />
-              New Admission
-            </Button>
+            {!currentAdmission && (
+              <Button
+                className="w-full"
+                variant="outline"
+                onClick={() => setShowAdmissionForm((prev) => !prev)}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                {showAdmissionForm ? 'Hide Admission Form' : 'New Admission'}
+              </Button>
+            )}
+            {currentAdmission && (
+              <>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowTransferDialog(true)}
+                >
+                  <ArrowRightLeft className="h-4 w-4 mr-2" />
+                  Transfer
+                </Button>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowDischargeDialog(true)}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Discharge
+                </Button>
+              </>
+            )}
             {currentAdmission && (
               <>
                 <Button
@@ -271,6 +303,14 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
           </CardContent>
         </Card>
       </div>
+
+      {showAdmissionForm && !currentAdmission && (
+        <AdmissionForm
+          patientId={id}
+          onSuccess={() => setShowAdmissionForm(false)}
+          onCancel={() => setShowAdmissionForm(false)}
+        />
+      )}
 
       {currentAdmission && (
         <div className="space-y-6">
@@ -490,6 +530,24 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
           )}
         </CardContent>
       </Card>
+
+      {currentAdmission && (
+        <>
+          <TransferDialog
+            admissionId={currentAdmission.id}
+            currentBedId={currentAdmission.bedId}
+            open={showTransferDialog}
+            onOpenChange={setShowTransferDialog}
+            onSuccess={() => setShowTransferDialog(false)}
+          />
+          <DischargeDialog
+            admissionId={currentAdmission.id}
+            open={showDischargeDialog}
+            onOpenChange={setShowDischargeDialog}
+            onSuccess={() => setShowDischargeDialog(false)}
+          />
+        </>
+      )}
     </div>
   );
 }
