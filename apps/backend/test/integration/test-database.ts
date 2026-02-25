@@ -640,7 +640,7 @@ export async function createTestAdmission(
       bedId,
       admissionNumber,
       admissionDate: new Date(),
-      admissionTime: '14:30',
+      admissionTime: new Date('1970-01-01T14:30:00.000Z'),
       admissionType: AdmissionType.SCHEDULED,
       diagnosis: 'Test diagnosis',
       chiefComplaint: 'Test chief complaint',
