@@ -2,7 +2,13 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SessionService, JwtTokenService, AuthService, RbacService } from './services';
+import {
+  SessionService,
+  JwtTokenService,
+  AuthService,
+  RbacService,
+  TokenBlacklistService,
+} from './services';
 import { SessionActivityInterceptor } from './interceptors';
 import { JwtStrategy, LocalStrategy } from './strategies';
 import { LocalAuthGuard, PermissionGuard, ResourceAccessGuard } from './guards';
@@ -30,6 +36,7 @@ import { PrismaModule } from '../../prisma';
     JwtTokenService,
     AuthService,
     RbacService,
+    TokenBlacklistService,
     SessionActivityInterceptor,
     JwtStrategy,
     LocalStrategy,
@@ -44,6 +51,7 @@ import { PrismaModule } from '../../prisma';
     JwtTokenService,
     AuthService,
     RbacService,
+    TokenBlacklistService,
     SessionActivityInterceptor,
     PermissionGuard,
     ResourceAccessGuard,

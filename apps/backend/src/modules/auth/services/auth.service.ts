@@ -2,7 +2,7 @@ import { Injectable, Logger, UnauthorizedException, ForbiddenException } from '@
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../../prisma';
-import { SessionService, JwtTokenService } from './';
+import { SessionService, JwtTokenService, TokenBlacklistService } from './';
 import { TokenPair, DeviceInfo, CreateSessionInput } from '../interfaces';
 import { LoginResponseDto, TokenResponseDto, UserInfoDto, ChangePasswordDto } from '../dto';
 
@@ -11,11 +11,13 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private readonly MAX_FAILED_ATTEMPTS = 5;
   private readonly LOCK_DURATION_MINUTES = 30;
+  private readonly MAX_TOKEN_TTL_SECONDS = 7 * 24 * 3600; // 7 days (refresh token lifetime)
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly sessionService: SessionService,
     private readonly jwtTokenService: JwtTokenService,
+    private readonly tokenBlacklistService: TokenBlacklistService,
   ) {}
 
   /**
@@ -113,11 +115,12 @@ export class AuthService {
   }
 
   /**
-   * Logout from all sessions
+   * Logout from all sessions and revoke all tokens
    */
   async logoutAll(userId: string): Promise<void> {
     await this.sessionService.destroyAllForUser(userId);
-    this.logger.log(`All sessions destroyed for user ${userId}`);
+    await this.tokenBlacklistService.revokeAllForUser(userId, this.MAX_TOKEN_TTL_SECONDS);
+    this.logger.log(`All sessions destroyed and tokens revoked for user ${userId}`);
   }
 
   /**
@@ -190,7 +193,11 @@ export class AuthService {
       },
     });
 
-    this.logger.log(`Password changed for user ${user.username}`);
+    // Invalidate all existing tokens and sessions after password change
+    await this.sessionService.destroyAllForUser(userId);
+    await this.tokenBlacklistService.revokeAllForUser(userId, this.MAX_TOKEN_TTL_SECONDS);
+
+    this.logger.log(`Password changed and all tokens revoked for user ${user.username}`);
   }
 
   /**

@@ -410,3 +410,68 @@ export class MessageResponseDto {
     this.message = message;
   }
 }
+
+/**
+ * DTO for creating a new role
+ */
+export class CreateRoleDto {
+  @ApiProperty({ description: 'Unique role code', example: 'PHARMACIST' })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(50)
+  @Matches(/^[A-Z_]+$/, { message: 'Role code must be uppercase letters and underscores' })
+  code: string;
+
+  @ApiProperty({ description: 'Role display name', example: 'Pharmacist' })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  name: string;
+
+  @ApiPropertyOptional({ description: 'Role description' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
+
+  @ApiPropertyOptional({ description: 'Role hierarchy level', default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  level?: number;
+}
+
+/**
+ * DTO for updating a role
+ */
+export class UpdateRoleDto {
+  @ApiPropertyOptional({ description: 'Role display name' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  name?: string;
+
+  @ApiPropertyOptional({ description: 'Role description' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
+
+  @ApiPropertyOptional({ description: 'Role hierarchy level' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  level?: number;
+}
+
+/**
+ * DTO for adding permission to a role
+ */
+export class AddPermissionDto {
+  @ApiProperty({ description: 'Permission ID to add', format: 'uuid' })
+  @IsNotEmpty()
+  @IsUUID()
+  permissionId: string;
+}
