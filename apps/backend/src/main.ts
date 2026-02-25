@@ -1,10 +1,21 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
+
+  app.use(helmet());
+
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3001'],
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -17,28 +28,30 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('Hospital ERP API')
-    .setDescription('Inpatient Management ERP System API Documentation')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('patients', 'Patient management')
-    .addTag('rooms', 'Room and bed management')
-    .addTag('admissions', 'Admission/discharge management')
-    .addTag('vitals', 'Vital signs recording')
-    .addTag('rounds', 'Rounding management')
-    .addTag('reports', 'Reporting endpoints')
-    .addTag('admin', 'Admin functions')
-    .build();
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Hospital ERP API')
+      .setDescription('Inpatient Management ERP System API Documentation')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('auth', 'Authentication endpoints')
+      .addTag('patients', 'Patient management')
+      .addTag('rooms', 'Room and bed management')
+      .addTag('admissions', 'Admission/discharge management')
+      .addTag('vitals', 'Vital signs recording')
+      .addTag('rounds', 'Rounding management')
+      .addTag('reports', 'Reporting endpoints')
+      .addTag('admin', 'Admin functions')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+    logger.log('Swagger documentation enabled at /api/docs');
+  }
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
 
-  console.log(`Application is running on: http://localhost:${port}`);
-  console.log(`Swagger documentation available at: http://localhost:${port}/api/docs`);
+  logger.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();
