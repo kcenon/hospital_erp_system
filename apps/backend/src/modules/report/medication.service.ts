@@ -7,6 +7,8 @@ import {
   AdministerMedicationDto,
   HoldMedicationDto,
   RefuseMedicationDto,
+  CancelMedicationDto,
+  DiscontinueMedicationDto,
   GetMedicationHistoryDto,
   MedicationResponseDto,
   PaginatedMedicationResponseDto,
@@ -160,6 +162,74 @@ export class MedicationService {
   }
 
   /**
+   * Cancel medication
+   */
+  async cancel(
+    medicationId: string,
+    dto: CancelMedicationDto,
+    userId: string,
+  ): Promise<MedicationResponseDto> {
+    const medication = await this.medicationRepo.findById(medicationId);
+
+    if (!medication) {
+      throw new NotFoundException(`Medication ${medicationId} not found`);
+    }
+
+    if (
+      medication.status !== MedicationStatus.SCHEDULED &&
+      medication.status !== MedicationStatus.HELD
+    ) {
+      throw new BadRequestException(`Cannot cancel medication with status ${medication.status}`);
+    }
+
+    const updated = await this.medicationRepo.update(medicationId, {
+      status: MedicationStatus.CANCELLED,
+      cancelledBy: userId,
+      cancelledAt: new Date(),
+      cancelReason: dto.reason,
+    });
+
+    this.logger.log(`Medication ${medicationId} cancelled by user ${userId}: ${dto.reason}`);
+
+    return this.toResponseDto(updated);
+  }
+
+  /**
+   * Discontinue medication
+   */
+  async discontinue(
+    medicationId: string,
+    dto: DiscontinueMedicationDto,
+    userId: string,
+  ): Promise<MedicationResponseDto> {
+    const medication = await this.medicationRepo.findById(medicationId);
+
+    if (!medication) {
+      throw new NotFoundException(`Medication ${medicationId} not found`);
+    }
+
+    if (
+      medication.status !== MedicationStatus.SCHEDULED &&
+      medication.status !== MedicationStatus.HELD
+    ) {
+      throw new BadRequestException(
+        `Cannot discontinue medication with status ${medication.status}`,
+      );
+    }
+
+    const updated = await this.medicationRepo.update(medicationId, {
+      status: MedicationStatus.DISCONTINUED,
+      cancelledBy: userId,
+      cancelledAt: new Date(),
+      cancelReason: dto.reason,
+    });
+
+    this.logger.log(`Medication ${medicationId} discontinued by user ${userId}: ${dto.reason}`);
+
+    return this.toResponseDto(updated);
+  }
+
+  /**
    * Get scheduled medications for a date
    */
   async getScheduled(admissionId: string, date: Date): Promise<MedicationResponseDto[]> {
@@ -227,6 +297,9 @@ export class MedicationService {
     status: string;
     holdReason: string | null;
     notes: string | null;
+    cancelledBy: string | null;
+    cancelledAt: Date | null;
+    cancelReason: string | null;
     createdAt: Date;
   }): MedicationResponseDto {
     return {
@@ -242,6 +315,9 @@ export class MedicationService {
       status: medication.status as MedicationResponseDto['status'],
       holdReason: medication.holdReason,
       notes: medication.notes,
+      cancelledBy: medication.cancelledBy,
+      cancelledAt: medication.cancelledAt,
+      cancelReason: medication.cancelReason,
       createdAt: medication.createdAt,
     };
   }

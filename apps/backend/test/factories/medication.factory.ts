@@ -34,6 +34,9 @@ export function createTestMedication(overrides?: Partial<Medication>): Medicatio
     pharmacyVerified: false,
     holdReason: null,
     notes: faker.lorem.sentence(),
+    cancelledBy: null,
+    cancelledAt: null,
+    cancelReason: null,
     createdAt: now,
     ...overrides,
   };

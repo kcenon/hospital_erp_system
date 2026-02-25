@@ -5,6 +5,7 @@ import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import {
   RecordVitalSignsDto,
+  AmendVitalSignsDto,
   GetVitalHistoryDto,
   GetTrendDto,
   VitalSignResponseDto,
@@ -49,6 +50,33 @@ export class VitalSignController {
     @CurrentUser() user: { id: string },
   ): Promise<VitalSignResponseDto> {
     return this.vitalSignService.record(admissionId, dto, user.id);
+  }
+
+  /**
+   * Amend vital signs record
+   * POST /admissions/:admissionId/vitals/:id/amend
+   */
+  @ApiOperation({ summary: 'Amend a vital signs record' })
+  @ApiParam({ name: 'admissionId', description: 'Admission UUID' })
+  @ApiParam({ name: 'id', description: 'Vital sign record UUID to amend' })
+  @ApiResponse({
+    status: 201,
+    description: 'Vital signs amended successfully',
+    type: VitalSignResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - insufficient permissions' })
+  @ApiResponse({ status: 404, description: 'Vital sign record not found' })
+  @Post(':id/amend')
+  @RequirePermission('vital:write')
+  async amend(
+    @Param('admissionId', ParseUUIDPipe) admissionId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: AmendVitalSignsDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<VitalSignResponseDto> {
+    return this.vitalSignService.amend(admissionId, id, dto, user.id);
   }
 
   /**

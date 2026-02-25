@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { AdmissionStatus } from '@prisma/client';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { AdmissionStatus, NoteType } from '@prisma/client';
 import { PrismaService } from '../../prisma';
 import { NursingNoteRepository } from './nursing-note.repository';
 import {
   CreateNursingNoteDto,
+  CreateAddendumDto,
   GetNursingNotesDto,
   NursingNoteResponseDto,
   PaginatedNursingNotesResponseDto,
@@ -64,6 +65,46 @@ export class NursingNoteService {
     );
 
     return this.toResponseDto(note);
+  }
+
+  /**
+   * Add addendum to an existing nursing note
+   */
+  async addAddendum(
+    admissionId: string,
+    noteId: string,
+    dto: CreateAddendumDto,
+    userId: string,
+  ): Promise<NursingNoteResponseDto> {
+    // 1. Find original note
+    const originalNote = await this.noteRepo.findById(noteId);
+    if (!originalNote) {
+      throw new NotFoundException(`Nursing note ${noteId} not found`);
+    }
+
+    if (originalNote.admissionId !== admissionId) {
+      throw new NotFoundException(`Nursing note ${noteId} not found for admission ${admissionId}`);
+    }
+
+    // 2. Create addendum note referencing the parent
+    const addendum = await this.prisma.nursingNote.create({
+      data: {
+        admissionId,
+        noteType: NoteType.ADDENDUM,
+        subjective: dto.content,
+        objective: null,
+        assessment: null,
+        plan: null,
+        recordedAt: new Date(),
+        recordedBy: userId,
+        isSignificant: dto.isSignificant ?? false,
+        parentNoteId: noteId,
+      },
+    });
+
+    this.logger.log(`Addendum added to nursing note ${noteId} by user ${userId}`);
+
+    return this.toResponseDto(addendum);
   }
 
   /**
@@ -155,6 +196,7 @@ export class NursingNoteService {
     isSignificant: boolean;
     createdAt: Date;
     updatedAt: Date;
+    parentNoteId?: string | null;
   }): NursingNoteResponseDto {
     return {
       id: note.id,
@@ -169,6 +211,7 @@ export class NursingNoteService {
       isSignificant: note.isSignificant,
       createdAt: note.createdAt,
       updatedAt: note.updatedAt,
+      parentNoteId: note.parentNoteId ?? null,
     };
   }
 }

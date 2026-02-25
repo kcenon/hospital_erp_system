@@ -8,6 +8,8 @@ import {
   AdministerMedicationDto,
   HoldMedicationDto,
   RefuseMedicationDto,
+  CancelMedicationDto,
+  DiscontinueMedicationDto,
   GetMedicationHistoryDto,
   MedicationResponseDto,
   PaginatedMedicationResponseDto,
@@ -127,6 +129,58 @@ export class MedicationController {
     @CurrentUser() user: { id: string },
   ): Promise<MedicationResponseDto> {
     return this.medicationService.refuse(id, dto, user.id);
+  }
+
+  /**
+   * Cancel medication
+   * POST /admissions/:admissionId/medications/:id/cancel
+   */
+  @ApiOperation({ summary: 'Cancel a scheduled medication' })
+  @ApiParam({ name: 'admissionId', description: 'Admission UUID' })
+  @ApiParam({ name: 'id', description: 'Medication UUID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Medication cancelled successfully',
+    type: MedicationResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid medication status for cancellation' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - insufficient permissions' })
+  @ApiResponse({ status: 404, description: 'Medication not found' })
+  @Post(':id/cancel')
+  @RequirePermission('report:write')
+  async cancel(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CancelMedicationDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<MedicationResponseDto> {
+    return this.medicationService.cancel(id, dto, user.id);
+  }
+
+  /**
+   * Discontinue medication
+   * POST /admissions/:admissionId/medications/:id/discontinue
+   */
+  @ApiOperation({ summary: 'Discontinue a medication' })
+  @ApiParam({ name: 'admissionId', description: 'Admission UUID' })
+  @ApiParam({ name: 'id', description: 'Medication UUID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Medication discontinued successfully',
+    type: MedicationResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid medication status for discontinuation' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - insufficient permissions' })
+  @ApiResponse({ status: 404, description: 'Medication not found' })
+  @Post(':id/discontinue')
+  @RequirePermission('report:write')
+  async discontinue(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: DiscontinueMedicationDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<MedicationResponseDto> {
+    return this.medicationService.discontinue(id, dto, user.id);
   }
 
   /**

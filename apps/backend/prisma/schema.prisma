@@ -52,7 +52,9 @@ model User {
   intakeOutputsRecorded   IntakeOutput[] @relation("IORecorder")
   medicationsPrescribed   Medication[]   @relation("MedicationPrescriber")
   medicationsAdministered Medication[]   @relation("MedicationAdministrator")
+  medicationsCancelled    Medication[]   @relation("MedicationCanceller")
   nursingNotesRecorded    NursingNote[]  @relation("NursingNoteRecorder")
+  vitalSignsAmended       VitalSign[]    @relation("VitalSignAmender")
   dailyReportsGenerated   DailyReport[]  @relation("DailyReportGenerator")
   roundsAsDoctor          Round[]        @relation("RoundLeadDoctor")
   roundsCreated           Round[]        @relation("RoundCreator")
@@ -539,6 +541,8 @@ enum MedicationStatus {
   HELD
   REFUSED
   MISSED
+  CANCELLED
+  DISCONTINUED
 
   @@schema("report")
 }
@@ -573,6 +577,7 @@ enum NoteType {
   EDUCATION
   DISCHARGE_PLANNING
   PHONE_CALL
+  ADDENDUM
 
   @@schema("report")
 }
@@ -607,15 +612,24 @@ model VitalSign {
   notes            String?        @db.Text
   hasAlert         Boolean        @default(false) @map("has_alert")
   createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  // Amendment fields (correction record chain)
+  amendedFromId    String?        @map("amended_from_id") @db.Uuid
+  amendedBy        String?        @map("amended_by") @db.Uuid
+  amendmentReason  String?        @map("amendment_reason") @db.Text
+  isAmended        Boolean        @default(false) @map("is_amended")
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
-  measurer  User      @relation("VitalSignMeasurer", fields: [measuredBy], references: [id], onDelete: Restrict)
+  admission   Admission  @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  measurer    User       @relation("VitalSignMeasurer", fields: [measuredBy], references: [id], onDelete: Restrict)
+  amendedFrom VitalSign? @relation("VitalSignAmendment", fields: [amendedFromId], references: [id], onDelete: SetNull)
+  amendments  VitalSign[] @relation("VitalSignAmendment")
+  amender     User?      @relation("VitalSignAmender", fields: [amendedBy], references: [id], onDelete: SetNull)
 
   @@index([admissionId, measuredAt(sort: Desc)])
   @@index([measuredAt])
   @@index([hasAlert])
   @@index([measuredBy])
+  @@index([amendedFromId])
   @@map("vital_signs")
   @@schema("report")
 }
@@ -672,11 +686,16 @@ model Medication {
   holdReason     String?          @map("hold_reason") @db.Text
   notes          String?          @db.Text
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  // Cancellation/discontinuation fields
+  cancelledBy    String?          @map("cancelled_by") @db.Uuid
+  cancelledAt    DateTime?        @map("cancelled_at") @db.Timestamptz
+  cancelReason   String?          @map("cancel_reason") @db.Text
 
   // Relations
   admission     Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   prescriber    User?     @relation("MedicationPrescriber", fields: [prescribedBy], references: [id], onDelete: SetNull)
   administrator User?     @relation("MedicationAdministrator", fields: [administeredBy], references: [id], onDelete: SetNull)
+  canceller     User?     @relation("MedicationCanceller", fields: [cancelledBy], references: [id], onDelete: SetNull)
 
   @@index([admissionId, administeredAt])
   @@index([admissionId, status])
@@ -690,30 +709,35 @@ model Medication {
 
 /// NursingNote entity for nursing documentation (SOAP format)
 model NursingNote {
-  id            String   @id @default(uuid()) @db.Uuid
-  admissionId   String   @map("admission_id") @db.Uuid
-  noteType      NoteType @map("note_type")
+  id            String       @id @default(uuid()) @db.Uuid
+  admissionId   String       @map("admission_id") @db.Uuid
+  noteType      NoteType     @map("note_type")
   // SOAP Format
-  subjective    String?  @db.Text
-  objective     String?  @db.Text
-  assessment    String?  @db.Text
-  plan          String?  @db.Text
+  subjective    String?      @db.Text
+  objective     String?      @db.Text
+  assessment    String?      @db.Text
+  plan          String?      @db.Text
   // Metadata
-  recordedAt    DateTime @map("recorded_at") @db.Timestamptz
-  recordedBy    String   @map("recorded_by") @db.Uuid
-  isSignificant Boolean  @default(false) @map("is_significant")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  recordedAt    DateTime     @map("recorded_at") @db.Timestamptz
+  recordedBy    String       @map("recorded_by") @db.Uuid
+  isSignificant Boolean      @default(false) @map("is_significant")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+  // Addendum support (references parent note)
+  parentNoteId  String?      @map("parent_note_id") @db.Uuid
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
-  recorder  User      @relation("NursingNoteRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
+  admission  Admission     @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  recorder   User          @relation("NursingNoteRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
+  parentNote NursingNote?  @relation("NursingNoteAddendum", fields: [parentNoteId], references: [id], onDelete: SetNull)
+  addendums  NursingNote[] @relation("NursingNoteAddendum")
 
   @@index([admissionId, recordedAt(sort: Desc)])
   @@index([admissionId, noteType])
   @@index([recordedAt])
   @@index([recordedBy])
   @@index([isSignificant])
+  @@index([parentNoteId])
   @@map("nursing_notes")
   @@schema("report")
 }
