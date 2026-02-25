@@ -173,7 +173,7 @@ model Floor {
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Restrict)
   rooms    Room[]
   rounds   Round[]
 
@@ -208,7 +208,7 @@ model Room {
   updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  floor Floor @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  floor Floor @relation(fields: [floorId], references: [id], onDelete: Restrict)
   beds  Bed[]
 
   @@unique([floorId, roomNumber])
@@ -240,7 +240,7 @@ model Bed {
   updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  room             Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room             Room       @relation(fields: [roomId], references: [id], onDelete: Restrict)
   currentAdmission Admission? @relation("BedCurrentAdmission", fields: [currentAdmissionId], references: [id], onDelete: SetNull)
   admissions       Admission[] @relation("AdmissionBed")
   transfersFrom    Transfer[]  @relation("TransferFromBed")
@@ -406,6 +406,7 @@ model Admission {
   createdAt             DateTime        @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime        @updatedAt @map("updated_at") @db.Timestamptz
   createdBy             String          @map("created_by") @db.Uuid
+  deletedAt             DateTime?       @map("deleted_at") @db.Timestamptz
 
   // Relations
   patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Restrict)
@@ -447,7 +448,7 @@ model Transfer {
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
-  admission   Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission   Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   fromBed     Bed       @relation("TransferFromBed", fields: [fromBedId], references: [id], onDelete: Restrict)
   toBed       Bed       @relation("TransferToBed", fields: [toBedId], references: [id], onDelete: Restrict)
   transferrer User      @relation("Transferrer", fields: [transferredBy], references: [id], onDelete: Restrict)
@@ -475,7 +476,7 @@ model Discharge {
   createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
-  admission  Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission  Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   discharger User      @relation("Discharger", fields: [dischargedBy], references: [id], onDelete: Restrict)
 
   @@index([dischargeDate])
@@ -577,7 +578,7 @@ model VitalSign {
   createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   measurer  User      @relation("VitalSignMeasurer", fields: [measuredBy], references: [id], onDelete: Restrict)
 
   @@index([admissionId, measuredAt(sort: Desc)])
@@ -611,7 +612,7 @@ model IntakeOutput {
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   recorder  User      @relation("IORecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
 
   @@index([admissionId, recordDate])
@@ -637,7 +638,7 @@ model Medication {
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
-  admission     Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission     Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   administrator User?     @relation("MedicationAdministrator", fields: [administeredBy], references: [id], onDelete: SetNull)
 
   @@index([admissionId, administeredAt])
@@ -665,7 +666,7 @@ model NursingNote {
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   recorder  User      @relation("NursingNoteRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
 
   @@index([admissionId, recordedAt(sort: Desc)])
@@ -698,7 +699,7 @@ model DailyReport {
   generatedBy      String?        @map("generated_by") @db.Uuid
 
   // Relations
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   generator User?     @relation("DailyReportGenerator", fields: [generatedBy], references: [id], onDelete: SetNull)
 
   @@unique([admissionId, reportDate])
@@ -875,7 +876,7 @@ model Round {
   createdBy     String      @map("created_by") @db.Uuid
 
   // Relations
-  floor      Floor         @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  floor      Floor         @relation(fields: [floorId], references: [id], onDelete: Restrict)
   leadDoctor User          @relation("RoundLeadDoctor", fields: [leadDoctorId], references: [id], onDelete: Restrict)
   creator    User          @relation("RoundCreator", fields: [createdBy], references: [id], onDelete: Restrict)
   records    RoundRecord[]
@@ -909,7 +910,7 @@ model RoundRecord {
 
   // Relations
   round     Round     @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  admission Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   recorder  User      @relation("RoundRecordRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
 
   @@unique([roundId, admissionId])
