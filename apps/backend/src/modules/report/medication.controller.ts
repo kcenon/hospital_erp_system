@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { MedicationService } from './medication.service';
-import { ParseUUIDPipe, JwtAuthGuard } from '../../common';
+import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import {
   ScheduleMedicationDto,
@@ -72,10 +72,9 @@ export class MedicationController {
   async administer(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: AdministerMedicationDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<MedicationResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.medicationService.administer(id, dto, effectiveUserId);
+    return this.medicationService.administer(id, dto, user.id);
   }
 
   /**
@@ -99,10 +98,9 @@ export class MedicationController {
   async hold(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: HoldMedicationDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<MedicationResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.medicationService.hold(id, dto, effectiveUserId);
+    return this.medicationService.hold(id, dto, user.id);
   }
 
   /**
@@ -126,10 +124,9 @@ export class MedicationController {
   async refuse(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: RefuseMedicationDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<MedicationResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.medicationService.refuse(id, dto, effectiveUserId);
+    return this.medicationService.refuse(id, dto, user.id);
   }
 
   /**
