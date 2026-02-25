@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDebounce } from '@/hooks';
 import {
   Card,
   CardContent,
@@ -40,6 +41,28 @@ const patientStatusOptions: { value: RoundPatientStatus; label: string; color: s
   { value: 'CRITICAL', label: 'Critical', color: 'bg-red-100 text-red-700' },
 ];
 
+function buildSaveData(data: RoundRecordFormData): UpdateRoundRecordData {
+  const result: UpdateRoundRecordData = {};
+  if (data.patientStatus) result.patientStatus = data.patientStatus as RoundPatientStatus;
+  if (data.chiefComplaint) result.chiefComplaint = data.chiefComplaint;
+  if (data.observation) result.observation = data.observation;
+  if (data.assessment) result.assessment = data.assessment;
+  if (data.plan) result.plan = data.plan;
+  if (data.orders) result.orders = data.orders;
+  return result;
+}
+
+function hasFormData(data: RoundRecordFormData): boolean {
+  return !!(
+    data.patientStatus ||
+    data.chiefComplaint ||
+    data.observation ||
+    data.assessment ||
+    data.plan ||
+    data.orders
+  );
+}
+
 export function RoundRecordForm({
   patient,
   onSave,
@@ -47,7 +70,8 @@ export function RoundRecordForm({
   isSaving = false,
 }: RoundRecordFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isManuallySaving = useRef(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
 
   const { register, handleSubmit, watch, setValue, reset } = useForm<RoundRecordFormData>({
     defaultValues: {
@@ -61,44 +85,27 @@ export function RoundRecordForm({
   });
 
   const formData = watch();
+  const debouncedFormData = useDebounce(formData, 5000);
 
-  const saveData = useCallback(() => {
-    const data: UpdateRoundRecordData = {};
-    if (formData.patientStatus) data.patientStatus = formData.patientStatus as RoundPatientStatus;
-    if (formData.chiefComplaint) data.chiefComplaint = formData.chiefComplaint;
-    if (formData.observation) data.observation = formData.observation;
-    if (formData.assessment) data.assessment = formData.assessment;
-    if (formData.plan) data.plan = formData.plan;
-    if (formData.orders) data.orders = formData.orders;
+  // Auto-save when debounced data changes (5s after last edit)
+  useEffect(() => {
+    if (isManuallySaving.current || isSaving) return;
+    if (!hasFormData(debouncedFormData)) return;
 
+    const data = buildSaveData(debouncedFormData);
     if (Object.keys(data).length > 0) {
+      setIsAutoSaving(true);
       onSave(data);
     }
-  }, [formData, onSave]);
+  }, [debouncedFormData, onSave, isSaving]);
 
+  // Reset flags when save completes
   useEffect(() => {
-    if (autoSaveTimerRef.current) {
-      clearTimeout(autoSaveTimerRef.current);
+    if (!isSaving) {
+      setIsAutoSaving(false);
+      isManuallySaving.current = false;
     }
-    autoSaveTimerRef.current = setTimeout(() => {
-      const hasData =
-        formData.patientStatus ||
-        formData.chiefComplaint ||
-        formData.observation ||
-        formData.assessment ||
-        formData.plan ||
-        formData.orders;
-      if (hasData) {
-        saveData();
-      }
-    }, 3000);
-
-    return () => {
-      if (autoSaveTimerRef.current) {
-        clearTimeout(autoSaveTimerRef.current);
-      }
-    };
-  }, [formData, saveData]);
+  }, [isSaving]);
 
   useEffect(() => {
     reset({
@@ -112,15 +119,9 @@ export function RoundRecordForm({
   }, [patient.admissionId, reset]);
 
   const onSubmit = (data: RoundRecordFormData) => {
-    const submitData: UpdateRoundRecordData = {};
-    if (data.patientStatus) submitData.patientStatus = data.patientStatus as RoundPatientStatus;
-    if (data.chiefComplaint) submitData.chiefComplaint = data.chiefComplaint;
-    if (data.observation) submitData.observation = data.observation;
-    if (data.assessment) submitData.assessment = data.assessment;
-    if (data.plan) submitData.plan = data.plan;
-    if (data.orders) submitData.orders = data.orders;
-
-    onSave(submitData);
+    isManuallySaving.current = true;
+    setIsAutoSaving(false);
+    onSave(buildSaveData(data));
   };
 
   return (
@@ -224,24 +225,29 @@ export function RoundRecordForm({
         </form>
       </CardContent>
 
-      <div className="p-4 border-t flex gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          className="flex-1 h-12 text-base"
-          onClick={onSkip}
-          disabled={isSaving}
-        >
-          Skip
-        </Button>
-        <Button
-          type="submit"
-          className="flex-1 h-12 text-base"
-          onClick={handleSubmit(onSubmit)}
-          disabled={isSaving}
-        >
-          {isSaving ? 'Saving...' : 'Save & Next'}
-        </Button>
+      <div className="p-4 border-t">
+        {isAutoSaving && (
+          <p className="text-xs text-muted-foreground text-center mb-2">Auto-saving...</p>
+        )}
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 h-12 text-base"
+            onClick={onSkip}
+            disabled={isSaving}
+          >
+            Skip
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 h-12 text-base"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSaving}
+          >
+            {isSaving && !isAutoSaving ? 'Saving...' : 'Save & Next'}
+          </Button>
+        </div>
       </div>
     </Card>
   );

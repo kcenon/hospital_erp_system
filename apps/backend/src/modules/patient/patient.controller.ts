@@ -114,6 +114,36 @@ export class PatientController {
     return this.patientService.findByLegacyId(legacyId, user.role);
   }
 
+  @ApiOperation({ summary: 'Get patient change history' })
+  @ApiParam({ name: 'id', description: 'Patient ID', format: 'uuid' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number', example: 1 })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page', example: 20 })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    description: 'Start date filter (ISO 8601)',
+    example: '2025-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    description: 'End date filter (ISO 8601)',
+    example: '2025-12-31',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated patient history' })
+  @ApiResponse({ status: 404, description: 'Patient not found' })
+  @Get(':id/history')
+  @RequirePermission(Permissions.PATIENT_READ)
+  async getHistory(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    return this.patientService.findHistory(id, { page, limit, from, to });
+  }
+
   @ApiOperation({ summary: 'Get patient by ID' })
   @ApiParam({ name: 'id', description: 'Patient ID' })
   @ApiResponse({ status: 200, description: 'Patient found', type: PatientResponseDto })

@@ -21,6 +21,29 @@ services:
     networks:
       - hospital-network
 
+  # PostgreSQL for E2E tests (isolated from dev data)
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: hospital-erp-db-test
+    restart: unless-stopped
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: hospital_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hospital_dev_password}
+      POSTGRES_DB: hospital_erp_test
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U hospital_user -d hospital_erp_test']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hospital-network
+    profiles:
+      - test
+
   # Redis 7
   redis:
     image: redis:7-alpine
@@ -30,9 +53,9 @@ services:
       - '6379:6379'
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev_password}
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ['CMD-SHELL', 'redis-cli -a ${REDIS_PASSWORD:-redis_dev_password} ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,7 +75,7 @@ services:
       NODE_ENV: development
       PORT: 3000
       DATABASE_URL: postgresql://hospital_user:${DB_PASSWORD:-hospital_dev_password}@postgres:5432/hospital_erp_dev
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_password}@redis:6379
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-access-secret-change-in-production}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-in-production}
       JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-1h}
@@ -94,10 +117,50 @@ services:
     networks:
       - hospital-network
 
+  # PgAdmin 4 — Database management GUI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: hospital-erp-pgadmin
+    restart: unless-stopped
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@hospital.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hospital-network
+    profiles:
+      - tools
+
+  # Redis Commander — Cache inspection GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: hospital-erp-redis-commander
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:${REDIS_PASSWORD:-redis_dev_password}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - hospital-network
+    profiles:
+      - tools
+
 networks:
   hospital-network:
     driver: bridge
 
 volumes:
   postgres_data:
+  postgres_test_data:
   redis_data:
+  pgadmin_data:

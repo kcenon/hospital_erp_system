@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # InfluxDB for k6 metrics storage
   influxdb:

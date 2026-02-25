@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard, ThrottlerStorage } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerRedisStorageService } from './common/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis';
 import { MetricsModule, MetricsInterceptor } from './metrics';
@@ -26,23 +27,26 @@ import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './c
       validate,
     }),
     EventEmitterModule.forRoot(),
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000,
-        limit: 3,
-      },
-      {
-        name: 'medium',
-        ttl: 10000,
-        limit: 20,
-      },
-      {
-        name: 'long',
-        ttl: 60000,
-        limit: 100,
-      },
-    ]),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'short',
+          ttl: 1000,
+          limit: 3,
+        },
+        {
+          name: 'medium',
+          ttl: 10000,
+          limit: 20,
+        },
+        {
+          name: 'long',
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+      errorMessage: 'Too many requests. Please try again later.',
+    }),
     RedisModule,
     PrismaModule,
     MetricsModule,
@@ -58,6 +62,10 @@ import { appConfig, databaseConfig, redisConfig, jwtConfig, validate } from './c
   ],
   controllers: [],
   providers: [
+    {
+      provide: ThrottlerStorage,
+      useClass: ThrottlerRedisStorageService,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
