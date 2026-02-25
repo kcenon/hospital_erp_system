@@ -146,6 +146,30 @@ export class GetMedicationHistoryDto {
 }
 
 /**
+ * DTO for cancelling medication
+ */
+export class CancelMedicationDto {
+  @ApiProperty({
+    description: 'Reason for cancelling the medication',
+    example: 'Medication no longer needed per physician order',
+  })
+  @IsString()
+  reason: string;
+}
+
+/**
+ * DTO for discontinuing medication
+ */
+export class DiscontinueMedicationDto {
+  @ApiProperty({
+    description: 'Reason for discontinuing the medication',
+    example: 'Adverse reaction observed',
+  })
+  @IsString()
+  reason: string;
+}
+
+/**
  * Medication response DTO
  */
 export class MedicationResponseDto {
@@ -191,6 +215,15 @@ export class MedicationResponseDto {
 
   @ApiPropertyOptional({ description: 'Additional notes', nullable: true })
   notes: string | null;
+
+  @ApiPropertyOptional({ description: 'User ID who cancelled the medication', nullable: true })
+  cancelledBy: string | null;
+
+  @ApiPropertyOptional({ description: 'Time when medication was cancelled', nullable: true })
+  cancelledAt: Date | null;
+
+  @ApiPropertyOptional({ description: 'Reason for cancellation', nullable: true })
+  cancelReason: string | null;
 
   @ApiProperty({ description: 'Record creation timestamp' })
   createdAt: Date;

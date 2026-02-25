@@ -49,6 +49,26 @@ export class CreateNursingNoteDto {
 }
 
 /**
+ * DTO for adding an addendum to an existing nursing note
+ */
+export class CreateAddendumDto {
+  @ApiProperty({
+    description: 'Addendum text to append to the original note',
+    example: 'Patient also reports mild dizziness since this morning',
+  })
+  @IsString()
+  content: string;
+
+  @ApiPropertyOptional({
+    description: 'Whether the addendum is significant for handoff',
+    example: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isSignificant?: boolean;
+}
+
+/**
  * DTO for querying nursing notes
  */
 export class GetNursingNotesDto {
@@ -127,6 +147,9 @@ export class NursingNoteResponseDto {
 
   @ApiProperty({ description: 'Record last update timestamp' })
   updatedAt: Date;
+
+  @ApiPropertyOptional({ description: 'Parent note ID for addendums', nullable: true })
+  parentNoteId: string | null;
 }
 
 /**

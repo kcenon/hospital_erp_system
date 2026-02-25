@@ -86,6 +86,18 @@ export class VitalSignResponseDto {
 
   @ApiProperty({ description: 'Record creation timestamp' })
   createdAt: Date;
+
+  @ApiPropertyOptional({ description: 'ID of original record this amends', nullable: true })
+  amendedFromId: string | null;
+
+  @ApiPropertyOptional({ description: 'User ID who made the amendment', nullable: true })
+  amendedBy: string | null;
+
+  @ApiPropertyOptional({ description: 'Reason for the amendment', nullable: true })
+  amendmentReason: string | null;
+
+  @ApiProperty({ description: 'Whether this record has been amended', example: false })
+  isAmended: boolean;
 }
 
 /**

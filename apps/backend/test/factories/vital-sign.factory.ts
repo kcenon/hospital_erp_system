@@ -28,6 +28,10 @@ export function createTestVitalSign(overrides?: Partial<VitalSign>): VitalSign {
     notes: null,
     hasAlert: false,
     createdAt: now,
+    amendedFromId: null,
+    amendedBy: null,
+    amendmentReason: null,
+    isAmended: false,
     ...overrides,
   };
 }

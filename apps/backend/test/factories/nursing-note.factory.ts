@@ -22,6 +22,7 @@ export function createTestNursingNote(overrides?: Partial<NursingNote>): Nursing
     isSignificant: faker.datatype.boolean(),
     createdAt: now,
     updatedAt: now,
+    parentNoteId: null,
     ...overrides,
   };
 }

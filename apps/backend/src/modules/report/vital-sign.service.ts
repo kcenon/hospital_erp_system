@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { VitalSign, AdmissionStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma';
@@ -6,6 +6,7 @@ import { VitalSignRepository } from './vital-sign.repository';
 import { VitalSigns, VitalAlert } from './value-objects';
 import {
   RecordVitalSignsDto,
+  AmendVitalSignsDto,
   GetVitalHistoryDto,
   GetTrendDto,
   VitalSignResponseDto,
@@ -113,6 +114,79 @@ export class VitalSignService {
     }
 
     return this.toResponseDto(vitalSign, alerts);
+  }
+
+  /**
+   * Amend vital signs record
+   * Creates a new corrected record referencing the original
+   */
+  async amend(
+    admissionId: string,
+    vitalSignId: string,
+    dto: AmendVitalSignsDto,
+    userId: string,
+  ): Promise<VitalSignResponseDto> {
+    // 1. Find original record
+    const original = await this.vitalRepo.findById(vitalSignId);
+    if (!original) {
+      throw new NotFoundException(`Vital sign record ${vitalSignId} not found`);
+    }
+
+    if (original.admissionId !== admissionId) {
+      throw new NotFoundException(
+        `Vital sign record ${vitalSignId} not found for admission ${admissionId}`,
+      );
+    }
+
+    // 2. Create value object for new readings
+    const vitals = new VitalSigns(
+      dto.temperature ?? null,
+      dto.systolicBp ?? null,
+      dto.diastolicBp ?? null,
+      dto.pulseRate ?? null,
+      dto.respiratoryRate ?? null,
+      dto.oxygenSaturation ?? null,
+      dto.bloodGlucose ?? null,
+      dto.painScore ?? null,
+      dto.consciousness ?? null,
+    );
+
+    const alerts = vitals.getAlerts();
+    const hasAlert = alerts.length > 0;
+    const measuredAt = dto.measuredAt ? new Date(dto.measuredAt) : original.measuredAt;
+
+    // 3. Create amended record and mark original in a transaction
+    const [amended] = await this.prisma.$transaction([
+      this.prisma.vitalSign.create({
+        data: {
+          admissionId,
+          temperature: dto.temperature ?? null,
+          systolicBp: dto.systolicBp ?? null,
+          diastolicBp: dto.diastolicBp ?? null,
+          pulseRate: dto.pulseRate ?? null,
+          respiratoryRate: dto.respiratoryRate ?? null,
+          oxygenSaturation: dto.oxygenSaturation ?? null,
+          bloodGlucose: dto.bloodGlucose ?? null,
+          painScore: dto.painScore ?? null,
+          consciousness: dto.consciousness ?? null,
+          measuredAt,
+          measuredBy: original.measuredBy,
+          notes: dto.notes ?? null,
+          hasAlert,
+          amendedFromId: vitalSignId,
+          amendedBy: userId,
+          amendmentReason: dto.reason,
+        },
+      }),
+      this.prisma.vitalSign.update({
+        where: { id: vitalSignId },
+        data: { isAmended: true },
+      }),
+    ]);
+
+    this.logger.log(`Vital sign ${vitalSignId} amended by user ${userId}: ${dto.reason}`);
+
+    return this.toResponseDto(amended, alerts);
   }
 
   /**
@@ -301,6 +375,10 @@ export class VitalSignService {
       hasAlert: vitalSign.hasAlert,
       alerts: computedAlerts,
       createdAt: vitalSign.createdAt,
+      amendedFromId: vitalSign.amendedFromId,
+      amendedBy: vitalSign.amendedBy,
+      amendmentReason: vitalSign.amendmentReason,
+      isAmended: vitalSign.isAmended,
     };
   }
 }

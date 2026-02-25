@@ -5,6 +5,7 @@ import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import {
   CreateNursingNoteDto,
+  CreateAddendumDto,
   GetNursingNotesDto,
   NursingNoteResponseDto,
   PaginatedNursingNotesResponseDto,
@@ -47,6 +48,33 @@ export class NursingNoteController {
     @CurrentUser() user: { id: string },
   ): Promise<NursingNoteResponseDto> {
     return this.noteService.create(admissionId, dto, user.id);
+  }
+
+  /**
+   * Add addendum to nursing note
+   * POST /admissions/:admissionId/notes/:id/addendum
+   */
+  @ApiOperation({ summary: 'Add an addendum to an existing nursing note' })
+  @ApiParam({ name: 'admissionId', description: 'Admission UUID' })
+  @ApiParam({ name: 'id', description: 'Nursing note UUID' })
+  @ApiResponse({
+    status: 201,
+    description: 'Addendum added successfully',
+    type: NursingNoteResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - insufficient permissions' })
+  @ApiResponse({ status: 404, description: 'Nursing note not found' })
+  @Post(':id/addendum')
+  @RequirePermission('report:write')
+  async addAddendum(
+    @Param('admissionId', ParseUUIDPipe) admissionId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateAddendumDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<NursingNoteResponseDto> {
+    return this.noteService.addAddendum(admissionId, id, dto, user.id);
   }
 
   /**
