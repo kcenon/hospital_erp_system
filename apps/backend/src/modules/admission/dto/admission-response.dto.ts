@@ -111,7 +111,7 @@ export class AdmissionResponseDto {
   @ApiPropertyOptional({ description: 'Primary nurse ID', nullable: true })
   primaryNurseId: string | null;
 
-  @ApiProperty({ description: 'Admission status', enum: ['ADMITTED', 'DISCHARGED', 'TRANSFERRED'] })
+  @ApiProperty({ description: 'Admission status', enum: ['ACTIVE', 'DISCHARGED', 'TRANSFERRED'] })
   status: AdmissionStatus;
 
   @ApiPropertyOptional({ description: 'Expected discharge date', nullable: true })
