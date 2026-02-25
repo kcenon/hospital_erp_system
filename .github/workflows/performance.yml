@@ -138,9 +138,9 @@ jobs:
           DATABASE_URL: postgresql://hospital_user:hospital_password@localhost:5432/hospital_erp_test
           REDIS_HOST: localhost
           REDIS_PORT: 6379
-          JWT_SECRET: test-jwt-secret-for-ci
-          JWT_ACCESS_SECRET: test-jwt-access-secret-for-ci
-          JWT_REFRESH_SECRET: test-jwt-refresh-secret-for-ci
+          JWT_SECRET: test-jwt-secret-for-ci-environment
+          JWT_ACCESS_SECRET: test-jwt-access-secret-for-ci-environment
+          JWT_REFRESH_SECRET: test-jwt-refresh-secret-for-ci-environment
           JWT_EXPIRES_IN: 1h
           PORT: 3000
 
