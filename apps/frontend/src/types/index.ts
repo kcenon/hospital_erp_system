@@ -28,3 +28,4 @@ export * from './rounding';
 export * from './medication';
 export * from './nursing-note';
 export * from './intake-output';
+export * from './admin';
