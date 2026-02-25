@@ -4,8 +4,12 @@ export type UserRole = 'ADMIN' | 'DOCTOR' | 'NURSE' | 'STAFF';
 
 @Injectable()
 export class DataMaskingService {
-  maskPhone(phone: string | null): string | null {
+  maskPhone(phone: string | null, role?: UserRole): string | null {
     if (!phone) return null;
+
+    if (role === 'ADMIN' || role === 'DOCTOR') {
+      return phone;
+    }
 
     const digits = phone.replace(/\D/g, '');
     if (digits.length < 7) return phone;
@@ -23,35 +27,38 @@ export class DataMaskingService {
     return `${visibleStart}-${maskedMiddle}-${visibleEnd}`;
   }
 
-  maskSsn(ssn: string | null, role?: UserRole): string | null {
-    if (!ssn) return null;
+  maskSsn(ssn: string | null, role?: UserRole): { value: string | null; unmasked: boolean } {
+    if (!ssn) return { value: null, unmasked: false };
 
     if (role === 'ADMIN') {
-      return ssn;
+      return { value: ssn, unmasked: true };
     }
 
     const digits = ssn.replace(/\D/g, '');
     if (digits.length === 13) {
-      return `${digits.slice(0, 6)}-${digits.charAt(6)}******`;
+      return { value: `${digits.slice(0, 6)}-${digits.charAt(6)}******`, unmasked: false };
     }
 
-    return ssn.replace(/(\d{6})-?(\d)(\d{6})/, '$1-$2******');
+    return { value: ssn.replace(/(\d{6})-?(\d)(\d{6})/, '$1-$2******'), unmasked: false };
   }
 
-  maskInsuranceNumber(insuranceNumber: string | null, role?: UserRole): string | null {
-    if (!insuranceNumber) return null;
+  maskInsuranceNumber(
+    insuranceNumber: string | null,
+    role?: UserRole,
+  ): { value: string | null; unmasked: boolean } {
+    if (!insuranceNumber) return { value: null, unmasked: false };
 
     if (role === 'ADMIN') {
-      return insuranceNumber;
+      return { value: insuranceNumber, unmasked: true };
     }
 
     if (insuranceNumber.length <= 4) {
-      return '*'.repeat(insuranceNumber.length);
+      return { value: '*'.repeat(insuranceNumber.length), unmasked: false };
     }
 
     const visibleEnd = insuranceNumber.slice(-4);
     const maskedPart = '*'.repeat(insuranceNumber.length - 4);
-    return maskedPart + visibleEnd;
+    return { value: maskedPart + visibleEnd, unmasked: false };
   }
 
   maskAddress(address: string | null): string | null {
