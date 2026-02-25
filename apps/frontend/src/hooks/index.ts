@@ -34,3 +34,5 @@ export {
   useHoldMedication,
   useRefuseMedication,
 } from './use-medications';
+export { useNursingNotes, useSignificantNotes, useCreateNursingNote } from './use-nursing-notes';
+export { useIOHistory, useIODailySummary, useRecordIO } from './use-intake-output';

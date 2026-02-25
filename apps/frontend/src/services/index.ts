@@ -5,3 +5,5 @@ export { roomApi } from './room-api';
 export { vitalApi } from './vital-api';
 export { roundingApi } from './rounding-api';
 export { medicationApi } from './medication-api';
+export { nursingNoteApi } from './nursing-note-api';
+export { intakeOutputApi } from './intake-output-api';

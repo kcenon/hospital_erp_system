@@ -29,11 +29,15 @@ import {
   FileText,
   Activity,
   Pill,
+  NotebookPen,
+  Droplets,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
 import { VitalSignsForm, VitalTrendChart, VitalAlerts } from '@/components/vital-signs';
 import { MedicationScheduleForm, MedicationList } from '@/components/medications';
+import { NursingNoteForm, NursingNoteList } from '@/components/nursing-notes';
+import { IORecordForm, IOHistory, IODailySummaryCard } from '@/components/intake-output';
 import type { Gender, AdmissionStatus } from '@/types';
 
 function formatDate(dateString: string): string {
@@ -80,6 +84,8 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
   const { data: admissions, isLoading: isLoadingAdmissions } = usePatientAdmissions(id);
   const [showVitalForm, setShowVitalForm] = useState(false);
   const [showMedForm, setShowMedForm] = useState(false);
+  const [showNoteForm, setShowNoteForm] = useState(false);
+  const [showIOForm, setShowIOForm] = useState(false);
 
   if (isLoadingPatient) {
     return (
@@ -234,6 +240,32 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
                     <ChevronDown className="h-4 w-4 ml-auto" />
                   )}
                 </Button>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowNoteForm((prev) => !prev)}
+                >
+                  <NotebookPen className="h-4 w-4 mr-2" />
+                  {showNoteForm ? 'Hide Note Form' : 'Add Nursing Note'}
+                  {showNoteForm ? (
+                    <ChevronUp className="h-4 w-4 ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 ml-auto" />
+                  )}
+                </Button>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => setShowIOForm((prev) => !prev)}
+                >
+                  <Droplets className="h-4 w-4 mr-2" />
+                  {showIOForm ? 'Hide I/O Form' : 'Record I/O'}
+                  {showIOForm ? (
+                    <ChevronUp className="h-4 w-4 ml-auto" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 ml-auto" />
+                  )}
+                </Button>
               </>
             )}
           </CardContent>
@@ -294,6 +326,75 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
             </CardHeader>
             <CardContent>
               <MedicationList admissionId={currentAdmission.id} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {currentAdmission && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <NotebookPen className="h-5 w-5" />
+            <h2 className="text-xl font-semibold">Nursing Notes</h2>
+          </div>
+
+          {showNoteForm && (
+            <Card>
+              <CardHeader>
+                <CardTitle>New Nursing Note (SOAP)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <NursingNoteForm
+                  admissionId={currentAdmission.id}
+                  onSuccess={() => setShowNoteForm(false)}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Notes Timeline</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <NursingNoteList admissionId={currentAdmission.id} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {currentAdmission && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Droplets className="h-5 w-5" />
+            <h2 className="text-xl font-semibold">Intake / Output</h2>
+          </div>
+
+          <IODailySummaryCard
+            admissionId={currentAdmission.id}
+            date={new Date().toISOString().slice(0, 10)}
+          />
+
+          {showIOForm && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Record Intake / Output</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <IORecordForm
+                  admissionId={currentAdmission.id}
+                  onSuccess={() => setShowIOForm(false)}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>I/O History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <IOHistory admissionId={currentAdmission.id} />
             </CardContent>
           </Card>
         </div>
