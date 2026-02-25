@@ -36,3 +36,17 @@ export {
 } from './use-medications';
 export { useNursingNotes, useSignificantNotes, useCreateNursingNote } from './use-nursing-notes';
 export { useIOHistory, useIODailySummary, useRecordIO } from './use-intake-output';
+export {
+  useAdminUsers,
+  useAdminUser,
+  useCreateUser,
+  useUpdateUser,
+  useDeactivateUser,
+  useResetPassword,
+  useAssignRole,
+  useRemoveRole,
+  useRoles,
+  useLoginHistory,
+  useAccessLogs,
+  useChangeLogs,
+} from './use-admin';

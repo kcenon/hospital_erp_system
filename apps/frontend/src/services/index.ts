@@ -7,3 +7,4 @@ export { roundingApi } from './rounding-api';
 export { medicationApi } from './medication-api';
 export { nursingNoteApi } from './nursing-note-api';
 export { intakeOutputApi } from './intake-output-api';
+export { adminUserApi, adminRoleApi, adminAuditApi } from './admin-api';
