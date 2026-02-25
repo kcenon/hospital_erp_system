@@ -35,7 +35,7 @@ export class FindAdmissionsDto {
 
   @ApiPropertyOptional({
     description: 'Filter by admission status',
-    enum: ['ADMITTED', 'DISCHARGED', 'TRANSFERRED'],
+    enum: ['ACTIVE', 'DISCHARGED', 'TRANSFERRED'],
   })
   @IsOptional()
   @IsEnum(AdmissionStatus)

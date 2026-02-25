@@ -44,7 +44,7 @@ function formatGender(gender: Gender): string {
 
 function getStatusBadgeVariant(status: AdmissionStatus) {
   switch (status) {
-    case 'ADMITTED':
+    case 'ACTIVE':
       return 'success';
     case 'DISCHARGED':
       return 'secondary';
@@ -57,8 +57,8 @@ function getStatusBadgeVariant(status: AdmissionStatus) {
 
 function formatAdmissionStatus(status: AdmissionStatus): string {
   switch (status) {
-    case 'ADMITTED':
-      return 'Admitted';
+    case 'ACTIVE':
+      return 'Active';
     case 'DISCHARGED':
       return 'Discharged';
     case 'TRANSFERRED':
@@ -104,7 +104,7 @@ export default function PatientDetailPage({ params }: PatientDetailPageProps) {
     );
   }
 
-  const currentAdmission = admissions?.find((a) => a.status === 'ADMITTED');
+  const currentAdmission = admissions?.find((a) => a.status === 'ACTIVE');
 
   return (
     <div className="container mx-auto py-6 space-y-6">

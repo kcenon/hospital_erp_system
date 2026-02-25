@@ -98,7 +98,7 @@ export class AdmissionController {
     name: 'status',
     description: 'Filter by admission status',
     required: false,
-    enum: ['ADMITTED', 'DISCHARGED', 'TRANSFERRED'],
+    enum: ['ACTIVE', 'DISCHARGED', 'TRANSFERRED'],
   })
   @ApiResponse({
     status: 200,

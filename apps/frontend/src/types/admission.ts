@@ -1,5 +1,5 @@
 export type AdmissionType = 'EMERGENCY' | 'SCHEDULED' | 'TRANSFER';
-export type AdmissionStatus = 'ADMITTED' | 'TRANSFERRED' | 'DISCHARGED';
+export type AdmissionStatus = 'ACTIVE' | 'TRANSFERRED' | 'DISCHARGED';
 export type DischargeType = 'NORMAL' | 'TRANSFER' | 'ESCAPE' | 'DEATH';
 
 export interface Transfer {
