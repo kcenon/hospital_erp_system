@@ -15,6 +15,8 @@ export function createTestVitalSign(overrides?: Partial<VitalSign>): VitalSign {
     oxygenSaturation: faker.number.int({ min: 85, max: 100 }),
     bloodGlucose: faker.number.int({ min: 70, max: 200 }),
     painScore: faker.number.int({ min: 0, max: 10 }),
+    weight: null,
+    gcsScore: null,
     consciousness: faker.helpers.arrayElement([
       'ALERT',
       'VERBAL',
