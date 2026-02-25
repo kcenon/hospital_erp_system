@@ -1,6 +1,6 @@
-export type AdmissionType = 'EMERGENCY' | 'SCHEDULED' | 'TRANSFER';
+export type AdmissionType = 'EMERGENCY' | 'ELECTIVE' | 'TRANSFER';
 export type AdmissionStatus = 'ACTIVE' | 'TRANSFERRED' | 'DISCHARGED';
-export type DischargeType = 'NORMAL' | 'TRANSFER' | 'ESCAPE' | 'DEATH';
+export type DischargeType = 'NORMAL' | 'TRANSFER' | 'AMA' | 'DECEASED';
 
 export interface Transfer {
   id: string;
@@ -57,4 +57,48 @@ export interface PaginatedAdmissions {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface CreateAdmissionData {
+  patientId: string;
+  bedId: string;
+  admissionDate: string;
+  admissionTime: string;
+  admissionType: AdmissionType;
+  diagnosis?: string;
+  chiefComplaint?: string;
+  attendingDoctorId: string;
+  primaryNurseId?: string;
+  expectedDischargeDate?: string;
+  notes?: string;
+}
+
+export interface TransferData {
+  toBedId: string;
+  transferDate: string;
+  transferTime: string;
+  reason: string;
+  notes?: string;
+}
+
+export interface DischargeData {
+  dischargeDate: string;
+  dischargeTime: string;
+  dischargeType: DischargeType;
+  dischargeDiagnosis?: string;
+  dischargeSummary?: string;
+  followUpInstructions?: string;
+  followUpDate?: string;
+}
+
+export interface CreatePatientData {
+  name: string;
+  birthDate: string;
+  gender: 'MALE' | 'FEMALE';
+  bloodType?: string;
+  phone?: string;
+  address?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyContactRelation?: string;
 }

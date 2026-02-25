@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { patientApi } from '@/services';
-import type { FindPatientsParams } from '@/types';
+import type { FindPatientsParams, CreatePatientData } from '@/types';
 
 export function usePatients(params: FindPatientsParams = {}) {
   return useQuery({
@@ -22,5 +22,16 @@ export function usePatientSearch(query: string) {
     queryKey: ['patient-search', query],
     queryFn: () => patientApi.search(query),
     enabled: query.length >= 2,
+  });
+}
+
+export function useCreatePatient() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreatePatientData) => patientApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+    },
   });
 }
