@@ -4,9 +4,10 @@ import { AdmissionService } from './admission.service';
 import { AdmissionRepository } from './admission.repository';
 import { AdmissionNumberGenerator } from './admission-number.generator';
 import { RoomModule } from '../room';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [RoomModule],
+  imports: [RoomModule, AuthModule],
   controllers: [AdmissionController],
   providers: [AdmissionService, AdmissionRepository, AdmissionNumberGenerator],
   exports: [AdmissionService, AdmissionRepository],
