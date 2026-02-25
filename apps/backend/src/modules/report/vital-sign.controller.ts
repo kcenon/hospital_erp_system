@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { VitalSignService } from './vital-sign.service';
-import { ParseUUIDPipe, JwtAuthGuard } from '../../common';
+import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import {
   RecordVitalSignsDto,
@@ -46,10 +46,9 @@ export class VitalSignController {
   async record(
     @Param('admissionId', ParseUUIDPipe) admissionId: string,
     @Body() dto: RecordVitalSignsDto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<VitalSignResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.vitalSignService.record(admissionId, dto, effectiveUserId);
+    return this.vitalSignService.record(admissionId, dto, user.id);
   }
 
   /**

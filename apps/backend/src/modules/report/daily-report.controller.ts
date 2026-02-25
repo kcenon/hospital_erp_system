@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Param, Query, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { DailyReportAggregatorService } from './daily-report-aggregator.service';
-import { ParseUUIDPipe, JwtAuthGuard } from '../../common';
+import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import {
   DailySummaryResponseDto,
@@ -66,11 +66,11 @@ export class DailyReportController {
   async generateReport(
     @Param('admissionId', ParseUUIDPipe) admissionId: string,
     @Param('date') date: string,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<DailyReportResponseDto> {
     const reportDate = new Date(date);
     reportDate.setHours(0, 0, 0, 0);
-    return this.aggregatorService.saveReport(admissionId, reportDate, userId);
+    return this.aggregatorService.saveReport(admissionId, reportDate, user.id);
   }
 
   /**

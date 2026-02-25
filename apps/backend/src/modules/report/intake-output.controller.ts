@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { IntakeOutputService } from './intake-output.service';
-import { ParseUUIDPipe, JwtAuthGuard } from '../../common';
+import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
 import { PermissionGuard, RequirePermission } from '../auth';
 import { RecordIODto } from './dto/record-io.dto';
 import {
@@ -46,10 +46,9 @@ export class IntakeOutputController {
   async record(
     @Param('admissionId', ParseUUIDPipe) admissionId: string,
     @Body() dto: RecordIODto,
-    @Headers('x-user-id') userId?: string,
+    @CurrentUser() user: { id: string },
   ): Promise<IntakeOutputResponseDto> {
-    const effectiveUserId = userId || '00000000-0000-0000-0000-000000000000';
-    return this.ioService.record(admissionId, dto, effectiveUserId);
+    return this.ioService.record(admissionId, dto, user.id);
   }
 
   /**
