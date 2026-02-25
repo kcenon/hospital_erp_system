@@ -26,8 +26,22 @@ const nextConfig = {
 
   // Image optimization configuration
   images: {
-    domains: ['localhost'],
     formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      // Add production image domains via NEXT_PUBLIC_IMAGE_DOMAINS env var
+      // e.g., NEXT_PUBLIC_IMAGE_DOMAINS=cdn.example.com,images.example.com
+      ...(process.env.NEXT_PUBLIC_IMAGE_DOMAINS || '')
+        .split(',')
+        .filter(Boolean)
+        .map((hostname) => ({
+          protocol: 'https',
+          hostname: hostname.trim(),
+        })),
+    ],
   },
 
   // Experimental features
