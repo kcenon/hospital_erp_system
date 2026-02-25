@@ -47,3 +47,13 @@ export interface FindPatientsParams {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
+
+export interface CreatePatientDetailData {
+  ssn?: string;
+  medicalHistory?: string;
+  allergies?: string;
+  insuranceType?: string;
+  insuranceNumber?: string;
+  insuranceCompany?: string;
+  notes?: string;
+}
