@@ -71,3 +71,30 @@ export class CannotRemoveLastAdminRoleException extends HttpException {
     super('Cannot remove the last admin role from the system', HttpStatus.FORBIDDEN);
   }
 }
+
+/**
+ * Exception thrown when attempting to create a role with duplicate code
+ */
+export class DuplicateRoleCodeException extends ConflictException {
+  constructor(code: string) {
+    super(`Role code already exists: ${code}`);
+  }
+}
+
+/**
+ * Exception thrown when attempting to delete a role that has assigned users
+ */
+export class RoleHasUsersException extends ConflictException {
+  constructor(roleId: string) {
+    super(`Cannot delete role ${roleId}: users are still assigned to this role`);
+  }
+}
+
+/**
+ * Exception thrown when a permission is not found
+ */
+export class PermissionNotFoundException extends NotFoundException {
+  constructor(identifier: string) {
+    super(`Permission not found: ${identifier}`);
+  }
+}
