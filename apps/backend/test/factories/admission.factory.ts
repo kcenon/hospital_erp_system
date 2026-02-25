@@ -17,7 +17,9 @@ export function createTestAdmission(overrides?: Partial<Admission>): Admission {
     bedId: faker.string.uuid(),
     admissionNumber: `A${year}${faker.string.numeric(6)}`,
     admissionDate: now,
-    admissionTime: `${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}`,
+    admissionTime: new Date(
+      `1970-01-01T${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}:00.000Z`,
+    ),
     admissionType: faker.helpers.arrayElement([
       'SCHEDULED',
       'EMERGENCY',
@@ -29,6 +31,9 @@ export function createTestAdmission(overrides?: Partial<Admission>): Admission {
     primaryNurseId: faker.string.uuid(),
     status: 'ACTIVE' as AdmissionStatus,
     expectedDischargeDate: faker.date.future({ years: 1 }),
+    admittedFrom: null,
+    dietaryRestrictions: null,
+    specialInstructions: null,
     notes: faker.lorem.sentence(),
     createdAt: now,
     updatedAt: now,
@@ -46,7 +51,9 @@ export function createTestTransfer(overrides?: Partial<Transfer>): Transfer {
     fromBedId: faker.string.uuid(),
     toBedId: faker.string.uuid(),
     transferDate: now,
-    transferTime: `${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}`,
+    transferTime: new Date(
+      `1970-01-01T${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}:00.000Z`,
+    ),
     reason: faker.lorem.sentence(),
     notes: faker.lorem.sentence(),
     transferredBy: faker.string.uuid(),
@@ -61,7 +68,9 @@ export function createTestDischarge(overrides?: Partial<Discharge>): Discharge {
     id: faker.string.uuid(),
     admissionId: faker.string.uuid(),
     dischargeDate: now,
-    dischargeTime: `${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}`,
+    dischargeTime: new Date(
+      `1970-01-01T${faker.number.int({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}:00.000Z`,
+    ),
     dischargeType: faker.helpers.arrayElement([
       'NORMAL',
       'AMA',

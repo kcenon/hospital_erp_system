@@ -50,6 +50,7 @@ model User {
   patientChanges          PatientHistory[] @relation("PatientHistoryChanger")
   vitalSignsMeasured      VitalSign[]    @relation("VitalSignMeasurer")
   intakeOutputsRecorded   IntakeOutput[] @relation("IORecorder")
+  medicationsPrescribed   Medication[]   @relation("MedicationPrescriber")
   medicationsAdministered Medication[]   @relation("MedicationAdministrator")
   nursingNotesRecorded    NursingNote[]  @relation("NursingNoteRecorder")
   dailyReportsGenerated   DailyReport[]  @relation("DailyReportGenerator")
@@ -190,6 +191,11 @@ enum RoomType {
   ISOLATION
   VIP
   EMERGENCY
+  RECOVERY
+  NICU
+  PEDIATRIC
+  LABOR_DELIVERY
+  OPERATING
 
   @@schema("room")
 }
@@ -280,6 +286,9 @@ model Patient {
   emergencyContactName     String?   @map("emergency_contact_name") @db.VarChar(100)
   emergencyContactPhone    String?   @map("emergency_contact_phone") @db.VarChar(20)
   emergencyContactRelation String?   @map("emergency_contact_relation") @db.VarChar(50)
+  dnrStatus                Boolean?  @map("dnr_status")
+  primaryDiagnosis         String?   @map("primary_diagnosis") @db.VarChar(255)
+  icd10Code                String?   @map("icd10_code") @db.VarChar(10)
   legacyPatientId          String?   @map("legacy_patient_id") @db.VarChar(50)
   createdAt                DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt                DateTime  @updatedAt @map("updated_at") @db.Timestamptz
@@ -363,6 +372,8 @@ enum AdmissionType {
   SCHEDULED
   EMERGENCY
   TRANSFER_IN
+  WALK_IN
+  REFERRAL
 
   @@schema("admission")
 }
@@ -383,6 +394,8 @@ enum DischargeType {
   TRANSFER_OUT
   DEATH
   OTHER
+  HOSPICE
+  ELOPEMENT
 
   @@schema("admission")
 }
@@ -394,7 +407,7 @@ model Admission {
   bedId                 String          @map("bed_id") @db.Uuid
   admissionNumber       String          @unique @map("admission_number") @db.VarChar(20)
   admissionDate         DateTime        @map("admission_date") @db.Date
-  admissionTime         String          @map("admission_time") @db.VarChar(10)
+  admissionTime         DateTime        @map("admission_time") @db.Time
   admissionType         AdmissionType   @map("admission_type")
   diagnosis             String?         @db.Text
   chiefComplaint        String?         @map("chief_complaint") @db.Text
@@ -402,6 +415,9 @@ model Admission {
   primaryNurseId        String?         @map("primary_nurse_id") @db.Uuid
   status                AdmissionStatus @default(ACTIVE)
   expectedDischargeDate DateTime?       @map("expected_discharge_date") @db.Date
+  admittedFrom          String?         @map("admitted_from") @db.VarChar(50)
+  dietaryRestrictions   String?         @map("dietary_restrictions") @db.Text
+  specialInstructions   String?         @map("special_instructions") @db.Text
   notes                 String?         @db.Text
   createdAt             DateTime        @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime        @updatedAt @map("updated_at") @db.Timestamptz
@@ -444,7 +460,7 @@ model Transfer {
   fromBedId     String   @map("from_bed_id") @db.Uuid
   toBedId       String   @map("to_bed_id") @db.Uuid
   transferDate  DateTime @map("transfer_date") @db.Date
-  transferTime  String   @map("transfer_time") @db.VarChar(10)
+  transferTime  DateTime @map("transfer_time") @db.Time
   reason        String   @db.VarChar(255)
   notes         String?  @db.Text
   transferredBy String   @map("transferred_by") @db.Uuid
@@ -470,7 +486,7 @@ model Discharge {
   id                   String        @id @default(uuid()) @db.Uuid
   admissionId          String        @unique @map("admission_id") @db.Uuid
   dischargeDate        DateTime      @map("discharge_date") @db.Date
-  dischargeTime        String        @map("discharge_time") @db.VarChar(10)
+  dischargeTime        DateTime      @map("discharge_time") @db.Time
   dischargeType        DischargeType @map("discharge_type")
   dischargeDiagnosis   String?       @map("discharge_diagnosis") @db.Text
   dischargeSummary     String?       @map("discharge_summary") @db.Text
@@ -537,6 +553,11 @@ enum MedicationRoute {
   TOP // Topical
   INH // Inhalation
   PR // Per rectum
+  TRANSDERMAL
+  OPHTHALMIC
+  OTIC
+  NASAL
+  EPIDURAL
   OTHER
 
   @@schema("report")
@@ -549,6 +570,9 @@ enum NoteType {
   PROCEDURE
   INCIDENT
   HANDOFF
+  EDUCATION
+  DISCHARGE_PLANNING
+  PHONE_CALL
 
   @@schema("report")
 }
@@ -575,6 +599,8 @@ model VitalSign {
   oxygenSaturation Int?           @map("oxygen_saturation")
   bloodGlucose     Int?           @map("blood_glucose")
   painScore        Int?           @map("pain_score")
+  weight           Decimal?       @db.Decimal(5, 1)
+  gcsScore         Int?           @map("gcs_score")
   consciousness    Consciousness?
   measuredAt       DateTime       @map("measured_at") @db.Timestamptz
   measuredBy       String         @map("measured_by") @db.Uuid
@@ -636,21 +662,27 @@ model Medication {
   route          MedicationRoute
   frequency      String?          @db.VarChar(100)
   scheduledTime  DateTime?        @map("scheduled_time") @db.Time
+  prescribedBy   String?          @map("prescribed_by") @db.Uuid
+  startDate      DateTime?        @map("start_date") @db.Date
+  endDate        DateTime?        @map("end_date") @db.Date
   administeredAt DateTime?        @map("administered_at") @db.Timestamptz
   administeredBy String?          @map("administered_by") @db.Uuid
   status         MedicationStatus
+  pharmacyVerified Boolean        @default(false) @map("pharmacy_verified")
   holdReason     String?          @map("hold_reason") @db.Text
   notes          String?          @db.Text
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
   // Relations
   admission     Admission @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  prescriber    User?     @relation("MedicationPrescriber", fields: [prescribedBy], references: [id], onDelete: SetNull)
   administrator User?     @relation("MedicationAdministrator", fields: [administeredBy], references: [id], onDelete: SetNull)
 
   @@index([admissionId, administeredAt])
   @@index([admissionId, status])
   @@index([medicationName])
   @@index([scheduledTime])
+  @@index([prescribedBy])
   @@index([administeredBy])
   @@map("medications")
   @@schema("report")
@@ -739,6 +771,10 @@ enum AuditAction {
   CREATE
   UPDATE
   DELETE
+  LOGIN
+  LOGOUT
+  EXPORT
+  PRINT
 
   @@schema("audit")
 }
