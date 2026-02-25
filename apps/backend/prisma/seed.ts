@@ -1,4 +1,17 @@
-import { PrismaClient, RoomType, BedStatus, Gender } from '@prisma/client';
+import {
+  PrismaClient,
+  RoomType,
+  BedStatus,
+  Gender,
+  AdmissionType,
+  AdmissionStatus,
+  MedicationRoute,
+  MedicationStatus,
+  NoteType,
+  RoundType,
+  RoundStatus,
+  Consciousness,
+} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -11,6 +24,21 @@ async function main() {
   console.log('Starting seed...');
 
   // Clean existing data (in reverse order of dependencies)
+  await prisma.roundRecord.deleteMany();
+  await prisma.round.deleteMany();
+  await prisma.roundSequence.deleteMany();
+  await prisma.dailyReport.deleteMany();
+  await prisma.nursingNote.deleteMany();
+  await prisma.medication.deleteMany();
+  await prisma.intakeOutput.deleteMany();
+  await prisma.vitalSign.deleteMany();
+  await prisma.discharge.deleteMany();
+  await prisma.transfer.deleteMany();
+  await prisma.admission.deleteMany();
+  await prisma.admissionSequence.deleteMany();
+  await prisma.loginHistory.deleteMany();
+  await prisma.accessLog.deleteMany();
+  await prisma.changeLog.deleteMany();
   await prisma.patientHistory.deleteMany();
   await prisma.patientDetail.deleteMany();
   await prisma.patient.deleteMany();
@@ -664,6 +692,375 @@ async function main() {
     });
   }
 
+  // =====================================================================
+  // Seed Additional Patients (25 more for a total of 30)
+  // =====================================================================
+
+  console.log('Creating additional patients...');
+
+  const additionalPatients = [
+    { name: 'Min-Jun Park', birthDate: '1970-04-10', gender: Gender.MALE, bloodType: 'A+' },
+    { name: 'Soo-Yeon Kim', birthDate: '1985-08-15', gender: Gender.FEMALE, bloodType: 'B+' },
+    { name: 'Hyun-Woo Lee', birthDate: '1952-12-03', gender: Gender.MALE, bloodType: 'O-' },
+    { name: 'Ji-Eun Choi', birthDate: '1990-02-28', gender: Gender.FEMALE, bloodType: 'AB+' },
+    { name: 'Sang-Ho Jung', birthDate: '1968-06-20', gender: Gender.MALE, bloodType: 'A-' },
+    { name: 'Hye-Jin Yoon', birthDate: '1978-10-05', gender: Gender.FEMALE, bloodType: 'O+' },
+    { name: 'Dong-Hoon Kang', birthDate: '1945-01-17', gender: Gender.MALE, bloodType: 'B-' },
+    { name: 'Eun-Bi Han', birthDate: '1993-11-22', gender: Gender.FEMALE, bloodType: 'A+' },
+    { name: 'Tae-Hyung Shin', birthDate: '1980-07-09', gender: Gender.MALE, bloodType: 'O+' },
+    { name: 'Yeon-Seo Lim', birthDate: '1965-03-30', gender: Gender.FEMALE, bloodType: 'B+' },
+    { name: 'Joon-Ho Seo', birthDate: '1973-09-14', gender: Gender.MALE, bloodType: 'AB-' },
+    { name: 'Su-Min Oh', birthDate: '1988-05-27', gender: Gender.FEMALE, bloodType: 'A+' },
+    { name: 'Woo-Jin Hwang', birthDate: '1955-08-11', gender: Gender.MALE, bloodType: 'O+' },
+    { name: 'Da-Hye Bae', birthDate: '1998-01-06', gender: Gender.FEMALE, bloodType: 'B+' },
+    { name: 'Seung-Hwan Jo', birthDate: '1962-04-25', gender: Gender.MALE, bloodType: 'A-' },
+    { name: 'Mi-Ra Song', birthDate: '1983-12-18', gender: Gender.FEMALE, bloodType: 'O-' },
+    { name: 'In-Ho Yoo', birthDate: '1950-06-08', gender: Gender.MALE, bloodType: 'AB+' },
+    { name: 'Bo-Young Jeon', birthDate: '1992-09-03', gender: Gender.FEMALE, bloodType: 'B-' },
+    { name: 'Gi-Tae Moon', birthDate: '1977-02-14', gender: Gender.MALE, bloodType: 'A+' },
+    { name: 'Na-Yeon Kwon', birthDate: '1986-10-31', gender: Gender.FEMALE, bloodType: 'O+' },
+    { name: 'Chang-Min Ahn', birthDate: '1943-07-20', gender: Gender.MALE, bloodType: 'B+' },
+    { name: 'Hye-Su Ryu', birthDate: '1995-04-12', gender: Gender.FEMALE, bloodType: 'AB+' },
+    { name: 'Young-Ho Baek', birthDate: '1971-11-28', gender: Gender.MALE, bloodType: 'O-' },
+    { name: 'Seo-Yun Im', birthDate: '1989-08-07', gender: Gender.FEMALE, bloodType: 'A+' },
+    { name: 'Kyung-Ho Nam', birthDate: '1958-03-16', gender: Gender.MALE, bloodType: 'B-' },
+  ];
+
+  const allPatientIds: string[] = [];
+
+  // Collect existing patient IDs
+  const existingPatients = await prisma.patient.findMany({ select: { id: true } });
+  allPatientIds.push(...existingPatients.map((p) => p.id));
+
+  for (const p of additionalPatients) {
+    const patientNumber = await generatePatientNumber();
+    const patient = await prisma.patient.create({
+      data: {
+        patientNumber,
+        name: p.name,
+        birthDate: new Date(p.birthDate),
+        gender: p.gender,
+        bloodType: p.bloodType,
+        phone: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
+        address: 'Seoul, Korea',
+        emergencyContactName: 'Family Contact',
+        emergencyContactPhone: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
+        emergencyContactRelation: 'Family',
+        detail: {
+          create: {
+            insuranceType: 'National Health Insurance',
+            insuranceCompany: 'NHI',
+          },
+        },
+      },
+    });
+    allPatientIds.push(patient.id);
+  }
+
+  // =====================================================================
+  // Seed Admissions, Vitals, Medications, and Notes
+  // =====================================================================
+
+  console.log('Creating admissions and clinical data...');
+
+  // Get doctor and nurse IDs
+  const doctor = await prisma.user.findFirst({ where: { username: 'doctor1' } });
+  const nurse = await prisma.user.findFirst({ where: { username: 'nurse1' } });
+  const headNurse = await prisma.user.findFirst({ where: { username: 'headnurse1' } });
+
+  if (!doctor || !nurse || !headNurse) {
+    throw new Error('Required users not found');
+  }
+
+  // Get available beds
+  const availableBeds = await prisma.bed.findMany({
+    where: { status: BedStatus.EMPTY, isActive: true },
+    take: 15,
+    include: { room: { include: { floor: true } } },
+  });
+
+  // Initialize admission sequence
+  await prisma.admissionSequence.create({
+    data: { year: currentYear, lastValue: 0 },
+  });
+
+  const generateAdmissionNumber = async (): Promise<string> => {
+    const seq = await prisma.admissionSequence.update({
+      where: { year: currentYear },
+      data: { lastValue: { increment: 1 } },
+    });
+    return `A${currentYear}${String(seq.lastValue).padStart(6, '0')}`;
+  };
+
+  const diagnoses = [
+    'Pneumonia',
+    'Acute appendicitis',
+    'Congestive heart failure',
+    'Type 2 diabetes complications',
+    'Hip fracture',
+    'COPD exacerbation',
+    'Acute kidney injury',
+    'Cellulitis',
+    'Deep vein thrombosis',
+    'Urinary tract infection',
+    'Stroke',
+    'Myocardial infarction',
+  ];
+
+  // Create 12 active admissions
+  const admissionIds: string[] = [];
+  const admissionCount = Math.min(12, availableBeds.length, allPatientIds.length);
+
+  for (let i = 0; i < admissionCount; i++) {
+    const bed = availableBeds[i];
+    const patientId = allPatientIds[i];
+    const admissionNumber = await generateAdmissionNumber();
+    const daysAgo = Math.floor(Math.random() * 7) + 1;
+    const admissionDate = new Date();
+    admissionDate.setDate(admissionDate.getDate() - daysAgo);
+
+    const admission = await prisma.admission.create({
+      data: {
+        patientId,
+        bedId: bed.id,
+        admissionNumber,
+        admissionDate,
+        admissionTime: new Date(`1970-01-01T${String(8 + (i % 12)).padStart(2, '0')}:00:00.000Z`),
+        admissionType: i % 3 === 0 ? AdmissionType.EMERGENCY : AdmissionType.SCHEDULED,
+        diagnosis: diagnoses[i % diagnoses.length],
+        chiefComplaint: `Patient presents with ${diagnoses[i % diagnoses.length].toLowerCase()} symptoms`,
+        attendingDoctorId: doctor.id,
+        primaryNurseId: nurse.id,
+        status: AdmissionStatus.ACTIVE,
+        createdBy: doctor.id,
+      },
+    });
+
+    // Update bed to OCCUPIED
+    await prisma.bed.update({
+      where: { id: bed.id },
+      data: { status: BedStatus.OCCUPIED, currentAdmissionId: admission.id },
+    });
+
+    admissionIds.push(admission.id);
+
+    // Create vital signs for the past 3 days (every 4 hours)
+    const vitalSignsData = [];
+    for (let day = 0; day < Math.min(3, daysAgo); day++) {
+      for (let hour = 0; hour < 24; hour += 4) {
+        const measuredAt = new Date();
+        measuredAt.setDate(measuredAt.getDate() - day);
+        measuredAt.setHours(hour, 0, 0, 0);
+
+        vitalSignsData.push({
+          admissionId: admission.id,
+          temperature: 36.0 + Math.random() * 2.0,
+          systolicBp: 110 + Math.floor(Math.random() * 40),
+          diastolicBp: 65 + Math.floor(Math.random() * 25),
+          pulseRate: 60 + Math.floor(Math.random() * 40),
+          respiratoryRate: 14 + Math.floor(Math.random() * 8),
+          oxygenSaturation: 94 + Math.floor(Math.random() * 6),
+          painScore: Math.floor(Math.random() * 5),
+          consciousness: 'ALERT' as Consciousness,
+          measuredAt,
+          measuredBy: nurse.id,
+          hasAlert: false,
+        });
+      }
+    }
+
+    if (vitalSignsData.length > 0) {
+      await prisma.vitalSign.createMany({ data: vitalSignsData });
+    }
+
+    // Create medications (3-5 per admission)
+    const medCount = 3 + Math.floor(Math.random() * 3);
+    const meds = [
+      { name: 'Amoxicillin 500mg', dosage: '500mg', route: MedicationRoute.PO, freq: 'TID' },
+      { name: 'Metformin 500mg', dosage: '500mg', route: MedicationRoute.PO, freq: 'BID' },
+      { name: 'Ceftriaxone 1g', dosage: '1g', route: MedicationRoute.IV, freq: 'Q24H' },
+      { name: 'Omeprazole 20mg', dosage: '20mg', route: MedicationRoute.PO, freq: 'QD' },
+      { name: 'Lisinopril 10mg', dosage: '10mg', route: MedicationRoute.PO, freq: 'QD' },
+    ];
+
+    for (let m = 0; m < medCount; m++) {
+      const med = meds[m % meds.length];
+      const status =
+        m === 0
+          ? MedicationStatus.ADMINISTERED
+          : m === 1
+            ? MedicationStatus.SCHEDULED
+            : MedicationStatus.SCHEDULED;
+
+      await prisma.medication.create({
+        data: {
+          admissionId: admission.id,
+          medicationName: med.name,
+          dosage: med.dosage,
+          route: med.route,
+          frequency: med.freq,
+          scheduledTime: new Date(`1970-01-01T${String(8 + m * 4).padStart(2, '0')}:00:00.000Z`),
+          status,
+          administeredAt: status === MedicationStatus.ADMINISTERED ? new Date() : null,
+          administeredBy: status === MedicationStatus.ADMINISTERED ? nurse.id : null,
+          prescribedBy: doctor.id,
+          startDate: admissionDate,
+          pharmacyVerified: true,
+        },
+      });
+    }
+
+    // Create nursing notes (2 per admission)
+    const noteTypes = [NoteType.ASSESSMENT, NoteType.PROGRESS];
+    for (const noteType of noteTypes) {
+      const recordedAt = new Date();
+      recordedAt.setHours(recordedAt.getHours() - Math.floor(Math.random() * 24));
+
+      await prisma.nursingNote.create({
+        data: {
+          admissionId: admission.id,
+          noteType,
+          subjective: 'Patient reports feeling improved.',
+          objective: 'Vital signs stable. No acute distress.',
+          assessment: `${diagnoses[i % diagnoses.length]} - ${noteType === NoteType.ASSESSMENT ? 'Initial assessment' : 'Progressing well'}`,
+          plan: 'Continue current treatment plan. Monitor vitals Q4H.',
+          recordedAt,
+          recordedBy: nurse.id,
+          isSignificant: noteType === NoteType.ASSESSMENT,
+        },
+      });
+    }
+
+    // Create intake/output records for today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    await prisma.intakeOutput.create({
+      data: {
+        admissionId: admission.id,
+        recordDate: today,
+        recordTime: new Date('1970-01-01T08:00:00.000Z'),
+        oralIntake: 200 + Math.floor(Math.random() * 300),
+        ivIntake: 100 + Math.floor(Math.random() * 200),
+        urineOutput: 150 + Math.floor(Math.random() * 250),
+        recordedBy: nurse.id,
+      },
+    });
+  }
+
+  // Set some additional beds to varied states
+  const remainingBeds = await prisma.bed.findMany({
+    where: { status: BedStatus.EMPTY, isActive: true },
+    take: 4,
+  });
+
+  if (remainingBeds.length >= 2) {
+    await prisma.bed.update({
+      where: { id: remainingBeds[0].id },
+      data: { status: BedStatus.RESERVED },
+    });
+    await prisma.bed.update({
+      where: { id: remainingBeds[1].id },
+      data: { status: BedStatus.MAINTENANCE, notes: 'Under maintenance - equipment check' },
+    });
+  }
+
+  // =====================================================================
+  // Seed Rounds
+  // =====================================================================
+
+  console.log('Creating rounds...');
+
+  await prisma.roundSequence.create({
+    data: { date: new Date(), lastValue: 0 },
+  });
+
+  // Create a completed morning round for the first floor
+  if (admissionIds.length >= 4) {
+    const morningRound = await prisma.round.create({
+      data: {
+        roundNumber: `R${currentYear}000001`,
+        floorId: mainFloors[0].id,
+        roundType: RoundType.MORNING,
+        scheduledDate: new Date(),
+        scheduledTime: new Date('1970-01-01T09:00:00.000Z'),
+        startedAt: new Date(new Date().setHours(9, 0, 0, 0)),
+        completedAt: new Date(new Date().setHours(10, 30, 0, 0)),
+        status: RoundStatus.COMPLETED,
+        leadDoctorId: doctor.id,
+        notes: 'Morning round completed. All patients stable.',
+        createdBy: doctor.id,
+      },
+    });
+
+    // Create round records for first 4 admissions
+    for (let r = 0; r < Math.min(4, admissionIds.length); r++) {
+      await prisma.roundRecord.create({
+        data: {
+          roundId: morningRound.id,
+          admissionId: admissionIds[r],
+          visitOrder: r + 1,
+          patientStatus: 'STABLE',
+          observation: 'Patient resting comfortably. Vitals within normal limits.',
+          assessment: 'Condition stable. Responding to treatment.',
+          plan: 'Continue current management.',
+          visitedAt: new Date(new Date().setHours(9, 15 + r * 15, 0, 0)),
+          visitDuration: 10 + Math.floor(Math.random() * 10),
+          recordedBy: doctor.id,
+        },
+      });
+    }
+
+    // Create a planned afternoon round
+    await prisma.round.create({
+      data: {
+        roundNumber: `R${currentYear}000002`,
+        floorId: mainFloors[0].id,
+        roundType: RoundType.AFTERNOON,
+        scheduledDate: new Date(),
+        scheduledTime: new Date('1970-01-01T14:00:00.000Z'),
+        status: RoundStatus.PLANNED,
+        leadDoctorId: doctor.id,
+        createdBy: doctor.id,
+      },
+    });
+  }
+
+  // =====================================================================
+  // Seed Login History
+  // =====================================================================
+
+  console.log('Creating audit data...');
+
+  const auditUsers = [adminUser, doctor, nurse, headNurse];
+  for (const user of auditUsers) {
+    // Successful login
+    await prisma.loginHistory.create({
+      data: {
+        userId: user.id,
+        username: user.username,
+        ipAddress: '192.168.1.100',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        deviceType: 'PC',
+        browser: 'Chrome',
+        os: 'Windows 10',
+        success: true,
+      },
+    });
+  }
+
+  // Failed login attempt
+  await prisma.loginHistory.create({
+    data: {
+      userId: null,
+      username: 'unknown_user',
+      ipAddress: '192.168.1.200',
+      userAgent: 'Mozilla/5.0',
+      success: false,
+      failureReason: 'Invalid credentials',
+    },
+  });
+
   // Print summary
   const userCount = await prisma.user.count();
   const roleCount = await prisma.role.count();
@@ -673,6 +1070,11 @@ async function main() {
   const roomCount = await prisma.room.count();
   const bedCount = await prisma.bed.count();
   const patientCount = await prisma.patient.count();
+  const admissionSeedCount = await prisma.admission.count();
+  const vitalSignCount = await prisma.vitalSign.count();
+  const medicationCount = await prisma.medication.count();
+  const nursingNoteCount = await prisma.nursingNote.count();
+  const roundCount = await prisma.round.count();
 
   console.log('\nSeed completed successfully!');
   console.log('Summary:');
@@ -685,8 +1087,13 @@ async function main() {
   console.log(`    Floors: ${floorCount}`);
   console.log(`    Rooms: ${roomCount}`);
   console.log(`    Beds: ${bedCount}`);
-  console.log('  Patients:');
+  console.log('  Clinical:');
   console.log(`    Patients: ${patientCount}`);
+  console.log(`    Admissions: ${admissionSeedCount}`);
+  console.log(`    Vital Signs: ${vitalSignCount}`);
+  console.log(`    Medications: ${medicationCount}`);
+  console.log(`    Nursing Notes: ${nursingNoteCount}`);
+  console.log(`    Rounds: ${roundCount}`);
 }
 
 main()
