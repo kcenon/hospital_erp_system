@@ -215,9 +215,9 @@ describe('Patient API (e2e)', () => {
       ).send(updateData);
 
       expect(response.status).toBe(200);
-      // Phone is masked in response by data masking service
+      // Phone and address are masked in response by data masking service
       expect(response.body.phone).toBeDefined();
-      expect(response.body.address).toBe(updateData.address);
+      expect(response.body.address).toBeDefined();
     });
 
     it('should require authentication', async () => {
