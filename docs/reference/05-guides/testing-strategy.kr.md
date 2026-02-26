@@ -20,7 +20,7 @@
                    ╱  ╲
                   ╱ E2E╲          5~10%
                  ╱──────╲         - 핵심 사용자 시나리오
-                ╱        ╲        - Playwright/Cypress
+                ╱        ╲        - Cypress
                ╱ 통합 테스트╲      20~30%
               ╱──────────────╲    - API 테스트
              ╱                ╲   - 모듈 간 연동
@@ -41,13 +41,13 @@
 
 ### 1.3 테스트 도구
 
-| 도구                      | 용도             | 레이어          |
-| ------------------------- | ---------------- | --------------- |
-| **Jest**                  | 단위/통합 테스트 | Backend, Shared |
-| **React Testing Library** | 컴포넌트 테스트  | Frontend        |
-| **Playwright**            | E2E 테스트       | 전체            |
-| **Supertest**             | API 테스트       | Backend         |
-| **MSW**                   | API 모킹         | Frontend        |
+| 도구                            | 용도             | 레이어          |
+| ------------------------------- | ---------------- | --------------- |
+| **Jest**                        | 단위/통합 테스트 | Backend, Shared |
+| **Cypress**                     | E2E 테스트       | Frontend        |
+| **Supertest**                   | API 테스트       | Backend         |
+| ~~React Testing Library~~ (TBD) | 컴포넌트 테스트  | Frontend        |
+| ~~MSW~~ (TBD)                   | API 모킹         | Frontend        |
 
 ---
 
@@ -491,45 +491,25 @@ describe('PatientRepository (Integration)', () => {
 
 ## 4. E2E 테스트 (End-to-End)
 
-### 4.1 Playwright 설정
+### 4.1 Cypress 설정
 
 ```typescript
-// playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+// cypress.config.ts
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-
-  use: {
-    baseURL: 'http://localhost:8080',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+  e2e: {
+    baseUrl: 'http://localhost:3001',
+    specPattern: 'cypress/e2e/**/*.cy.{ts,tsx}',
+    supportFile: 'cypress/support/e2e.ts',
+    viewportWidth: 1280,
+    viewportHeight: 720,
+    retries: {
+      runMode: 2,
+      openMode: 0,
     },
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'iPad',
-      use: { ...devices['iPad Pro'] },
-    },
-  ],
-
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:8080',
-    reuseExistingServer: !process.env.CI,
+    screenshotOnRunFailure: true,
+    video: false,
   },
 });
 ```
@@ -537,113 +517,115 @@ export default defineConfig({
 ### 4.2 E2E 테스트 시나리오
 
 ```typescript
-// e2e/patient-admission.spec.ts
-import { test, expect } from '@playwright/test';
-
-test.describe('환자 입원 프로세스', () => {
-  test.beforeEach(async ({ page }) => {
+// cypress/e2e/patient-admission.cy.ts
+describe('환자 입원 프로세스', () => {
+  beforeEach(() => {
     // 로그인
-    await page.goto('/login');
-    await page.fill('[data-testid="username"]', 'clerk001');
-    await page.fill('[data-testid="password"]', 'testpass123');
-    await page.click('[data-testid="login-button"]');
-    await expect(page).toHaveURL('/dashboard');
+    cy.visit('/login');
+    cy.get('[data-testid="username"]').type('clerk001');
+    cy.get('[data-testid="password"]').type('testpass123');
+    cy.get('[data-testid="login-button"]').click();
+    cy.url().should('include', '/dashboard');
   });
 
-  test('새 환자 등록부터 입원까지 전체 프로세스', async ({ page }) => {
+  it('새 환자 등록부터 입원까지 전체 프로세스', () => {
     // 1. 환자 등록 페이지로 이동
-    await page.click('[data-testid="nav-patients"]');
-    await page.click('[data-testid="add-patient-button"]');
+    cy.get('[data-testid="nav-patients"]').click();
+    cy.get('[data-testid="add-patient-button"]').click();
 
     // 2. 환자 정보 입력
-    await page.fill('[data-testid="patient-number"]', 'P2025999999');
-    await page.fill('[data-testid="patient-name"]', 'E2E테스트환자');
-    await page.fill('[data-testid="birth-date"]', '1990-05-15');
-    await page.selectOption('[data-testid="gender"]', 'M');
-    await page.fill('[data-testid="phone"]', '010-1234-5678');
+    cy.get('[data-testid="patient-number"]').type('P2025999999');
+    cy.get('[data-testid="patient-name"]').type('E2E테스트환자');
+    cy.get('[data-testid="birth-date"]').type('1990-05-15');
+    cy.get('[data-testid="gender"]').select('M');
+    cy.get('[data-testid="phone"]').type('010-1234-5678');
 
     // 3. 저장
-    await page.click('[data-testid="save-patient-button"]');
-    await expect(page.locator('[data-testid="toast-success"]')).toBeVisible();
+    cy.get('[data-testid="save-patient-button"]').click();
+    cy.get('[data-testid="toast-success"]').should('be.visible');
 
     // 4. 입원 등록
-    await page.click('[data-testid="admit-patient-button"]');
+    cy.get('[data-testid="admit-patient-button"]').click();
 
     // 5. 병실 선택
-    await page.click('[data-testid="room-301"]');
-    await page.click('[data-testid="bed-A"]');
+    cy.get('[data-testid="room-301"]').click();
+    cy.get('[data-testid="bed-A"]').click();
 
     // 6. 입원 정보 입력
-    await page.fill('[data-testid="diagnosis"]', 'E2E 테스트 진단');
-    await page.selectOption('[data-testid="admission-type"]', 'SCHEDULED');
-    await page.selectOption('[data-testid="attending-doctor"]', 'doctor001');
+    cy.get('[data-testid="diagnosis"]').type('E2E 테스트 진단');
+    cy.get('[data-testid="admission-type"]').select('SCHEDULED');
+    cy.get('[data-testid="attending-doctor"]').select('doctor001');
 
     // 7. 입원 확정
-    await page.click('[data-testid="confirm-admission-button"]');
+    cy.get('[data-testid="confirm-admission-button"]').click();
 
     // 8. 결과 확인
-    await expect(page.locator('[data-testid="admission-success-modal"]')).toBeVisible();
-    await expect(page.locator('[data-testid="admission-number"]')).toHaveText(/A\d{10}/);
+    cy.get('[data-testid="admission-success-modal"]').should('be.visible');
+    cy.get('[data-testid="admission-number"]')
+      .invoke('text')
+      .should('match', /A\d{10}/);
 
     // 9. 병실 현황에서 확인
-    await page.click('[data-testid="nav-rooms"]');
-    await expect(page.locator('[data-testid="room-301-bed-A"]')).toHaveClass(/occupied/);
+    cy.get('[data-testid="nav-rooms"]').click();
+    cy.get('[data-testid="room-301-bed-A"]').should('have.class', 'occupied');
   });
 
-  test('바이탈 입력 및 조회', async ({ page }) => {
+  it('바이탈 입력 및 조회', () => {
     // 환자 상세 페이지로 이동
-    await page.goto('/patients/test-patient-id');
+    cy.visit('/patients/test-patient-id');
 
     // 바이탈 탭 클릭
-    await page.click('[data-testid="tab-vitals"]');
+    cy.get('[data-testid="tab-vitals"]').click();
 
     // 새 바이탈 입력
-    await page.click('[data-testid="add-vital-button"]');
+    cy.get('[data-testid="add-vital-button"]').click();
 
-    await page.fill('[data-testid="temperature"]', '36.5');
-    await page.fill('[data-testid="systolic-bp"]', '120');
-    await page.fill('[data-testid="diastolic-bp"]', '80');
-    await page.fill('[data-testid="pulse-rate"]', '72');
-    await page.fill('[data-testid="respiratory-rate"]', '18');
-    await page.fill('[data-testid="oxygen-saturation"]', '98');
+    cy.get('[data-testid="temperature"]').type('36.5');
+    cy.get('[data-testid="systolic-bp"]').type('120');
+    cy.get('[data-testid="diastolic-bp"]').type('80');
+    cy.get('[data-testid="pulse-rate"]').type('72');
+    cy.get('[data-testid="respiratory-rate"]').type('18');
+    cy.get('[data-testid="oxygen-saturation"]').type('98');
 
-    await page.click('[data-testid="save-vital-button"]');
+    cy.get('[data-testid="save-vital-button"]').click();
 
     // 저장 확인
-    await expect(page.locator('[data-testid="toast-success"]')).toBeVisible();
+    cy.get('[data-testid="toast-success"]').should('be.visible');
 
     // 목록에서 확인
-    await expect(page.locator('[data-testid="vital-list"]')).toContainText('36.5');
-    await expect(page.locator('[data-testid="vital-list"]')).toContainText('120/80');
+    cy.get('[data-testid="vital-list"]').should('contain', '36.5');
+    cy.get('[data-testid="vital-list"]').should('contain', '120/80');
   });
 });
 
-test.describe('모바일 라운딩', () => {
-  test.use({ ...devices['iPad Pro'] });
+describe('모바일 라운딩', () => {
+  beforeEach(() => {
+    cy.viewport('ipad-2');
+  });
 
-  test('태블릿에서 라운딩 기록', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="username"]', 'doctor001');
-    await page.fill('[data-testid="password"]', 'testpass123');
-    await page.click('[data-testid="login-button"]');
+  it('태블릿에서 라운딩 기록', () => {
+    cy.visit('/login');
+    cy.get('[data-testid="username"]').type('doctor001');
+    cy.get('[data-testid="password"]').type('testpass123');
+    cy.get('[data-testid="login-button"]').click();
 
     // 라운딩 시작
-    await page.click('[data-testid="start-round-button"]');
+    cy.get('[data-testid="start-round-button"]').click();
 
     // 첫 번째 환자
-    await page.click('[data-testid="patient-item-0"]');
+    cy.get('[data-testid="patient-item-0"]').click();
 
     // 상태 선택
-    await page.click('[data-testid="status-stable"]');
+    cy.get('[data-testid="status-stable"]').click();
 
     // 관찰 소견 입력
-    await page.fill('[data-testid="observation"]', '상태 양호, 특이사항 없음');
+    cy.get('[data-testid="observation"]').type('상태 양호, 특이사항 없음');
 
     // 저장 및 다음 환자
-    await page.click('[data-testid="save-next-button"]');
+    cy.get('[data-testid="save-next-button"]').click();
 
     // 다음 환자 확인
-    await expect(page.locator('[data-testid="current-patient"]')).not.toHaveText('첫번째환자');
+    cy.get('[data-testid="current-patient"]').should('not.contain', '첫번째환자');
   });
 });
 ```
@@ -872,18 +854,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Playwright
-        run: pnpm exec playwright install --with-deps
-
       - name: Run E2E tests
-        run: pnpm test:e2e
+        run: pnpm --filter @hospital-erp/frontend cypress:run:ci
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: cypress-screenshots
+          path: apps/frontend/cypress/screenshots/
 ```
 
 ---

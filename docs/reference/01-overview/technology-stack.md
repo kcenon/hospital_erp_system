@@ -32,7 +32,7 @@
 
 | Layer        | Technology              | Selection Rationale                                       |
 | ------------ | ----------------------- | --------------------------------------------------------- |
-| **Frontend** | Next.js 14 + TypeScript | SSR support, responsive UI, type safety                   |
+| **Frontend** | Next.js 16 + TypeScript | SSR support, responsive UI, type safety                   |
 | **Backend**  | NestJS + TypeScript     | Modularization, dependency injection, enterprise patterns |
 | **Database** | PostgreSQL 16           | ACID, JSON support, medical data reliability              |
 | **Cache**    | Redis                   | Session management, real-time status board                |
@@ -46,7 +46,7 @@
 
 ```
 Frontend Stack
-├── Framework: Next.js 14 (App Router)
+├── Framework: Next.js 16 (App Router)
 ├── Language: TypeScript 5.x
 ├── UI Library: Tailwind CSS + shadcn/ui
 ├── State Management: Zustand (client) + TanStack Query (server)
@@ -58,7 +58,7 @@ Frontend Stack
 
 | Technology         | Selection Rationale                                                                   | Alternative       |
 | ------------------ | ------------------------------------------------------------------------------------- | ----------------- |
-| **Next.js 14**     | Server components with App Router, SEO not required but SSR optimizes initial loading | Vite + React      |
+| **Next.js 16**     | Server components with App Router, SEO not required but SSR optimizes initial loading | Vite + React      |
 | **TypeScript**     | Essential type safety for medical data, reduces runtime errors                        | JavaScript        |
 | **shadcn/ui**      | Easy customization, built-in accessibility support                                    | MUI, Ant Design   |
 | **Tailwind CSS**   | Fast responsive UI development, consistent design system                              | Styled Components |
@@ -230,7 +230,7 @@ Development Tools
 ├── Version Control: Git + GitHub/GitLab
 ├── Package Manager: pnpm (Monorepo)
 ├── Linting: ESLint + Prettier
-├── Testing: Jest + Playwright
+├── Testing: Jest + Cypress
 └── API Testing: Postman / Insomnia
 ```
 
@@ -335,7 +335,7 @@ jobs:
 ┌─────────────────────────────────────────────────────────────────┐
 │                 Recommended Technology Stack Summary             │
 ├─────────────────────────────────────────────────────────────────┤
-│  Frontend  : Next.js 14 + TypeScript + Tailwind + shadcn/ui    │
+│  Frontend  : Next.js 16 + TypeScript + Tailwind + shadcn/ui    │
 │  Backend   : NestJS 10 + TypeScript + Prisma                   │
 │  Database  : PostgreSQL 16 + Redis 7                           │
 │  Cloud     : AWS (ECS Fargate + RDS + ElastiCache)             │
@@ -360,7 +360,7 @@ jobs:
 | ---------- | ------------------- | --------------- | ------- |
 | Node.js    | 20.x                | 18.x            | 2026-04 |
 | TypeScript | 5.3+                | 5.0             | -       |
-| Next.js    | 14.x                | 13.x            | -       |
+| Next.js    | 16.x                | 14.x            | -       |
 | NestJS     | 10.x                | 9.x             | -       |
 | PostgreSQL | 16                  | 14              | 2026-11 |
 | Redis      | 7.x                 | 6.x             | -       |
