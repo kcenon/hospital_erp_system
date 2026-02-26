@@ -20,7 +20,7 @@
                    ╱  ╲
                   ╱ E2E╲          5~10%
                  ╱──────╲         - Core user scenarios
-                ╱        ╲        - Playwright/Cypress
+                ╱        ╲        - Cypress
                ╱Integration╲      20~30%
               ╱──────────────╲    - API tests
              ╱                ╲   - Module integration
@@ -41,13 +41,13 @@
 
 ### 1.3 Test Tools
 
-| Tool                      | Purpose                | Layer           |
-| ------------------------- | ---------------------- | --------------- |
-| **Jest**                  | Unit/Integration tests | Backend, Shared |
-| **React Testing Library** | Component tests        | Frontend        |
-| **Playwright**            | E2E tests              | Full stack      |
-| **Supertest**             | API tests              | Backend         |
-| **MSW**                   | API mocking            | Frontend        |
+| Tool                            | Purpose                | Layer           |
+| ------------------------------- | ---------------------- | --------------- |
+| **Jest**                        | Unit/Integration tests | Backend, Shared |
+| **Cypress**                     | E2E tests              | Frontend        |
+| **Supertest**                   | API tests              | Backend         |
+| ~~React Testing Library~~ (TBD) | Component tests        | Frontend        |
+| ~~MSW~~ (TBD)                   | API mocking            | Frontend        |
 
 ---
 
@@ -491,45 +491,25 @@ describe('PatientRepository (Integration)', () => {
 
 ## 4. E2E Tests (End-to-End)
 
-### 4.1 Playwright Configuration
+### 4.1 Cypress Configuration
 
 ```typescript
-// playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+// cypress.config.ts
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-
-  use: {
-    baseURL: 'http://localhost:8080',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+  e2e: {
+    baseUrl: 'http://localhost:3001',
+    specPattern: 'cypress/e2e/**/*.cy.{ts,tsx}',
+    supportFile: 'cypress/support/e2e.ts',
+    viewportWidth: 1280,
+    viewportHeight: 720,
+    retries: {
+      runMode: 2,
+      openMode: 0,
     },
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'iPad',
-      use: { ...devices['iPad Pro'] },
-    },
-  ],
-
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:8080',
-    reuseExistingServer: !process.env.CI,
+    screenshotOnRunFailure: true,
+    video: false,
   },
 });
 ```
@@ -537,113 +517,115 @@ export default defineConfig({
 ### 4.2 E2E Test Scenarios
 
 ```typescript
-// e2e/patient-admission.spec.ts
-import { test, expect } from '@playwright/test';
-
-test.describe('Patient Admission Process', () => {
-  test.beforeEach(async ({ page }) => {
+// cypress/e2e/patient-admission.cy.ts
+describe('Patient Admission Process', () => {
+  beforeEach(() => {
     // Login
-    await page.goto('/login');
-    await page.fill('[data-testid="username"]', 'clerk001');
-    await page.fill('[data-testid="password"]', 'testpass123');
-    await page.click('[data-testid="login-button"]');
-    await expect(page).toHaveURL('/dashboard');
+    cy.visit('/login');
+    cy.get('[data-testid="username"]').type('clerk001');
+    cy.get('[data-testid="password"]').type('testpass123');
+    cy.get('[data-testid="login-button"]').click();
+    cy.url().should('include', '/dashboard');
   });
 
-  test('Complete process from new patient registration to admission', async ({ page }) => {
+  it('Complete process from new patient registration to admission', () => {
     // 1. Navigate to patient registration page
-    await page.click('[data-testid="nav-patients"]');
-    await page.click('[data-testid="add-patient-button"]');
+    cy.get('[data-testid="nav-patients"]').click();
+    cy.get('[data-testid="add-patient-button"]').click();
 
     // 2. Enter patient information
-    await page.fill('[data-testid="patient-number"]', 'P2025999999');
-    await page.fill('[data-testid="patient-name"]', 'E2E Test Patient');
-    await page.fill('[data-testid="birth-date"]', '1990-05-15');
-    await page.selectOption('[data-testid="gender"]', 'M');
-    await page.fill('[data-testid="phone"]', '010-1234-5678');
+    cy.get('[data-testid="patient-number"]').type('P2025999999');
+    cy.get('[data-testid="patient-name"]').type('E2E Test Patient');
+    cy.get('[data-testid="birth-date"]').type('1990-05-15');
+    cy.get('[data-testid="gender"]').select('M');
+    cy.get('[data-testid="phone"]').type('010-1234-5678');
 
     // 3. Save
-    await page.click('[data-testid="save-patient-button"]');
-    await expect(page.locator('[data-testid="toast-success"]')).toBeVisible();
+    cy.get('[data-testid="save-patient-button"]').click();
+    cy.get('[data-testid="toast-success"]').should('be.visible');
 
     // 4. Register admission
-    await page.click('[data-testid="admit-patient-button"]');
+    cy.get('[data-testid="admit-patient-button"]').click();
 
     // 5. Select room
-    await page.click('[data-testid="room-301"]');
-    await page.click('[data-testid="bed-A"]');
+    cy.get('[data-testid="room-301"]').click();
+    cy.get('[data-testid="bed-A"]').click();
 
     // 6. Enter admission information
-    await page.fill('[data-testid="diagnosis"]', 'E2E test diagnosis');
-    await page.selectOption('[data-testid="admission-type"]', 'SCHEDULED');
-    await page.selectOption('[data-testid="attending-doctor"]', 'doctor001');
+    cy.get('[data-testid="diagnosis"]').type('E2E test diagnosis');
+    cy.get('[data-testid="admission-type"]').select('SCHEDULED');
+    cy.get('[data-testid="attending-doctor"]').select('doctor001');
 
     // 7. Confirm admission
-    await page.click('[data-testid="confirm-admission-button"]');
+    cy.get('[data-testid="confirm-admission-button"]').click();
 
     // 8. Verify result
-    await expect(page.locator('[data-testid="admission-success-modal"]')).toBeVisible();
-    await expect(page.locator('[data-testid="admission-number"]')).toHaveText(/A\d{10}/);
+    cy.get('[data-testid="admission-success-modal"]').should('be.visible');
+    cy.get('[data-testid="admission-number"]')
+      .invoke('text')
+      .should('match', /A\d{10}/);
 
     // 9. Verify in room status
-    await page.click('[data-testid="nav-rooms"]');
-    await expect(page.locator('[data-testid="room-301-bed-A"]')).toHaveClass(/occupied/);
+    cy.get('[data-testid="nav-rooms"]').click();
+    cy.get('[data-testid="room-301-bed-A"]').should('have.class', 'occupied');
   });
 
-  test('Vital signs input and retrieval', async ({ page }) => {
+  it('Vital signs input and retrieval', () => {
     // Navigate to patient detail page
-    await page.goto('/patients/test-patient-id');
+    cy.visit('/patients/test-patient-id');
 
     // Click vitals tab
-    await page.click('[data-testid="tab-vitals"]');
+    cy.get('[data-testid="tab-vitals"]').click();
 
     // Enter new vital signs
-    await page.click('[data-testid="add-vital-button"]');
+    cy.get('[data-testid="add-vital-button"]').click();
 
-    await page.fill('[data-testid="temperature"]', '36.5');
-    await page.fill('[data-testid="systolic-bp"]', '120');
-    await page.fill('[data-testid="diastolic-bp"]', '80');
-    await page.fill('[data-testid="pulse-rate"]', '72');
-    await page.fill('[data-testid="respiratory-rate"]', '18');
-    await page.fill('[data-testid="oxygen-saturation"]', '98');
+    cy.get('[data-testid="temperature"]').type('36.5');
+    cy.get('[data-testid="systolic-bp"]').type('120');
+    cy.get('[data-testid="diastolic-bp"]').type('80');
+    cy.get('[data-testid="pulse-rate"]').type('72');
+    cy.get('[data-testid="respiratory-rate"]').type('18');
+    cy.get('[data-testid="oxygen-saturation"]').type('98');
 
-    await page.click('[data-testid="save-vital-button"]');
+    cy.get('[data-testid="save-vital-button"]').click();
 
     // Verify save
-    await expect(page.locator('[data-testid="toast-success"]')).toBeVisible();
+    cy.get('[data-testid="toast-success"]').should('be.visible');
 
     // Verify in list
-    await expect(page.locator('[data-testid="vital-list"]')).toContainText('36.5');
-    await expect(page.locator('[data-testid="vital-list"]')).toContainText('120/80');
+    cy.get('[data-testid="vital-list"]').should('contain', '36.5');
+    cy.get('[data-testid="vital-list"]').should('contain', '120/80');
   });
 });
 
-test.describe('Mobile Rounding', () => {
-  test.use({ ...devices['iPad Pro'] });
+describe('Mobile Rounding', () => {
+  beforeEach(() => {
+    cy.viewport('ipad-2');
+  });
 
-  test('Record rounding on tablet', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[data-testid="username"]', 'doctor001');
-    await page.fill('[data-testid="password"]', 'testpass123');
-    await page.click('[data-testid="login-button"]');
+  it('Record rounding on tablet', () => {
+    cy.visit('/login');
+    cy.get('[data-testid="username"]').type('doctor001');
+    cy.get('[data-testid="password"]').type('testpass123');
+    cy.get('[data-testid="login-button"]').click();
 
     // Start rounding
-    await page.click('[data-testid="start-round-button"]');
+    cy.get('[data-testid="start-round-button"]').click();
 
     // First patient
-    await page.click('[data-testid="patient-item-0"]');
+    cy.get('[data-testid="patient-item-0"]').click();
 
     // Select status
-    await page.click('[data-testid="status-stable"]');
+    cy.get('[data-testid="status-stable"]').click();
 
     // Enter observation
-    await page.fill('[data-testid="observation"]', 'Condition good, no abnormalities');
+    cy.get('[data-testid="observation"]').type('Condition good, no abnormalities');
 
     // Save and next patient
-    await page.click('[data-testid="save-next-button"]');
+    cy.get('[data-testid="save-next-button"]').click();
 
     // Verify next patient
-    await expect(page.locator('[data-testid="current-patient"]')).not.toHaveText('First Patient');
+    cy.get('[data-testid="current-patient"]').should('not.contain', 'First Patient');
   });
 });
 ```
@@ -872,18 +854,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Playwright
-        run: pnpm exec playwright install --with-deps
-
       - name: Run E2E tests
-        run: pnpm test:e2e
+        run: pnpm --filter @hospital-erp/frontend cypress:run:ci
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: cypress-screenshots
+          path: apps/frontend/cypress/screenshots/
 ```
 
 ---

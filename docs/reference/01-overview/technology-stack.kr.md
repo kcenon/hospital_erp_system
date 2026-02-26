@@ -32,7 +32,7 @@
 
 | 계층         | 기술                    | 선택 이유                              |
 | ------------ | ----------------------- | -------------------------------------- |
-| **Frontend** | Next.js 14 + TypeScript | SSR 지원, 반응형 UI, 타입 안정성       |
+| **Frontend** | Next.js 16 + TypeScript | SSR 지원, 반응형 UI, 타입 안정성       |
 | **Backend**  | NestJS + TypeScript     | 모듈화, 의존성 주입, 엔터프라이즈 패턴 |
 | **Database** | PostgreSQL 16           | ACID, JSON 지원, 의료 데이터 신뢰성    |
 | **Cache**    | Redis                   | 세션 관리, 실시간 현황판               |
@@ -46,7 +46,7 @@
 
 ```
 Frontend Stack
-├── Framework: Next.js 14 (App Router)
+├── Framework: Next.js 16 (App Router)
 ├── Language: TypeScript 5.x
 ├── UI Library: Tailwind CSS + shadcn/ui
 ├── State Management: Zustand (클라이언트) + TanStack Query (서버)
@@ -58,7 +58,7 @@ Frontend Stack
 
 | 기술               | 선택 이유                                                              | 대안              |
 | ------------------ | ---------------------------------------------------------------------- | ----------------- |
-| **Next.js 14**     | App Router로 서버 컴포넌트 지원, SEO 불필요하나 SSR로 초기 로딩 최적화 | Vite + React      |
+| **Next.js 16**     | App Router로 서버 컴포넌트 지원, SEO 불필요하나 SSR로 초기 로딩 최적화 | Vite + React      |
 | **TypeScript**     | 의료 데이터 타입 안정성 필수, 런타임 에러 감소                         | JavaScript        |
 | **shadcn/ui**      | 커스터마이징 용이, 접근성 기본 지원                                    | MUI, Ant Design   |
 | **Tailwind CSS**   | 반응형 UI 빠른 개발, 일관된 디자인 시스템                              | Styled Components |
@@ -230,7 +230,7 @@ Development Tools
 ├── Version Control: Git + GitHub/GitLab
 ├── Package Manager: pnpm (Monorepo)
 ├── Linting: ESLint + Prettier
-├── Testing: Jest + Playwright
+├── Testing: Jest + Cypress
 └── API Testing: Postman / Insomnia
 ```
 
@@ -334,7 +334,7 @@ jobs:
 ┌─────────────────────────────────────────────────────────────────┐
 │                    권장 기술 스택 요약                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  Frontend  : Next.js 14 + TypeScript + Tailwind + shadcn/ui    │
+│  Frontend  : Next.js 16 + TypeScript + Tailwind + shadcn/ui    │
 │  Backend   : NestJS 10 + TypeScript + Prisma                   │
 │  Database  : PostgreSQL 16 + Redis 7                           │
 │  Cloud     : AWS (ECS Fargate + RDS + ElastiCache)             │
@@ -359,7 +359,7 @@ jobs:
 | ---------- | --------- | --------- | -------- |
 | Node.js    | 20.x      | 18.x      | 2026-04  |
 | TypeScript | 5.3+      | 5.0       | -        |
-| Next.js    | 14.x      | 13.x      | -        |
+| Next.js    | 16.x      | 14.x      | -        |
 | NestJS     | 10.x      | 9.x       | -        |
 | PostgreSQL | 16        | 14        | 2026-11  |
 | Redis      | 7.x       | 6.x       | -        |
