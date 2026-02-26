@@ -52,6 +52,6 @@ export class TokenBlacklistService {
       return false;
     }
 
-    return tokenIssuedAt <= parseInt(revokedAt, 10);
+    return tokenIssuedAt < parseInt(revokedAt, 10);
   }
 }

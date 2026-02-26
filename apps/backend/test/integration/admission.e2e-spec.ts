@@ -282,7 +282,7 @@ describe('Admission API (e2e)', () => {
       const transferData = {
         toBedId: testIds.rooms.bed302AId,
         transferDate: new Date().toISOString().split('T')[0],
-        transferTime: '10:00',
+        transferTime: new Date('1970-01-01T10:00:00.000Z'),
         reason: 'Patient requires different room',
       };
 
@@ -306,7 +306,7 @@ describe('Admission API (e2e)', () => {
       const transferData = {
         toBedId: testIds.rooms.bed302AId,
         transferDate: new Date().toISOString().split('T')[0],
-        transferTime: '10:00',
+        transferTime: new Date('1970-01-01T10:00:00.000Z'),
         reason: 'Patient requires different room',
       };
 
@@ -339,7 +339,7 @@ describe('Admission API (e2e)', () => {
       const transferData = {
         toBedId: testIds.rooms.bed302AId,
         transferDate: new Date().toISOString().split('T')[0],
-        transferTime: '10:00',
+        transferTime: new Date('1970-01-01T10:00:00.000Z'),
         reason: 'Transfer test',
       };
 
@@ -361,7 +361,7 @@ describe('Admission API (e2e)', () => {
       const transferData = {
         toBedId: testIds.rooms.bed302AId,
         transferDate: new Date().toISOString().split('T')[0],
-        transferTime: '10:00',
+        transferTime: new Date('1970-01-01T10:00:00.000Z'),
         reason: 'Transfer test',
       };
 
@@ -499,7 +499,7 @@ describe('Admission API (e2e)', () => {
           fromBedId: testIds.rooms.bed301AId,
           toBedId: testIds.rooms.bed302AId,
           transferDate: new Date(),
-          transferTime: '10:00',
+          transferTime: new Date('1970-01-01T10:00:00.000Z'),
           reason: 'First transfer',
           transferredBy: testIds.users.adminId,
         },
