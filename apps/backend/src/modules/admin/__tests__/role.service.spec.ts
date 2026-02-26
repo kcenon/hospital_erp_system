@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { RoleService } from '../role.service';
 import { RoleRepository, RoleWithPermissions } from '../role.repository';
 import { RoleNotFoundException } from '../exceptions';
+import { RbacService } from '../../auth/services/rbac.service';
 
 describe('RoleService', () => {
   let service: RoleService;
@@ -14,6 +15,10 @@ describe('RoleService', () => {
     findByIdWithPermissions: jest.fn(),
     findAll: jest.fn(),
     findAllWithPermissions: jest.fn(),
+  };
+
+  const mockRbacService = {
+    invalidateAllCaches: jest.fn(),
   };
 
   const createMockRole = (overrides = {}) => ({
@@ -61,7 +66,11 @@ describe('RoleService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [RoleService, { provide: RoleRepository, useValue: mockRoleRepo }],
+      providers: [
+        RoleService,
+        { provide: RoleRepository, useValue: mockRoleRepo },
+        { provide: RbacService, useValue: mockRbacService },
+      ],
     }).compile();
 
     service = module.get<RoleService>(RoleService);

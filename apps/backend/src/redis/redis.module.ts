@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { RedisModule as IoRedisModule } from '@nestjs-modules/ioredis';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisShutdownService } from './redis-shutdown.service';
 
 @Global()
 @Module({
@@ -14,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
   ],
+  providers: [RedisShutdownService],
   exports: [IoRedisModule],
 })
 export class RedisModule {}

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { MedicationService } from './medication.service';
 import { ParseUUIDPipe, JwtAuthGuard, CurrentUser } from '../../common';
@@ -70,6 +80,7 @@ export class MedicationController {
   @ApiResponse({ status: 403, description: 'Forbidden - insufficient permissions' })
   @ApiResponse({ status: 404, description: 'Medication not found' })
   @Post(':id/administer')
+  @HttpCode(HttpStatus.OK)
   @RequirePermission('report:write')
   async administer(
     @Param('id', ParseUUIDPipe) id: string,

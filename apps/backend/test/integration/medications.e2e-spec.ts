@@ -168,7 +168,7 @@ describe('Medications API (e2e)', () => {
         reason: 'Patient NPO for procedure',
       });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe('HELD');
     });
   });
@@ -201,7 +201,7 @@ describe('Medications API (e2e)', () => {
         reason: 'Patient refuses due to nausea',
       });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe('REFUSED');
     });
   });

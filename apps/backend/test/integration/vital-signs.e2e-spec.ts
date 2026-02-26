@@ -118,7 +118,7 @@ describe('Vital Signs API (e2e)', () => {
     });
 
     it('should return 404 for non-existent admission', async () => {
-      const fakeId = '00000000-0000-0000-0000-000000000000';
+      const fakeId = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
       const response = await authRequest(
         app,
         'post',
@@ -181,10 +181,15 @@ describe('Vital Signs API (e2e)', () => {
 
   describe('GET /admissions/:admissionId/vitals/trend', () => {
     it('should return vital signs trend data', async () => {
+      const now = new Date();
+      const startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+      const endDate = now.toISOString().split('T')[0];
       const response = await authRequest(
         app,
         'get',
-        `/admissions/${admissionId}/vitals/trend`,
+        `/admissions/${admissionId}/vitals/trend?startDate=${startDate}&endDate=${endDate}`,
         doctorToken,
       );
 

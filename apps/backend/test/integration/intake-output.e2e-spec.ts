@@ -107,7 +107,7 @@ describe('Intake/Output API (e2e)', () => {
     });
 
     it('should return 404 for non-existent admission', async () => {
-      const fakeId = '00000000-0000-0000-0000-000000000000';
+      const fakeId = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
       const response = await authRequest(app, 'post', `/admissions/${fakeId}/io`, nurseToken).send({
         recordDate: new Date().toISOString().split('T')[0],
         recordTime: new Date().toISOString(),
@@ -162,10 +162,15 @@ describe('Intake/Output API (e2e)', () => {
 
   describe('GET /admissions/:admissionId/io/balance', () => {
     it('should return I/O balance history', async () => {
+      const now = new Date();
+      const startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+      const endDate = now.toISOString().split('T')[0];
       const response = await authRequest(
         app,
         'get',
-        `/admissions/${admissionId}/io/balance`,
+        `/admissions/${admissionId}/io/balance?startDate=${startDate}&endDate=${endDate}`,
         doctorToken,
       );
 

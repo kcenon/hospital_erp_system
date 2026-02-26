@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaService } from '../../src/prisma';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 import { PatientModule } from '../../src/modules/patient/patient.module';
@@ -30,6 +31,7 @@ export async function createTestApp(): Promise<TestApp> {
         load: [appConfig, databaseConfig, redisConfig, jwtConfig],
         envFilePath: ['.env.test', '.env'],
       }),
+      EventEmitterModule.forRoot(),
       RedisModule,
       PrismaModule,
       AuthModule,
@@ -70,5 +72,11 @@ export async function createTestApp(): Promise<TestApp> {
  * Close test application and cleanup
  */
 export async function closeTestApp(testApp: TestApp): Promise<void> {
+  const httpServer = testApp.app.getHttpServer();
+  if (httpServer?.listening) {
+    await new Promise<void>((resolve) => {
+      httpServer.close(() => resolve());
+    });
+  }
   await testApp.app.close();
 }
