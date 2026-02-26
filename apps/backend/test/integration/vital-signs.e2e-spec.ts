@@ -181,10 +181,15 @@ describe('Vital Signs API (e2e)', () => {
 
   describe('GET /admissions/:admissionId/vitals/trend', () => {
     it('should return vital signs trend data', async () => {
+      const now = new Date();
+      const startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+      const endDate = now.toISOString().split('T')[0];
       const response = await authRequest(
         app,
         'get',
-        `/admissions/${admissionId}/vitals/trend`,
+        `/admissions/${admissionId}/vitals/trend?startDate=${startDate}&endDate=${endDate}`,
         doctorToken,
       );
 

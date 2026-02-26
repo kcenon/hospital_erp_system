@@ -162,10 +162,15 @@ describe('Intake/Output API (e2e)', () => {
 
   describe('GET /admissions/:admissionId/io/balance', () => {
     it('should return I/O balance history', async () => {
+      const now = new Date();
+      const startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+      const endDate = now.toISOString().split('T')[0];
       const response = await authRequest(
         app,
         'get',
-        `/admissions/${admissionId}/io/balance`,
+        `/admissions/${admissionId}/io/balance?startDate=${startDate}&endDate=${endDate}`,
         doctorToken,
       );
 

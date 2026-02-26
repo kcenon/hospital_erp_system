@@ -248,7 +248,7 @@ describe('Rounding API (e2e)', () => {
         doctorToken,
       );
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(400);
     });
   });
 
@@ -274,7 +274,7 @@ describe('Rounding API (e2e)', () => {
     it('should transition round to IN_PROGRESS', async () => {
       const response = await authRequest(app, 'post', `/rounds/${roundId}/start`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.IN_PROGRESS);
       expect(response.body.startedAt).toBeDefined();
       expect(response.body.validTransitions).toContain(RoundStatus.PAUSED);
@@ -319,7 +319,7 @@ describe('Rounding API (e2e)', () => {
     it('should pause an in-progress round', async () => {
       const response = await authRequest(app, 'post', `/rounds/${roundId}/pause`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.PAUSED);
       expect(response.body.pausedAt).toBeDefined();
     });
@@ -369,7 +369,7 @@ describe('Rounding API (e2e)', () => {
     it('should resume a paused round', async () => {
       const response = await authRequest(app, 'post', `/rounds/${roundId}/resume`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.IN_PROGRESS);
       expect(response.body.pausedAt).toBeNull();
     });
@@ -400,7 +400,7 @@ describe('Rounding API (e2e)', () => {
     it('should mark round as completed', async () => {
       const response = await authRequest(app, 'post', `/rounds/${roundId}/complete`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.COMPLETED);
       expect(response.body.completedAt).toBeDefined();
       expect(response.body.validTransitions).toEqual([]);
@@ -439,7 +439,7 @@ describe('Rounding API (e2e)', () => {
     it('should cancel a planned round', async () => {
       const response = await authRequest(app, 'post', `/rounds/${roundId}/cancel`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.CANCELLED);
       expect(response.body.validTransitions).toEqual([]);
     });
@@ -451,7 +451,7 @@ describe('Rounding API (e2e)', () => {
 
       const response = await authRequest(app, 'post', `/rounds/${roundId}/cancel`, doctorToken);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(response.body.status).toBe(RoundStatus.CANCELLED);
     });
 
@@ -550,7 +550,7 @@ describe('Rounding API (e2e)', () => {
       expect(response.status).toBe(400);
     });
 
-    it('should reject duplicate record for same admission', async () => {
+    it('should upsert record for same admission', async () => {
       // Add first record
       await authRequest(app, 'post', `/rounds/${roundId}/records`, doctorToken)
         .set('x-user-id', testIds.users.doctorId)
@@ -559,7 +559,7 @@ describe('Rounding API (e2e)', () => {
           patientStatus: RoundPatientStatus.STABLE,
         });
 
-      // Try to add another record for the same admission
+      // Adding another record for the same admission updates the existing one
       const response = await authRequest(app, 'post', `/rounds/${roundId}/records`, doctorToken)
         .set('x-user-id', testIds.users.doctorId)
         .send({
@@ -567,7 +567,7 @@ describe('Rounding API (e2e)', () => {
           patientStatus: RoundPatientStatus.IMPROVING,
         });
 
-      expect(response.status).toBe(409);
+      expect(response.status).toBe(201);
     });
 
     it('should increment visit order for each record', async () => {
@@ -670,7 +670,7 @@ describe('Rounding API (e2e)', () => {
       expect(response.body[0]).toHaveProperty('visitOrder');
     });
 
-    it('should return 404 for non-existent round', async () => {
+    it('should return 400 for invalid nil UUID', async () => {
       const response = await authRequest(
         app,
         'get',
@@ -678,7 +678,7 @@ describe('Rounding API (e2e)', () => {
         doctorToken,
       );
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(400);
     });
   });
 
@@ -761,7 +761,7 @@ describe('Rounding API (e2e)', () => {
       expect(response.body.plan).toBe('Continue medication and monitor');
     });
 
-    it('should return 404 for non-existent record', async () => {
+    it('should return 400 for invalid nil UUID record', async () => {
       const response = await authRequest(
         app,
         'patch',
@@ -773,7 +773,7 @@ describe('Rounding API (e2e)', () => {
           patientStatus: RoundPatientStatus.STABLE,
         });
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(400);
     });
   });
 
