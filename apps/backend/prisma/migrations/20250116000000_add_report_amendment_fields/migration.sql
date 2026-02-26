@@ -24,7 +24,7 @@ ALTER TABLE "report"."vital_signs"
 -- FK: amended_by -> auth.users
 ALTER TABLE "report"."vital_signs"
     ADD CONSTRAINT "vital_signs_amended_by_fkey"
-    FOREIGN KEY ("amended_by") REFERENCES "auth"."users"("id")
+    FOREIGN KEY ("amended_by") REFERENCES "public"."users"("id")
     ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Indexes
@@ -64,13 +64,13 @@ ALTER TABLE "report"."medications"
 -- FK: prescribed_by -> auth.users
 ALTER TABLE "report"."medications"
     ADD CONSTRAINT "medications_prescribed_by_fkey"
-    FOREIGN KEY ("prescribed_by") REFERENCES "auth"."users"("id")
+    FOREIGN KEY ("prescribed_by") REFERENCES "public"."users"("id")
     ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- FK: cancelled_by -> auth.users
 ALTER TABLE "report"."medications"
     ADD CONSTRAINT "medications_cancelled_by_fkey"
-    FOREIGN KEY ("cancelled_by") REFERENCES "auth"."users"("id")
+    FOREIGN KEY ("cancelled_by") REFERENCES "public"."users"("id")
     ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Indexes
