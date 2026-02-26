@@ -203,8 +203,93 @@ export async function seedTestDatabase(prisma: PrismaService): Promise<void> {
     });
   }
 
-  // Assign all permissions including admin:audit to admin role
-  const allNewPerms = [...reportPerms, adminAuditPerm];
+  // Create admission and round permissions
+  const admissionCreatePerm = await prisma.permission.upsert({
+    where: { code: 'admission:create' },
+    update: {},
+    create: {
+      code: 'admission:create',
+      resource: 'admission',
+      action: 'create',
+      description: 'Create admissions',
+    },
+  });
+  const admissionReadPerm = await prisma.permission.upsert({
+    where: { code: 'admission:read' },
+    update: {},
+    create: {
+      code: 'admission:read',
+      resource: 'admission',
+      action: 'read',
+      description: 'Read admissions',
+    },
+  });
+  const admissionUpdatePerm = await prisma.permission.upsert({
+    where: { code: 'admission:update' },
+    update: {},
+    create: {
+      code: 'admission:update',
+      resource: 'admission',
+      action: 'update',
+      description: 'Update admissions',
+    },
+  });
+  const roundReadPerm = await prisma.permission.upsert({
+    where: { code: 'round:read' },
+    update: {},
+    create: {
+      code: 'round:read',
+      resource: 'round',
+      action: 'read',
+      description: 'Read rounds',
+    },
+  });
+  const roundWritePerm = await prisma.permission.upsert({
+    where: { code: 'round:write' },
+    update: {},
+    create: {
+      code: 'round:write',
+      resource: 'round',
+      action: 'write',
+      description: 'Write rounds',
+    },
+  });
+
+  // Assign admission/round permissions to doctor and nurse roles
+  const admissionRoundPerms = [
+    admissionCreatePerm,
+    admissionReadPerm,
+    admissionUpdatePerm,
+    roundReadPerm,
+    roundWritePerm,
+  ];
+  for (const perm of admissionRoundPerms) {
+    await prisma.rolePermission.upsert({
+      where: { roleId_permissionId: { roleId: doctorRole.id, permissionId: perm.id } },
+      update: {},
+      create: { roleId: doctorRole.id, permissionId: perm.id },
+    });
+    await prisma.rolePermission.upsert({
+      where: { roleId_permissionId: { roleId: nurseRole.id, permissionId: perm.id } },
+      update: {},
+      create: { roleId: nurseRole.id, permissionId: perm.id },
+    });
+  }
+
+  // Create wildcard permission for admin role
+  const wildcardPerm = await prisma.permission.upsert({
+    where: { code: '*' },
+    update: {},
+    create: {
+      code: '*',
+      resource: '*',
+      action: '*',
+      description: 'Full access (wildcard)',
+    },
+  });
+
+  // Assign all permissions including admin:audit and wildcard to admin role
+  const allNewPerms = [...reportPerms, adminAuditPerm, wildcardPerm];
   for (const perm of allNewPerms) {
     await prisma.rolePermission.upsert({
       where: { roleId_permissionId: { roleId: adminRole.id, permissionId: perm.id } },
