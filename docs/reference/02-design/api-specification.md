@@ -38,10 +38,9 @@ X-Client-Version: 1.0.0        # Client version
 # Response Headers
 Content-Type: application/json
 X-Request-ID: <uuid>
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1704067200
 ```
+
+> **Note**: `X-RateLimit-*` response headers are **not implemented**. When a rate limit is exceeded, the API returns HTTP 429 with the body below (see Section 1.6).
 
 ### 1.3 Common Response Format
 
@@ -222,6 +221,31 @@ Deprecation: true
 Sunset: Sat, 01 Mar 2026 00:00:00 GMT
 Link: <https://docs.hospital-erp.com/migration/v2>; rel="successor-version"
 ```
+
+### 1.6 Rate Limiting
+
+The API uses a **3-tier throttling strategy** powered by `@nestjs/throttler` with Redis-backed distributed storage (`ThrottlerRedisStorageService`). All three tiers are enforced simultaneously — a request is rejected when **any** tier limit is exceeded.
+
+| Tier       | Window | Limit | Effective Rate      |
+| ---------- | ------ | ----- | ------------------- |
+| **short**  | 1 sec  | 3     | 3 requests/second   |
+| **medium** | 10 sec | 20    | 20 requests/10 sec  |
+| **long**   | 60 sec | 100   | 100 requests/minute |
+
+**Redis Storage**: Rate limit counters are stored in Redis, ensuring consistent enforcement across multiple backend replicas.
+
+**429 Error Response**
+
+When a limit is exceeded, the API responds with HTTP `429 Too Many Requests`:
+
+```json
+{
+  "statusCode": 429,
+  "message": "Too many requests. Please try again later."
+}
+```
+
+> **Note**: `X-RateLimit-*` response headers are not implemented. Clients must handle 429 responses with appropriate retry logic (e.g., exponential backoff).
 
 ---
 

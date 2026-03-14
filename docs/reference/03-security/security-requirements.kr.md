@@ -649,45 +649,40 @@ server {
 
 ### 6.2 WAF 규칙
 
-| 규칙           | 설명                 | 조치        |
-| -------------- | -------------------- | ----------- |
-| SQL Injection  | SQL 인젝션 패턴 탐지 | 차단        |
-| XSS            | 스크립트 삽입 시도   | 차단        |
-| Path Traversal | 경로 조작 시도       | 차단        |
-| Rate Limit     | 분당 1000 요청 초과  | 임시 차단   |
-| Bot Detection  | 알려진 악성 봇       | 차단        |
-| GeoIP          | 허용 국가 외 접근    | 차단 (선택) |
+| 규칙           | 설명                                     | 조치                 |
+| -------------- | ---------------------------------------- | -------------------- |
+| SQL Injection  | SQL 인젝션 패턴 탐지                     | 차단                 |
+| XSS            | 스크립트 삽입 시도                       | 차단                 |
+| Path Traversal | 경로 조작 시도                           | 차단                 |
+| Rate Limit     | 쓰로틀 한도 초과 (3/초, 20/10초, 100/분) | 임시 차단 (HTTP 429) |
+| Bot Detection  | 알려진 악성 봇                           | 차단                 |
+| GeoIP          | 허용 국가 외 접근                        | 차단 (선택)          |
 
 ### 6.3 Rate Limiting
 
+백엔드는 `@nestjs/throttler`를 사용하여 **3단계 쓰로틀링 전략**을 적용합니다. 세 단계가 동시에 적용되며, 하나라도 초과하는 즉시 요청이 차단됩니다.
+
 ```typescript
-// Rate Limiting 설정
-const rateLimitConfig = {
-  // 일반 API
-  default: {
-    windowMs: 60 * 1000, // 1분
-    max: 100, // 100 요청
-  },
-
-  // 로그인 API (브루트포스 방지)
-  login: {
-    windowMs: 15 * 60 * 1000, // 15분
-    max: 5, // 5회
-  },
-
-  // 민감 정보 API
-  sensitive: {
-    windowMs: 60 * 1000, // 1분
-    max: 20, // 20 요청
-  },
-
-  // 데이터 내보내기
-  export: {
-    windowMs: 60 * 60 * 1000, // 1시간
-    max: 10, // 10회
-  },
-};
+// app.module.ts 실제 구현
+ThrottlerModule.forRoot({
+  throttlers: [
+    { name: 'short', ttl: 1000, limit: 3 }, // 3 요청/초
+    { name: 'medium', ttl: 10000, limit: 20 }, // 20 요청/10초
+    { name: 'long', ttl: 60000, limit: 100 }, // 100 요청/분
+  ],
+  errorMessage: 'Too many requests. Please try again later.',
+});
 ```
+
+| 단계       | 윈도우 | 한도 | 목적                           |
+| ---------- | ------ | ---- | ------------------------------ |
+| **short**  | 1초    | 3    | 순간 폭발 트래픽 방지          |
+| **medium** | 10초   | 20   | 지속적 요청 속도 제어          |
+| **long**   | 60초   | 100  | 클라이언트 IP당 분당 전체 한도 |
+
+**저장소**: Rate limit 카운터는 `ThrottlerRedisStorageService`를 통해 **Redis**에 저장됩니다. 다중 인스턴스 환경에서 모든 레플리카에 일관되게 적용됩니다.
+
+**에러 응답**: 한도 초과 시 `HTTP 429`와 함께 `"Too many requests. Please try again later."` 메시지가 반환됩니다.
 
 ---
 
