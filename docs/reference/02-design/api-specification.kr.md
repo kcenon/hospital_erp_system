@@ -37,10 +37,9 @@ X-Client-Version: 1.0.0        # 클라이언트 버전
 # 응답 헤더
 Content-Type: application/json
 X-Request-ID: <uuid>
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1704067200
 ```
+
+> **참고**: `X-RateLimit-*` 응답 헤더는 **구현되어 있지 않습니다**. Rate limit 초과 시 HTTP 429가 반환됩니다 (1.6절 참고).
 
 ### 1.3 공통 응답 형식
 
@@ -109,6 +108,27 @@ X-RateLimit-Reset: 1704067200
 | 422  | Unprocessable     | 유효성 검증 실패  |
 | 429  | Too Many Requests | 요청 제한 초과    |
 | 500  | Internal Error    | 서버 오류         |
+
+### 1.5 Rate Limiting
+
+API는 `@nestjs/throttler`를 사용한 **3단계 쓰로틀링 전략**을 적용합니다. Redis(`ThrottlerRedisStorageService`)를 통해 분산 저장하므로 다중 레플리카 환경에서도 일관되게 적용됩니다.
+
+| 단계       | 윈도우 | 한도 | 설명         |
+| ---------- | ------ | ---- | ------------ |
+| **short**  | 1초    | 3    | 3 요청/초    |
+| **medium** | 10초   | 20   | 20 요청/10초 |
+| **long**   | 60초   | 100  | 100 요청/분  |
+
+세 단계가 동시에 적용되며, 하나라도 초과하면 HTTP 429로 응답합니다.
+
+**429 에러 응답**
+
+```json
+{
+  "statusCode": 429,
+  "message": "Too many requests. Please try again later."
+}
+```
 
 ---
 

@@ -650,45 +650,40 @@ server {
 
 ### 6.2 WAF Rules
 
-| Rule           | Description                        | Action           |
-| -------------- | ---------------------------------- | ---------------- |
-| SQL Injection  | SQL injection pattern detection    | Block            |
-| XSS            | Script injection attempt           | Block            |
-| Path Traversal | Path manipulation attempt          | Block            |
-| Rate Limit     | Exceeding 1000 requests per minute | Temporary block  |
-| Bot Detection  | Known malicious bots               | Block            |
-| GeoIP          | Access from non-allowed countries  | Block (optional) |
+| Rule           | Description                                                   | Action                     |
+| -------------- | ------------------------------------------------------------- | -------------------------- |
+| SQL Injection  | SQL injection pattern detection                               | Block                      |
+| XSS            | Script injection attempt                                      | Block                      |
+| Path Traversal | Path manipulation attempt                                     | Block                      |
+| Rate Limit     | Exceeding per-tier throttle limits (3/sec, 20/10sec, 100/min) | Temporary block (HTTP 429) |
+| Bot Detection  | Known malicious bots                                          | Block                      |
+| GeoIP          | Access from non-allowed countries                             | Block (optional)           |
 
 ### 6.3 Rate Limiting
 
+The backend uses `@nestjs/throttler` with a **3-tier strategy**. All three tiers are enforced simultaneously — a request is blocked the moment any tier limit is exceeded.
+
 ```typescript
-// Rate Limiting configuration
-const rateLimitConfig = {
-  // General API
-  default: {
-    windowMs: 60 * 1000, // 1 minute
-    max: 100, // 100 requests
-  },
-
-  // Login API (brute force prevention)
-  login: {
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 attempts
-  },
-
-  // Sensitive information API
-  sensitive: {
-    windowMs: 60 * 1000, // 1 minute
-    max: 20, // 20 requests
-  },
-
-  // Data export
-  export: {
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // 10 times
-  },
-};
+// Actual implementation in app.module.ts
+ThrottlerModule.forRoot({
+  throttlers: [
+    { name: 'short', ttl: 1000, limit: 3 }, // 3 req/sec
+    { name: 'medium', ttl: 10000, limit: 20 }, // 20 req/10sec
+    { name: 'long', ttl: 60000, limit: 100 }, // 100 req/min
+  ],
+  errorMessage: 'Too many requests. Please try again later.',
+});
 ```
+
+| Tier       | Window | Limit | Purpose                              |
+| ---------- | ------ | ----- | ------------------------------------ |
+| **short**  | 1 sec  | 3     | Prevent burst/flood attacks          |
+| **medium** | 10 sec | 20    | Smooth sustained request rates       |
+| **long**   | 60 sec | 100   | Overall per-minute cap per client IP |
+
+**Storage**: Rate limit counters are stored in **Redis** via `ThrottlerRedisStorageService`, ensuring consistent enforcement across all backend replicas in a multi-instance deployment.
+
+**Error Response**: When any tier is exceeded, the API returns `HTTP 429` with the message `"Too many requests. Please try again later."`
 
 ---
 
