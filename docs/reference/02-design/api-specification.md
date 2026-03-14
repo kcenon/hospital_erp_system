@@ -57,7 +57,7 @@ Returns the DTO object directly:
   "patientNumber": "P2025001234",
   "name": "John Doe",
   "birthDate": "1990-05-15",
-  "gender": "M",
+  "gender": "MALE",
   "createdAt": "2025-12-29T10:30:00Z",
   "updatedAt": "2025-12-29T10:30:00Z"
 }
@@ -359,7 +359,7 @@ GET /api/v1/patients
       "patientNumber": "P2025001234",
       "name": "John Doe",
       "birthDate": "1990-05-15",
-      "gender": "M",
+      "gender": "MALE",
       "age": 34,
       "phone": "010-1234-5678",
       "currentAdmission": {
@@ -397,7 +397,7 @@ GET /api/v1/patients/{patientId}
   "patientNumber": "P2025001234",
   "name": "John Doe",
   "birthDate": "1990-05-15",
-  "gender": "M",
+  "gender": "MALE",
   "bloodType": "A+",
   "phone": "010-1234-5678",
   "emergencyContact": "Jane Doe",
@@ -452,7 +452,7 @@ POST /api/v1/patients
   "patientNumber": "P2025001234",
   "name": "John Doe",
   "birthDate": "1990-05-15",
-  "gender": "M",
+  "gender": "MALE",
   "bloodType": "A+",
   "phone": "010-1234-5678",
   "emergencyContact": "Jane Doe",
@@ -499,7 +499,7 @@ GET /api/v1/patients/legacy/search
     "legacyId": "L2020001234",
     "name": "John Doe",
     "birthDate": "1990-05-15",
-    "gender": "M",
+    "gender": "MALE",
     "ssn": "900515-1******",
     "phone": "010-****-5678",
     "bloodType": "A+",
@@ -521,7 +521,7 @@ GET /api/v1/patients/legacy/{legacyId}
   "legacyId": "L2020001234",
   "name": "John Doe",
   "birthDate": "1990-05-15",
-  "gender": "M",
+  "gender": "MALE",
   "ssn": "900515-1******",
   "phone": "010-****-5678",
   "address": "*** Teheran-ro, Gangnam-gu, Seoul",
@@ -623,12 +623,12 @@ GET /api/v1/rooms
 
 **Query Parameters**
 
-| Parameter  | Type    | Description                           |
-| ---------- | ------- | ------------------------------------- |
-| buildingId | uuid    | Building filter                       |
-| floorId    | uuid    | Floor filter                          |
-| status     | string  | Status (AVAILABLE, FULL, MAINTENANCE) |
-| hasVacancy | boolean | Has vacant beds                       |
+| Parameter  | Type    | Description                                     |
+| ---------- | ------- | ----------------------------------------------- |
+| buildingId | uuid    | Building filter                                 |
+| floorId    | uuid    | Floor filter                                    |
+| status     | string  | Status (EMPTY, OCCUPIED, RESERVED, MAINTENANCE) |
+| hasVacancy | boolean | Has vacant beds                                 |
 
 **Response (200 OK)**
 
@@ -642,10 +642,10 @@ GET /api/v1/rooms
       "number": 3,
       "name": "3rd Floor Internal Medicine"
     },
-    "roomType": "DOUBLE",
+    "roomType": "WARD",
     "capacity": 2,
     "currentCount": 1,
-    "status": "AVAILABLE",
+    "status": "EMPTY",
     "beds": [
       {
         "id": "bed-uuid-1",
@@ -695,7 +695,7 @@ GET /api/v1/rooms/dashboard/floor/{floorId}
     {
       "id": "room-uuid",
       "number": "301",
-      "status": "AVAILABLE",
+      "status": "EMPTY",
       "beds": [...]
     }
   ],
@@ -711,10 +711,10 @@ GET /api/v1/beds/available
 
 **Query Parameters**
 
-| Parameter | Type   | Description                       |
-| --------- | ------ | --------------------------------- |
-| floorId   | uuid   | Floor filter                      |
-| roomType  | string | Room type (SINGLE, DOUBLE, MULTI) |
+| Parameter | Type   | Description                                                                                            |
+| --------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| floorId   | uuid   | Floor filter                                                                                           |
+| roomType  | string | Room type (WARD, ICU, ISOLATION, VIP, EMERGENCY, RECOVERY, NICU, PEDIATRIC, LABOR_DELIVERY, OPERATING) |
 
 ---
 
@@ -2167,7 +2167,7 @@ const socket = io('wss://api.hospital-erp.com', {
   "data": {
     "roomId": "room-uuid",
     "roomNumber": "301",
-    "status": "FULL",
+    "status": "OCCUPIED",
     "beds": [
       { "bedId": "bed-1", "status": "OCCUPIED" },
       { "bedId": "bed-2", "status": "OCCUPIED" }
@@ -2478,5 +2478,43 @@ components:
           format: date
         gender:
           type: string
-          enum: [M, F]
+          enum: [MALE, FEMALE, OTHER]
 ```
+
+---
+
+## 12. Enum Reference
+
+This section provides a single source of truth for all valid enum values used in API requests and responses. All values must match the Prisma schema definitions exactly.
+
+### 12.1 Gender
+
+| Value    | Description |
+| -------- | ----------- |
+| `MALE`   | Male        |
+| `FEMALE` | Female      |
+| `OTHER`  | Other       |
+
+### 12.2 RoomType
+
+| Value            | Description                  |
+| ---------------- | ---------------------------- |
+| `WARD`           | General ward                 |
+| `ICU`            | Intensive Care Unit          |
+| `ISOLATION`      | Isolation room               |
+| `VIP`            | VIP room                     |
+| `EMERGENCY`      | Emergency room               |
+| `RECOVERY`       | Recovery room                |
+| `NICU`           | Neonatal Intensive Care Unit |
+| `PEDIATRIC`      | Pediatric ward               |
+| `LABOR_DELIVERY` | Labor and delivery room      |
+| `OPERATING`      | Operating room               |
+
+### 12.3 BedStatus
+
+| Value         | Description                   |
+| ------------- | ----------------------------- |
+| `EMPTY`       | Bed is unoccupied             |
+| `OCCUPIED`    | Bed is currently occupied     |
+| `RESERVED`    | Bed is reserved for a patient |
+| `MAINTENANCE` | Bed is under maintenance      |
