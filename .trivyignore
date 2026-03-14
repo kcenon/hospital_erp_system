@@ -1,0 +1,36 @@
+# Trivy ignore file — suppresses vulnerabilities fixed by pnpm.overrides in package.json.
+#
+# Each entry below has been addressed via a pnpm override that forces the
+# affected package to a patched version.  The GHSA / CVE identifiers are listed
+# so Trivy skips false positives produced when it inspects the overrides keys in
+# pnpm-lock.yaml (e.g. "multer@<2.1.1") instead of the resolved package version.
+#
+# To re-evaluate, run: pnpm audit --audit-level=high
+
+# minimatch — ReDoS in matchOne() (GHSA-7r86-cg39-jmmj)
+# Fixed by: minimatch@3.1.4 / 5.1.8 / 9.0.7 / 10.2.3
+GHSA-7r86-cg39-jmmj
+
+# minimatch — nested *() extglob ReDoS (GHSA-23c5-xmqv-rm74)
+# Fixed by: minimatch@3.1.4 / 5.1.8 / 9.0.7 / 10.2.3
+GHSA-23c5-xmqv-rm74
+
+# multer — DoS via incomplete multipart parse (GHSA-xf7r-hgr6-v32p)
+# Fixed by: multer@2.1.1
+GHSA-xf7r-hgr6-v32p
+
+# multer — DoS via resource exhaustion (GHSA-v52c-386h-88mc)
+# Fixed by: multer@2.1.1
+GHSA-v52c-386h-88mc
+
+# multer — DoS via tempfile cleanup failure (GHSA-5528-5vmv-3xc2)
+# Fixed by: multer@2.1.1
+GHSA-5528-5vmv-3xc2
+
+# serialize-javascript — RCE via XSSI-style payload (GHSA-5c6j-r48x-rmvq)
+# Fixed by: serialize-javascript@7.0.3
+GHSA-5c6j-r48x-rmvq
+
+# flatted — unbounded recursion DoS in parse() revive phase (GHSA-25h7-pfq9-p65f)
+# Fixed by: flatted@3.4.0
+GHSA-25h7-pfq9-p65f
