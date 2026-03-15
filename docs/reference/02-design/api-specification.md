@@ -2071,6 +2071,8 @@ DELETE /api/v1/admin/users/{userId}/roles/{roleId}
 
 ### 8.2 Role Management
 
+> **Required permission**: `ADMIN` role for all role management endpoints.
+
 #### 8.2.1 List Roles
 
 ```http
@@ -2106,11 +2108,112 @@ GET /api/v1/admin/roles
 GET /api/v1/admin/roles/{roleId}
 ```
 
-#### 8.2.3 Get Role with Permissions
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roleId    | uuid | Role ID     |
+
+**Response**: Same shape as a single item in 8.2.1.
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role not found`
+
+#### 8.2.3 Create Role
+
+```http
+POST /api/v1/admin/roles
+```
+
+**Request**
+
+```json
+{
+  "code": "PHARMACIST",
+  "name": "Pharmacist",
+  "description": "Pharmacy staff with medication access",
+  "level": 4
+}
+```
+
+| Field       | Type   | Required | Constraints                               |
+| ----------- | ------ | -------- | ----------------------------------------- |
+| code        | string | Yes      | Uppercase letters and underscores, max 50 |
+| name        | string | Yes      | Display name, max 100 characters          |
+| description | string | No       | Optional description                      |
+| level       | number | No       | Hierarchy level 0–100 (default: 0)        |
+
+**Response** `201 Created`
+
+```json
+{
+  "id": "new-role-uuid",
+  "code": "PHARMACIST",
+  "name": "Pharmacist",
+  "description": "Pharmacy staff with medication access",
+  "level": 4,
+  "isActive": true
+}
+```
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `409 Role code already exists`
+
+#### 8.2.4 Update Role
+
+```http
+PATCH /api/v1/admin/roles/{roleId}
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roleId    | uuid | Role ID     |
+
+**Request** (all fields optional)
+
+```json
+{
+  "name": "Senior Pharmacist",
+  "description": "Updated description",
+  "level": 3
+}
+```
+
+**Response** `200 OK`: Updated role object (same shape as 8.2.1 item).
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role not found`
+
+#### 8.2.5 Delete Role
+
+```http
+DELETE /api/v1/admin/roles/{roleId}
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roleId    | uuid | Role ID     |
+
+**Response** `200 OK`
+
+```json
+{ "message": "Role deleted successfully" }
+```
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role not found`, `409 Role has assigned users`
+
+#### 8.2.6 Get Role with Permissions
 
 ```http
 GET /api/v1/admin/roles/{roleId}/permissions
 ```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roleId    | uuid | Role ID     |
 
 **Response**
 
@@ -2119,6 +2222,9 @@ GET /api/v1/admin/roles/{roleId}/permissions
   "id": "role-uuid",
   "code": "DOCTOR",
   "name": "Doctor",
+  "description": "Medical staff with patient access",
+  "level": 3,
+  "isActive": true,
   "permissions": [
     {
       "id": "perm-uuid",
@@ -2138,7 +2244,50 @@ GET /api/v1/admin/roles/{roleId}/permissions
 }
 ```
 
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role not found`
+
+#### 8.2.7 Add Permission to Role
+
+```http
+POST /api/v1/admin/roles/{roleId}/permissions
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| roleId    | uuid | Role ID     |
+
+**Request**
+
+```json
+{ "permissionId": "perm-uuid" }
+```
+
+**Response** `201 Created`: Updated role with permissions (same shape as 8.2.6).
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role or permission not found`, `409 Role already has this permission`
+
+#### 8.2.8 Remove Permission from Role
+
+```http
+DELETE /api/v1/admin/roles/{roleId}/permissions/{permId}
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description   |
+| --------- | ---- | ------------- |
+| roleId    | uuid | Role ID       |
+| permId    | uuid | Permission ID |
+
+**Response** `200 OK`: Updated role with permissions (same shape as 8.2.6).
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Role or permission not found`
+
 ### 8.3 Audit Logs
+
+> **Required permission**: `admin:audit` for all audit endpoints.
 
 #### 8.3.1 Get Access Logs
 
@@ -2148,13 +2297,265 @@ GET /api/v1/admin/audit/access-logs
 
 **Query Parameters**
 
-| Parameter    | Type     | Description    |
-| ------------ | -------- | -------------- |
-| userId       | uuid     | User filter    |
-| resourceType | string   | Resource type  |
-| action       | string   | Action         |
-| startDate    | datetime | Start datetime |
-| endDate      | datetime | End datetime   |
+| Parameter    | Type     | Required | Description                                      |
+| ------------ | -------- | -------- | ------------------------------------------------ |
+| userId       | uuid     | No       | Filter by user ID                                |
+| patientId    | uuid     | No       | Filter by patient ID                             |
+| resourceType | string   | No       | Filter by resource type (e.g. `patient`, `room`) |
+| resourceId   | uuid     | No       | Filter by specific resource ID                   |
+| action       | string   | No       | `CREATE`, `READ`, `UPDATE`, or `DELETE`          |
+| startDate    | datetime | No       | Start of date range (ISO 8601)                   |
+| endDate      | datetime | No       | End of date range (ISO 8601)                     |
+| page         | number   | No       | Page number (default: 1)                         |
+| limit        | number   | No       | Items per page (default: 20, max: 100)           |
+
+**Response**
+
+```json
+{
+  "data": [
+    {
+      "id": "log-uuid",
+      "userId": "user-uuid",
+      "username": "dr.kim",
+      "userRole": "DOCTOR",
+      "ipAddress": "192.168.1.10",
+      "resourceType": "patient",
+      "resourceId": "patient-uuid",
+      "action": "READ",
+      "requestPath": "/api/v1/patients/patient-uuid",
+      "requestMethod": "GET",
+      "patientId": "patient-uuid",
+      "accessedFields": ["name", "birthDate", "medicalHistory"],
+      "success": true,
+      "errorCode": null,
+      "errorMessage": null,
+      "createdAt": "2026-01-15T10:30:00Z"
+    }
+  ],
+  "total": 500,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 25
+}
+```
+
+#### 8.3.2 Get Login History
+
+```http
+GET /api/v1/admin/audit/login-history
+```
+
+**Query Parameters**
+
+| Parameter | Type     | Required | Description                              |
+| --------- | -------- | -------- | ---------------------------------------- |
+| userId    | uuid     | No       | Filter by user ID                        |
+| username  | string   | No       | Filter by username                       |
+| ipAddress | string   | No       | Filter by IP address                     |
+| success   | boolean  | No       | Filter by login success (`true`/`false`) |
+| startDate | datetime | No       | Start of date range (ISO 8601)           |
+| endDate   | datetime | No       | End of date range (ISO 8601)             |
+| page      | number   | No       | Page number (default: 1)                 |
+| limit     | number   | No       | Items per page (default: 20, max: 100)   |
+
+**Response**
+
+```json
+{
+  "data": [
+    {
+      "id": "login-uuid",
+      "userId": "user-uuid",
+      "username": "dr.kim",
+      "ipAddress": "192.168.1.10",
+      "userAgent": "Mozilla/5.0 ...",
+      "deviceType": "PC",
+      "browser": "Chrome",
+      "os": "Windows",
+      "loginAt": "2026-01-15T09:00:00Z",
+      "logoutAt": "2026-01-15T17:00:00Z",
+      "sessionId": "session-uuid",
+      "success": true,
+      "failureReason": null
+    }
+  ],
+  "total": 1000,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 50
+}
+```
+
+#### 8.3.3 Get Change Logs
+
+```http
+GET /api/v1/admin/audit/change-logs
+```
+
+**Query Parameters**
+
+| Parameter   | Type     | Required | Description                             |
+| ----------- | -------- | -------- | --------------------------------------- |
+| userId      | uuid     | No       | Filter by user ID                       |
+| tableSchema | string   | No       | Filter by database schema               |
+| tableName   | string   | No       | Filter by table name                    |
+| recordId    | uuid     | No       | Filter by specific record ID            |
+| action      | string   | No       | `CREATE`, `READ`, `UPDATE`, or `DELETE` |
+| startDate   | datetime | No       | Start of date range (ISO 8601)          |
+| endDate     | datetime | No       | End of date range (ISO 8601)            |
+| page        | number   | No       | Page number (default: 1)                |
+| limit       | number   | No       | Items per page (default: 20, max: 100)  |
+
+**Response**
+
+```json
+{
+  "data": [
+    {
+      "id": "change-uuid",
+      "userId": "user-uuid",
+      "username": "admin",
+      "ipAddress": "192.168.1.1",
+      "tableSchema": "patient",
+      "tableName": "patients",
+      "recordId": "patient-uuid",
+      "action": "UPDATE",
+      "oldValues": { "name": "Old Name" },
+      "newValues": { "name": "New Name" },
+      "changedFields": ["name"],
+      "changeReason": null,
+      "createdAt": "2026-01-15T11:00:00Z"
+    }
+  ],
+  "total": 200,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 10
+}
+```
+
+#### 8.3.4 Get Patient Access Report
+
+```http
+GET /api/v1/admin/audit/patients/{patientId}/access-report
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| patientId | uuid | Patient ID  |
+
+**Query Parameters**
+
+| Parameter | Type     | Required | Description                    |
+| --------- | -------- | -------- | ------------------------------ |
+| startDate | datetime | Yes      | Start of date range (ISO 8601) |
+| endDate   | datetime | Yes      | End of date range (ISO 8601)   |
+
+**Response**
+
+```json
+{
+  "patientId": "patient-uuid",
+  "dateRange": {
+    "startDate": "2026-01-01T00:00:00Z",
+    "endDate": "2026-01-31T23:59:59Z"
+  },
+  "totalAccess": 42,
+  "accessByUser": [
+    { "userId": "user-uuid-1", "username": "dr.kim", "accessCount": 20 },
+    { "userId": "user-uuid-2", "username": "nurse.park", "accessCount": 22 }
+  ],
+  "accessByType": [
+    { "action": "READ", "count": 38 },
+    { "action": "UPDATE", "count": 4 }
+  ],
+  "timeline": [
+    {
+      "userId": "user-uuid-1",
+      "username": "dr.kim",
+      "action": "READ",
+      "accessedFields": ["name", "medicalHistory"],
+      "timestamp": "2026-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 Patient not found`
+
+#### 8.3.5 Get User Activity Report
+
+```http
+GET /api/v1/admin/audit/users/{userId}/activity-report
+```
+
+**Path Parameters**
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| userId    | uuid | User ID     |
+
+**Query Parameters**
+
+| Parameter | Type     | Required | Description                    |
+| --------- | -------- | -------- | ------------------------------ |
+| startDate | datetime | Yes      | Start of date range (ISO 8601) |
+| endDate   | datetime | Yes      | End of date range (ISO 8601)   |
+
+**Response**: Aggregated activity summary for the user over the specified date range (resource access counts, action breakdown, and timeline).
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`, `404 User not found`
+
+#### 8.3.6 Get Suspicious Activity
+
+```http
+GET /api/v1/admin/audit/security/suspicious-activity
+```
+
+Returns IP addresses with multiple failed login attempts within the specified date range.
+
+**Query Parameters**
+
+| Parameter | Type     | Required | Description                    |
+| --------- | -------- | -------- | ------------------------------ |
+| startDate | datetime | Yes      | Start of date range (ISO 8601) |
+| endDate   | datetime | Yes      | End of date range (ISO 8601)   |
+
+**Response**
+
+```json
+[
+  {
+    "ipAddress": "203.0.113.42",
+    "failedAttempts": 15,
+    "usernames": ["admin", "dr.kim", "root"]
+  }
+]
+```
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`
+
+#### 8.3.7 Get Failed Login Attempts
+
+```http
+GET /api/v1/admin/audit/security/failed-logins
+```
+
+Returns all failed login attempts within the specified date range (paginated).
+
+**Query Parameters**
+
+| Parameter | Type     | Required | Description                    |
+| --------- | -------- | -------- | ------------------------------ |
+| startDate | datetime | Yes      | Start of date range (ISO 8601) |
+| endDate   | datetime | Yes      | End of date range (ISO 8601)   |
+
+**Response**: Paginated list of `LoginHistoryResponseDto` items with `success: false`. Same shape as 8.3.2 response.
+
+**Error Responses**: `401 Unauthorized`, `403 Forbidden`
 
 ---
 
