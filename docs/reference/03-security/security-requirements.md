@@ -60,7 +60,7 @@
 │  │                           Application Security                         │ │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                │ │
 │  │  │Authentication│  │Authorization │  │ Input Valid. │                │ │
-│  │  │   (JWT/MFA)  │  │   (RBAC)     │  │  (Sanitize)  │                │ │
+│  │  │    (JWT)     │  │   (RBAC)     │  │  (Sanitize)  │                │ │
 │  │  └──────────────┘  └──────────────┘  └──────────────┘                │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 │                                      │                                       │
@@ -81,32 +81,36 @@
 
 ### 2.1 Authentication Requirements
 
-| Requirement                  | Details                                                                      | Priority    |
-| ---------------------------- | ---------------------------------------------------------------------------- | ----------- |
-| **Strong Password**          | 8+ characters, combination of uppercase/lowercase/numbers/special characters | Required    |
-| **Password Hashing**         | bcrypt (cost factor 12 or higher)                                            | Required    |
-| **MFA Support**              | TOTP (Google Authenticator, etc.)                                            | Recommended |
-| **Session Management**       | 30-minute idle timeout                                                       | Required    |
-| **Concurrent Session Limit** | Maximum 3 sessions per user                                                  | Required    |
-| **Login Attempt Limit**      | 15-minute lockout after 5 failed attempts                                    | Required    |
+| Requirement                  | Details                                                                      | Priority    | Implementation Status                    |
+| ---------------------------- | ---------------------------------------------------------------------------- | ----------- | ---------------------------------------- |
+| **Strong Password**          | 8+ characters, combination of uppercase/lowercase/numbers/special characters | Required    | Implemented                              |
+| **Password Hashing**         | bcrypt (cost factor 12 or higher)                                            | Required    | Implemented                              |
+| **MFA Support**              | TOTP (Google Authenticator, etc.)                                            | Recommended | **Not Implemented** — Future Enhancement |
+| **Session Management**       | 30-minute idle timeout                                                       | Required    | Implemented                              |
+| **Concurrent Session Limit** | Maximum 3 sessions per user                                                  | Required    | Implemented                              |
+| **Login Attempt Limit**      | 15-minute lockout after 5 failed attempts                                    | Required    | Implemented                              |
 
 ### 2.2 Password Policy
+
+> **Implementation Note**: The policy object below represents the **target** configuration.
+> Fields marked `// NOT IMPLEMENTED` are planned requirements not yet present in the codebase.
+> See [Security Roadmap](#security-roadmap) for the delivery timeline.
 
 ```typescript
 // Password policy implementation example
 const passwordPolicy = {
-  minLength: 8,
-  maxLength: 128,
-  requireUppercase: true,
-  requireLowercase: true,
-  requireNumber: true,
-  requireSpecial: true,
+  minLength: 8, // Implemented
+  maxLength: 128, // Implemented
+  requireUppercase: true, // Implemented
+  requireLowercase: true, // Implemented
+  requireNumber: true, // Implemented
+  requireSpecial: true, // Implemented
   specialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-  preventCommon: true, // Block common passwords
-  preventUserInfo: true, // Block passwords containing user info
-  historyCount: 5, // Prevent reuse of last 5 passwords
-  maxAge: 90, // Password change required every 90 days
-  warnBefore: 14, // Warning 14 days before expiration
+  preventCommon: true, // NOT IMPLEMENTED — Future Enhancement
+  preventUserInfo: true, // Partially implemented (username only; full user-info check not yet done)
+  historyCount: 5, // NOT IMPLEMENTED — Future Enhancement (no password history storage)
+  maxAge: 90, // NOT IMPLEMENTED — Future Enhancement (no expiry enforcement)
+  warnBefore: 14, // NOT IMPLEMENTED — Future Enhancement (no expiry warning)
 };
 
 // Password strength validation
@@ -947,6 +951,36 @@ jobs:
 | Tertiary  | Executive        | -                     | External response         |
 | External  | CERT Team        | -                     | Legal reporting           |
 | External  | Cyber Police     | 182                   | Investigation cooperation |
+
+---
+
+## Security Roadmap
+
+The following security features are **planned but not yet implemented**. They are listed here to
+prevent confusion between current capabilities and future requirements. No reader should assume
+these controls are active in the current codebase.
+
+### Authentication Enhancements
+
+| Feature                       | Section | Status      | Notes                                                                            |
+| ----------------------------- | ------- | ----------- | -------------------------------------------------------------------------------- |
+| MFA / TOTP                    | 2.1     | Not Started | Google Authenticator-compatible TOTP; requires new DB column and enrollment flow |
+| Common password blocklist     | 2.2     | Not Started | Integration with HaveIBeenPwned API or bundled wordlist                          |
+| Full user-info password check | 2.2     | Not Started | Extend current username check to cover name, email, employee ID                  |
+
+### Password Lifecycle Policies
+
+| Feature              | Section | Status      | Notes                                                            |
+| -------------------- | ------- | ----------- | ---------------------------------------------------------------- |
+| Password history     | 2.2     | Not Started | Store hashed history (last 5); reject reuse on change            |
+| Password expiry      | 2.2     | Not Started | Force change after 90 days; requires `password_changed_at` field |
+| Expiry warning email | 2.2     | Not Started | Notify user 14 days before expiry; depends on expiry feature     |
+
+### Prioritisation
+
+These features are deferred to a future release. Until implemented, the effective password
+policy enforces only: minimum length, character-class requirements, username exclusion, bcrypt
+hashing, session timeout, concurrent-session cap, and login-attempt lockout.
 
 ---
 
