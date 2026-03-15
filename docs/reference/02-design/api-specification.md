@@ -424,10 +424,18 @@ GET /api/v1/patients/{patientId}
   "gender": "MALE",
   "bloodType": "A+",
   "phone": "010-1234-5678",
-  "emergencyContact": "Jane Doe",
-  "emergencyPhone": "010-9876-5432",
+  "emergencyContactName": "Jane Doe",
+  "emergencyContactPhone": "010-9876-5432",
+  "emergencyContactRelation": "Spouse",
   "address": "123 Teheran-ro, Gangnam-gu, Seoul",
-  "allergies": ["Penicillin"],
+  "detail": {
+    "allergies": "Penicillin",
+    "medicalHistory": null,
+    "insuranceType": null,
+    "insuranceNumber": null,
+    "insuranceCompany": null,
+    "notes": null
+  },
   "currentAdmission": {
     "id": "660e8400-e29b-41d4-a716-446655440001",
     "admissionNumber": "A2025123456",
@@ -473,16 +481,15 @@ POST /api/v1/patients
 
 ```json
 {
-  "patientNumber": "P2025001234",
   "name": "John Doe",
   "birthDate": "1990-05-15",
   "gender": "MALE",
   "bloodType": "A+",
   "phone": "010-1234-5678",
-  "emergencyContact": "Jane Doe",
-  "emergencyPhone": "010-9876-5432",
-  "address": "123 Teheran-ro, Gangnam-gu, Seoul",
-  "allergies": ["Penicillin"]
+  "emergencyContactName": "Jane Doe",
+  "emergencyContactPhone": "010-9876-5432",
+  "emergencyContactRelation": "Spouse",
+  "address": "123 Teheran-ro, Gangnam-gu, Seoul"
 }
 ```
 
@@ -730,7 +737,7 @@ GET /api/v1/rooms/dashboard/floor/{floorId}
 ### 4.3 Get Available Beds
 
 ```http
-GET /api/v1/beds/available
+GET /api/v1/rooms/beds/available
 ```
 
 **Query Parameters**
@@ -1500,6 +1507,26 @@ GET /api/v1/rounds
 | scheduledDateTo   | date   | End date filter                                    |
 | page              | number | Page number (default: 1)                           |
 | limit             | number | Items per page (default: 20, max: 100)             |
+
+### 7.2.1 Get Round by Round Number
+
+```http
+GET /api/v1/rounds/by-number/{roundNumber}
+```
+
+**Path Parameters**
+
+| Parameter   | Type   | Description                             |
+| ----------- | ------ | --------------------------------------- |
+| roundNumber | string | Round number (e.g., `RND-20240101-001`) |
+
+**Response (200 OK)**: Single round object (same shape as 7.3 Get Round Detail response).
+
+**Error Responses**
+
+| HTTP | Code            | Description                           |
+| ---- | --------------- | ------------------------------------- |
+| 404  | ROUND_NOT_FOUND | Round with specified number not found |
 
 ### 7.3 Get Round Detail
 
