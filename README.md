@@ -375,10 +375,12 @@ See [Security Documentation](docs/kubernetes/security.md) for complete security 
 
 | Phase       | Period    | Focus                                        |
 | ----------- | --------- | -------------------------------------------- |
-| **Phase 1** | Month 1-2 | Foundation (Auth, Patient, Room Management)  |
-| **Phase 2** | Month 3-4 | Core Features (Admission/Discharge, Reports) |
-| **Phase 3** | Month 5   | Advanced Features (Rounds, Statistics)       |
-| **Phase 4** | Month 6   | Stabilization & Launch                       |
+| **Phase 1** | Month 1   | Foundation (Auth, Patient, Room Management)  |
+| **Phase 2** | Month 2-3 | Core Features (Admission/Discharge, Reports) |
+| **Phase 3** | Month 4   | Advanced Features (Rounds, Statistics)       |
+| **Phase 4** | Month 5   | Stabilization & Launch                       |
+
+> Total estimated duration: **4–5 months** (aligns with PRD project schedule).
 
 ---
 
