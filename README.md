@@ -1,3 +1,5 @@
+> Status: archived 2026-09. No further maintenance; kept for reference.
+
 # Inpatient Management ERP System
 
 > **An integrated ERP system that enhances healthcare staff efficiency and strengthens patient safety through digital transformation of inpatient management**
